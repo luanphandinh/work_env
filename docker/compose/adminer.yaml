@@ -1,0 +1,7 @@
+version: '3.3'
+
+services:
+  adminer:
+    image: adminer
+    ports:
+      - 4000:8080

@@ -13,10 +13,3 @@ services:
       MYSQL_PASSWORD: admin
     ports:
       - 3306:3306
-
-  adminer:
-    image: adminer
-    depends_on:
-      - db
-    ports:
-      - 4000:8080
