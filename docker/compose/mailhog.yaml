@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    command: ['-storage=maildir', '-maildir-path=/maildir']
+    volumes:
+      - '../../docker/run/mailhog:/maildir'
+    ports:
+      - '8025:8025'
+      - '1025:1025'
