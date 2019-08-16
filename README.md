@@ -13,5 +13,5 @@ Run all
 ```
 Or run optional services
 ```bash
-./docker.sh mysql adminer es rabbitmq
+./docker.sh mysql adminer es rabbitmq redis redis-commander
 ```
