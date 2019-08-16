@@ -4,7 +4,7 @@ services:
   es:
     image: 'elasticsearch:5.5.2-alpine'
     volumes:
-      - '../../docker/run/elasticsearch:/usr/share/elasticsearch/data'
+      - '../../docker/run/${ENV}/elasticsearch:/usr/share/elasticsearch/data'
     ports:
       - '9400:9200'
     environment:

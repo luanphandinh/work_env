@@ -59,6 +59,7 @@ env()
 	fi
 
 	echo "Docker containers running on ENV: $ENV"
+	export ENV=$ENV
 }
 
 while getopts "e:s:h:" opt
