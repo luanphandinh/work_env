@@ -2,6 +2,8 @@ version: '3.3'
 
 services:
   mailhog:
+    container_name: "work_${ENV}_mailhog"
+    hostname: "work_${ENV}_mailhog"
     image: mailhog/mailhog:v1.0.0
     command: ['-storage=maildir', '-maildir-path=/maildir']
     volumes:

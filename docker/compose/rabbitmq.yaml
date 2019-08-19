@@ -2,6 +2,8 @@ version: '3.3'
 
 services:
   queue:
+    container_name: "work_${ENV}_queue"
+    hostname: "work_${ENV}_queue"
     image: 'rabbitmq:3-management'
     environment:
       - RABBITMQ_DEFAULT_USER=admin

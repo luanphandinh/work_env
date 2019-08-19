@@ -2,6 +2,8 @@ version: '3.3'
 
 services:
   redis:
+    container_name: "work_${ENV}_redis"
+    hostname: "work_${ENV}_redis"
     image: redis:4-alpine
     ports:
       - '6379:6379'

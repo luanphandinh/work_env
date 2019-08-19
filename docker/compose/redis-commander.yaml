@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
+    container_name: "work_${ENV}_redis_commander"
+    hostname: "work_${ENV}_redis_commander"
     image: rediscommander/redis-commander:latest
     restart: always
     depends_on:
