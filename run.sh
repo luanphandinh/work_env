@@ -4,8 +4,8 @@ info()
 {
 	echo ""
 	echo "Usage: $0 -e ENV -s SERVICES"
-	echo -e "\t-a e Environment: Possible values ['dev', 'test'], avoiding conflict data, accidentally delete dev data when running test"
-	echo -e "\t-b s Services: optional services to bootstrap"
+	echo -e "\t-e e Environment: Possible values ['dev', 'test'], avoiding conflict data, accidentally delete dev data when running test"
+	echo -e "\t-s s Services: optional services to bootstrap"
 	exit 1
 }
 
@@ -14,7 +14,7 @@ compose()
 	compose="docker-compose"
 	SERVICES=$@
 
-	for SERVICE in $SERVICES ; do
+	for SERVICE in $SERVICES; do
 		compose+=" -f docker/compose/$SERVICE"
 		if [[ $SERVICE != *".yaml"* ]]; then
 			compose+=".yaml"
