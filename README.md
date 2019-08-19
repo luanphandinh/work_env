@@ -5,7 +5,8 @@ Starting docker containers for common stuffs: mysql, adminer, es, rabbitmq, ...
 
 # Start and running
 ```bash
-chmod +x run.sh
+chmod +x docker/run.sh
+chmod +x docker/stop.sh
 ```
 Options
 ```
@@ -17,9 +18,14 @@ Options
 ```
 Run all
 ```bash
-./run.sh -e "dev" -s "all"
+./docker/run.sh -e "dev" -s "all"
 ```
 Or run optional services
 ```bash
-./run.sh -e "dev" -s "mysql adminer es rabbitmq redis redis-commander"
+./docker/run.sh -e "dev" -s "mysql adminer es rabbitmq redis redis-commander"
+```
+
+Stop all
+```bash
+./docker/stop.sh
 ```
