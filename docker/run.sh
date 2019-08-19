@@ -14,42 +14,42 @@ compose()
 	compose="docker-compose"
 	SERVICES=$@
 
-	for SERVICE in $SERVICES; do
+	for SERVICE in ${SERVICES}; do
 		compose+=" -f docker/compose/$SERVICE"
-		if [[ $SERVICE != *".yaml"* ]]; then
+		if [[ ${SERVICE} != *".yaml"* ]]; then
 			compose+=".yaml"
 		fi
 	done
 
 	compose+=" up"
-	echo $compose
+	echo "$compose"
 }
 
 command()
 {
 	SERVICES=$@
 
-	if [ -z "$SERVICES" ]
+	if [[ -z "$SERVICES" ]]
 	then
 		SERVICES="all"
 	fi
 
 	COMMAND=""
-	if [ "$SERVICES" == "all" ]; then
+	if [[ "$SERVICES" == "all" ]]; then
 		COMMAND="$(compose `ls docker/compose`)"
 	else
-		COMMAND="$(compose $SERVICES)"
+		COMMAND="$(compose "$SERVICES")"
 	fi
 
-	echo $COMMAND
-	$COMMAND
+	echo "$COMMAND"
+	${COMMAND}
 }
 
 env()
 {
 	ENV=$1
 
-	if [ -z "$ENV" ]; then
+	if [[ -z "$ENV" ]]; then
 		ENV="dev"
 	fi
 
@@ -59,7 +59,7 @@ env()
 	fi
 
 	echo "Docker containers running on ENV: $ENV"
-	export ENV=$ENV
+	export ENV="$ENV"
 }
 
 while getopts "e:s:h:" opt
@@ -71,5 +71,5 @@ do
    esac
 done
 
-env $ENV
-command $SERVICES
+env "$ENV"
+command "$SERVICES"
