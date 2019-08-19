@@ -7,7 +7,7 @@ services:
     image: mailhog/mailhog:v1.0.0
     command: ['-storage=maildir', '-maildir-path=/maildir']
     volumes:
-      - '../../docker/run/${ENV}/mailhog:/maildir'
+      - '../../docker/run/env/${ENV}/mailhog:/maildir'
     ports:
       - '8025:8025'
       - '1025:1025'

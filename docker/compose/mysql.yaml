@@ -6,7 +6,7 @@ services:
     hostname: "work_${ENV}_db"
     image: mysql:5.7
     volumes:
-      - '../../docker/run/${ENV}/mysql:/var/lib/mysql'
+      - '../../docker/run/env/${ENV}/mysql:/var/lib/mysql'
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
