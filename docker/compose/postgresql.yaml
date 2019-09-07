@@ -1,0 +1,16 @@
+version: '3.3'
+
+services:
+  postgresql:
+    container_name: "work_${ENV}_postgresql"
+    hostname: "work_${ENV}_postgresql"
+    image: postgres
+    volumes:
+      - '../../docker/run/env/${ENV}/postgresql:/var/lib/postgresql/data'
+    restart: always
+    environment:
+      POSTGRES_DB: workspace
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - 5432:5432
