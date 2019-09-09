@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  mysql57:
+    container_name: "work_${ENV}_mysql57"
+    hostname: "work_${ENV}_mysql57"
+    image: mysql:5.7
+    volumes:
+      - '../../docker/run/env/${ENV}/mysql57:/var/lib/mysql'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: workspace
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - 5706:3306
