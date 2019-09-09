@@ -1,0 +1,13 @@
+version: "3.3"
+
+services:
+  msssql:
+    build: ../mssql
+    container_name: "work_${ENV}_msssql"
+    hostname: "work_${ENV}_msssql"
+    environment:
+      SA_PASSWORD: "MssqlPass123"
+      ACCEPT_EULA: "Y"
+      MSSQL_AGENT_ENABLED: "true"
+    ports:
+      - "2500:1433"
