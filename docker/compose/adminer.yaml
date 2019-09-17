@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   adminer:
+    build: ./adminer
     container_name: "work_${ENV}_adminer"
     hostname: "work_${ENV}_adminer"
-    image: adminer
     ports:
       - 4000:8080
