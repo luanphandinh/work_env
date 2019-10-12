@@ -3,7 +3,7 @@
 info()
 {
 	echo ""
-	echo "Usage: $0 -e ENV -s SERVICES"
+	echo "Usage: $0 -e ENV -s PARAMS"
 	echo -e "\t-e e Environment: Possible values ['dev', 'test'], avoiding conflict data, accidentally delete dev data when running test"
 	echo -e "\t-s s Services: optional services to bootstrap"
 	exit 1
@@ -12,9 +12,9 @@ info()
 compose()
 {
 	compose="docker-compose"
-	SERVICES=$@
+	PARAMS=$@
 
-	for SERVICE in ${SERVICES}; do
+	for SERVICE in ${PARAMS}; do
 		compose+=" -f docker/compose/$SERVICE"
 		if [[ ${SERVICE} != *".yaml"* ]]; then
 			compose+=".yaml"
@@ -27,12 +27,17 @@ compose()
 
 command()
 {
-	SERVICES=$@
+	PARAMS=$@
+  SERVICES="all"
 
-	if [[ -z "$SERVICES" ]]
-	then
-		SERVICES="all"
-	fi
+	if [[ -n "$PARAMS" ]]; then
+	  FILTER=""
+	  for SERVICE in ${PARAMS}; do
+      FILTER+="-e $SERVICE.*yaml "
+    done
+
+    SERVICES=$(ls -p docker/compose | grep ${FILTER})
+  fi
 
 	COMMAND=""
 	if [[ "$SERVICES" == "all" ]]; then
@@ -66,10 +71,10 @@ while getopts "e:s:h:" opt
 do
    case "$opt" in
       e ) ENV="$OPTARG" ;;
-      s ) SERVICES="$OPTARG" ;;
+      s ) PARAMS="$OPTARG" ;;
       h ) info ;;
    esac
 done
 
 env "$ENV"
-command "$SERVICES"
+command "$PARAMS"
