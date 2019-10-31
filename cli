@@ -2,10 +2,11 @@
 
 set -e
 export ENVROOT=$(cd $(dirname $0) && pwd)
+export __log__=$ENVROOT/bin/log
 
 usage() {
-  cli_name=${0##*/}
-  echo "
+	cli_name=${0##*/}
+	echo "
 $cli_name
 your env CLI
 version: $(cat $ENVROOT/VERSION)
@@ -23,7 +24,7 @@ commands:
 
     *         Help
 "
-  exit 1
+	exit 1
 }
 
 # Handle the environment settings
@@ -34,40 +35,44 @@ set -e
 export ENV='dev'
 
 env() {
-  ENV=$1
+	ENV=$1
 
-  if [[ -z "$ENV" ]]; then
-    ENV="dev"
-  fi
+	if [[ -z "$ENV" ]]; then
+		ENV="dev"
+	fi
 
-  if [[ "$ENV" != "dev" ]] && [[ "$ENV" != "test" ]]; then
-    echo "-e only accept values ['dev', 'test']"
-    exit 1
-  fi
+	if [[ "$ENV" != "dev" ]] && [[ "$ENV" != "test" ]]; then
+		echo "-e only accept values ['dev', 'test']"
+		exit 1
+	fi
 
-  set -e
-  export ENV="$ENV"
-}
-
-log_info() {
-  echo "CLI taking action on ENV: $ENV"
+	set -e
+	export ENV="$ENV"
 }
 
 while [ "$1" != "" ]; do
-    case $1 in
-        -e | --env )            shift
-                                env $1
-                                ;;
-        docker )                shift
-                                log_info
-                                "$ENVROOT/bin/docker" $@
-                                exit
-                                ;;
-        -h | --help )           usage
-                                exit
-                                ;;
-        * )                     usage
-                                exit 1
-    esac
-    shift
+	case $1 in
+	-e | --env)
+		shift
+		env $1
+		;;
+
+	docker)
+		shift
+		$__log__ -i "CLI taking action on ENV: $ENV"
+		"$ENVROOT/bin/docker" $@
+		exit
+		;;
+
+	-h | --help)
+		usage
+		exit
+		;;
+
+	*)
+		usage
+		exit 1
+		;;
+	esac
+	shift
 done
