@@ -1,12 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 usage() {
   echo "
 Usage: ${0##*/} [command]
 Commands:
     run     Start all specify docker containers.
+
     stop    Stop all docker containers.
-            Not yet implement stop by name
+            Not yet implement stop by name.
+
+    clean   Clean up all docker containers within namespace (default is work_<ENV>).
+            [--cache] to remove cache.
 "
   exit 1
 }
@@ -31,26 +35,34 @@ compose() {
 }
 
 command() {
-  PARAMS=$@
-
-  if [[ -n "$PARAMS" ]]; then
-    FILTER=""
-    for SERVICE in ${PARAMS}; do
-      FILTER+="-e $SERVICE.*yaml "
-    done
-
-    SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
-  fi
-
-  COMMAND=""
-  if [[ "$SERVICES" == "all" ]]; then
+  if [[ "$1" == "all" ]]; then
     COMMAND="$(compose $(ls -p $ENVROOT/etc/docker | grep -v /))"
   else
+    PARAMS=$@
+
+    if [[ -n "$PARAMS" ]]; then
+      FILTER=""
+      for SERVICE in ${PARAMS}; do
+        FILTER+="-e $SERVICE.*yaml "
+      done
+
+      SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
+    fi
     COMMAND="$(compose "$SERVICES")"
   fi
 
   echo ${COMMAND}
   ${COMMAND}
+}
+
+clean() {
+  if [ $(docker ps -a --format "{{.Names}}" | grep "work" | wc -l) -gt 0 ]; then
+    docker rm `docker ps -a --format "{{.Names}}" | grep "work"`
+  fi
+
+  if [ "$1" == "--cache" ]; then
+    rm -rf "$ENVROOT/proc/docker"
+  fi
 }
 
 while [ "$1" != "" ]; do
@@ -61,6 +73,10 @@ while [ "$1" != "" ]; do
                         ;;
         stop )          shift
                         docker stop `docker ps --format "{{.Names}}" | grep "work"`
+                        exit
+                        ;;
+        clean )         shift
+                        clean $1
                         exit
                         ;;
         -h | --help )   usage
