@@ -7,16 +7,16 @@ usage() {
   cli_name=${0##*/}
   echo "
 $cli_name
-Your env CLI
-Version: $(cat $ENVROOT/VERSION)
-Usage: $cli_name [options] [command [options]]
+your env CLI
+version: $(cat $ENVROOT/VERSION)
+usage: $cli_name [options] [command [command's options]]
 
-Options:
+options:
     -e | --env :  Define environment that cli with take action on
                   Environment: Possible values ['dev', 'test']
                   Avoiding conflict data, accidentally delete dev data when running test
 
-Commands:
+commands:
     docker    Up and running dockers container
               All possible containers a listed in etc/docker
               Will create volume for corresponding containers in proc/<ENV>/docker
