@@ -11,6 +11,10 @@ Commands:
   exit 1
 }
 
+# Export environment ports from config
+set -e
+. "$ENVROOT/etc/docker/.PORT"
+
 compose() {
   compose="docker-compose"
   PARAMS=$@

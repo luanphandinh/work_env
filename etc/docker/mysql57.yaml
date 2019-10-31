@@ -14,4 +14,4 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     ports:
-      - 5706:3306
+      - ${MYSQL57_PORT}:3306

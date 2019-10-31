@@ -9,7 +9,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=admin
     volumes:
       - '${ENVROOT}/proc/docker/${ENV}/rabbitmq:/var/lib/rabbitmq'
-    ports: ['5672:5672', '15672:15672']
+    ports: ['${RABBIT_MQ_PORT_1}:5672', '${RABBIT_MQ_PORT_2}:15672']
     healthcheck:
       test: ["CMD", "rabbitmqadmin", "show", "overview", "-u", "admin", "-p", "admin"]
       interval: 10s

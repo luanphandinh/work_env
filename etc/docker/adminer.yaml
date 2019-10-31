@@ -6,4 +6,4 @@ services:
     container_name: "work_${ENV}_adminer"
     hostname: "work_${ENV}_adminer"
     ports:
-      - 4000:8080
+      - ${ADMINER_PORT}:8080
