@@ -9,9 +9,15 @@ usage() {
 $cli_name
 Your env CLI
 Version: $(cat $ENVROOT/VERSION)
-Usage: $cli_name [command]
+Usage: $cli_name [options] [command [options]]
+Options:
+    -e | --env :  Define environment that cli with take action on
+                  Environment: Possible values ['dev', 'test']
+                  Avoiding conflict data, accidentally delete dev data when running test
 Commands:
     docker    Up and running dockers container
+              All possible containers a listed in etc/docker
+              Will create volume for corresponding containers in proc/<ENV>/docker
     *         Help
 "
   exit 1
@@ -41,7 +47,7 @@ env() {
 }
 
 log_info() {
-  echo "CLI running with ENV: $ENV"
+  echo "CLI taking action on ENV: $ENV"
 }
 
 while [ "$1" != "" ]; do
@@ -51,7 +57,7 @@ while [ "$1" != "" ]; do
                                 ;;
         docker )                shift
                                 log_info
-                                "$ENVROOT/bin/docker-run" $@
+                                "$ENVROOT/bin/docker" $@
                                 exit
                                 ;;
         -h | --help )           usage

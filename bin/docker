@@ -1,8 +1,13 @@
 #!/bin/bash
 
 usage() {
-  echo "Commands:"
-  echo "    -s | --services: list of service names to bootstrap"
+  echo "
+Usage: ${0##*/} [command]
+Commands:
+    run     Start all specify docker containers.
+    stop    Stop all docker containers.
+            Not yet implement stop by name
+"
   exit 1
 }
 
@@ -46,15 +51,19 @@ command() {
 
 while [ "$1" != "" ]; do
     case $1 in
-        -s | --services )       shift
-                                command $@
-                                exit
-                                ;;
-        -h | --help )           usage
-                                exit
-                                ;;
-        * )                     usage
-                                exit 1
+        run )           shift
+                        command $@
+                        exit
+                        ;;
+        stop )          shift
+                        docker stop `docker ps --format "{{.Names}}" | grep "work"`
+                        exit
+                        ;;
+        -h | --help )   usage
+                        exit
+                        ;;
+        * )             usage
+                        exit 1
     esac
     shift
 done
