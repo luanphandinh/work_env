@@ -4,28 +4,25 @@ Starting docker containers for common stuffs: mysql, adminer, es, rabbitmq, ...
 `
 
 # Start and running
+examples:
+* Docker
 ```bash
-chmod +x docker-run.sh
-chmod +x docker-stop.sh
-```
-Options
-```
--e  	Environment: Possible values ['dev', 'test']
-    	Avoiding conflict data, accidentally delete dev data when running test
-	Will create volume for corresponding containers
+chmod +x ./cli
 
--s  	optional service to bootstrap container
-```
-Run all
-```bash
-./docker-run.sh -e "dev" -s "all"
-```
-Or run optional services
-```bash
-./docker-run.sh -e "dev" -s "mysql adminer es rabbitmq redis redis-commander postgresql"
+./cli -e dev docker run mysql adminer
 ```
 
-Stop all
+* Help
 ```bash
-./docker-stop.sh
+./cli -h
+
+Options:
+    -e | --env :  Define environment that cli with take action on
+                  Environment: Possible values ['dev', 'test']
+                  Avoiding conflict data, accidentally delete dev data when running test
+Commands:
+    docker    Up and running dockers container
+              All possible containers a listed in etc/docker
+              Will create volume for corresponding containers in proc/<ENV>/docker
+    *         Help
 ```

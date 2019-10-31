@@ -6,7 +6,7 @@ services:
     hostname: "work_${ENV}_mysql"
     image: mysql
     volumes:
-      - '../../docker/run/env/${ENV}/mysql:/var/lib/mysql'
+      - '${ENVROOT}/proc/docker/${ENV}/mysql:/var/lib/mysql'
     restart: always
     command:
       - --default-authentication-plugin=mysql_native_password
