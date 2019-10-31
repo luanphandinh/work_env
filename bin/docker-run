@@ -1,0 +1,60 @@
+#!/bin/bash
+
+usage() {
+  echo "Commands:"
+  echo "    -s | --services: list of service names to bootstrap"
+  exit 1
+}
+
+compose() {
+  compose="docker-compose"
+  PARAMS=$@
+
+  for SERVICE in ${PARAMS}; do
+    compose+=" -f $ENVROOT/etc/docker/$SERVICE"
+    if [[ ${SERVICE} != *".yaml"* ]]; then
+      compose+=".yaml"
+    fi
+  done
+
+  compose+=" up"
+  echo "$compose"
+}
+
+command() {
+  PARAMS=$@
+
+  if [[ -n "$PARAMS" ]]; then
+    FILTER=""
+    for SERVICE in ${PARAMS}; do
+      FILTER+="-e $SERVICE.*yaml "
+    done
+
+    SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
+  fi
+
+  COMMAND=""
+  if [[ "$SERVICES" == "all" ]]; then
+    COMMAND="$(compose $(ls -p $ENVROOT/etc/docker | grep -v /))"
+  else
+    COMMAND="$(compose "$SERVICES")"
+  fi
+
+  echo ${COMMAND}
+  ${COMMAND}
+}
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -s | --services )       shift
+                                command $@
+                                exit
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
