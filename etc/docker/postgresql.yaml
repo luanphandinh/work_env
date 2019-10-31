@@ -6,7 +6,7 @@ services:
     hostname: "work_${ENV}_postgresql"
     image: postgres
     volumes:
-      - '../../docker/run/env/${ENV}/postgresql:/var/lib/postgresql/data'
+      - '${ENVROOT}/proc/docker/${ENV}/postgresql:/var/lib/postgresql/data'
     restart: always
     environment:
       POSTGRES_DB: workspace
