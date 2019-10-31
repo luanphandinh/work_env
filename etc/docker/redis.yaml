@@ -6,7 +6,7 @@ services:
     hostname: "work_${ENV}_redis"
     image: redis:4-alpine
     ports:
-      - '6379:6379'
+      - ${REDIS_PORT}:6379
     volumes:
       - '${ENVROOT}/proc/docker/${ENV}/redis:/var/lib/redis/'
     healthcheck:

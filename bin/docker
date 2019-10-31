@@ -1,15 +1,33 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 usage() {
   echo "
-Usage: ${0##*/} [command]
-Commands:
+usage: ${0##*/} [command]
+commands:
+
     run     Start all specify docker containers.
+            eg: docker run mysql adminer
+
+            Options:
+
+            [--like]    To run services that contain keyword
+                        eg: docker run --like sql
+
     stop    Stop all docker containers.
-            Not yet implement stop by name
+            Not yet implement stop by name.
+
+    clean   Clean up all docker containers within namespace (default is work_<ENV>).
+
+            Options:
+
+            [--cache]       To remove cache.
 "
   exit 1
 }
+
+# Export environment ports from config
+set -e
+. "$ENVROOT/etc/docker/.PORT"
 
 compose() {
   compose="docker-compose"
@@ -26,22 +44,23 @@ compose() {
   echo "$compose"
 }
 
-command() {
-  PARAMS=$@
-
-  if [[ -n "$PARAMS" ]]; then
-    FILTER=""
-    for SERVICE in ${PARAMS}; do
-      FILTER+="-e $SERVICE.*yaml "
-    done
-
-    SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
-  fi
-
-  COMMAND=""
-  if [[ "$SERVICES" == "all" ]]; then
+run() {
+  if [[ "$1" == "all" ]]; then
     COMMAND="$(compose $(ls -p $ENVROOT/etc/docker | grep -v /))"
   else
+    SERVICES=$@
+    if [[ "$1" == "--like" ]]; then
+      PARAMS=$@
+
+      if [[ -n "$PARAMS" ]]; then
+        FILTER=""
+        for SERVICE in ${PARAMS}; do
+          FILTER+="-e $SERVICE.*yaml "
+        done
+
+        SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
+      fi
+    fi
     COMMAND="$(compose "$SERVICES")"
   fi
 
@@ -49,14 +68,32 @@ command() {
   ${COMMAND}
 }
 
+stop() {
+  docker stop `docker ps --format "{{.Names}}" | grep "work"`
+}
+
+clean() {
+  if [ $(docker ps -a --format "{{.Names}}" | grep "work" | wc -l) -gt 0 ]; then
+    docker rm `docker ps -a --format "{{.Names}}" | grep "work"`
+  fi
+
+  if [ "$1" == "--cache" ]; then
+    rm -rf "$ENVROOT/proc/docker"
+  fi
+}
+
 while [ "$1" != "" ]; do
     case $1 in
         run )           shift
-                        command $@
+                        run $@
                         exit
                         ;;
         stop )          shift
-                        docker stop `docker ps --format "{{.Names}}" | grep "work"`
+                        stop
+                        exit
+                        ;;
+        clean )         shift
+                        clean $1
                         exit
                         ;;
         -h | --help )   usage
