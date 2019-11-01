@@ -8,7 +8,7 @@ services:
     ports:
       - ${REDIS_PORT}:6379
     volumes:
-      - '${ENVROOT}/proc/docker/${ENV}/redis:/var/lib/redis/'
+      - '${__docker_path__}/redis:/var/lib/redis/'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

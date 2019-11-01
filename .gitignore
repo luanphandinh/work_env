@@ -1,6 +1,7 @@
 docker/.DS_Store
 .DS_Store
 .idea/
-proc/docker
 tmp/
 log/
+var/lib/
+var/mail/

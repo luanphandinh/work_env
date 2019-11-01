@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 
+# All available global variables
 set -e
 export ENVROOT=$(cd $(dirname $0) && pwd)
+export CLI_VERSION=$(cat $ENVROOT/VERSION)
 export __log__=$ENVROOT/bin/log
+export __var_log_dir__=$ENVROOT/var/log
+export __var_lib_dir__=$ENVROOT/var/lib
+export __var_mail_dir__=$ENVROOT/var/mail
 
 usage() {
 	cli_name=${0##*/}
 	echo "
 $cli_name
 your env CLI
-version: $(cat $ENVROOT/VERSION)
+version: $CLI_VERSION
 usage: $cli_name [options] [command [command's options]]
 
 options:
