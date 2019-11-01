@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 usage() {
-  echo "
+	echo "
 usage: ${0##*/} [command]
 commands:
 
@@ -22,7 +22,7 @@ commands:
 
             [--cache]       To remove cache.
 "
-  exit 1
+	exit 1
 }
 
 # Export environment ports from config
@@ -30,77 +30,87 @@ set -e
 . "$ENVROOT/etc/docker/.PORT"
 
 compose() {
-  compose="docker-compose"
-  PARAMS=$@
+	compose="docker-compose"
+	PARAMS=$@
 
-  for SERVICE in ${PARAMS}; do
-    compose+=" -f $ENVROOT/etc/docker/$SERVICE"
-    if [[ ${SERVICE} != *".yaml"* ]]; then
-      compose+=".yaml"
-    fi
-  done
+	for SERVICE in ${PARAMS}; do
+		compose+=" -f $ENVROOT/etc/docker/$SERVICE"
+		if [[ ${SERVICE} != *".yaml"* ]]; then
+			compose+=".yaml"
+		fi
+	done
 
-  compose+=" up"
-  echo "$compose"
+	compose+=" up"
+	echo "$compose"
 }
 
 run() {
-  if [[ "$1" == "all" ]]; then
-    COMMAND="$(compose $(ls -p $ENVROOT/etc/docker | grep -v /))"
-  else
-    SERVICES=$@
-    if [[ "$1" == "--like" ]]; then
-      PARAMS=$@
+	if [[ "$1" == "all" ]]; then
+		COMMAND="$(compose $(ls -p $ENVROOT/etc/docker | grep -v /))"
+	else
+		SERVICES=$@
+		if [[ "$1" == "--like" ]]; then
+			PARAMS=$@
 
-      if [[ -n "$PARAMS" ]]; then
-        FILTER=""
-        for SERVICE in ${PARAMS}; do
-          FILTER+="-e $SERVICE.*yaml "
-        done
+			if [[ -n "$PARAMS" ]]; then
+				FILTER=""
+				for SERVICE in ${PARAMS}; do
+					FILTER+="-e $SERVICE.*yaml "
+				done
 
-        SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
-      fi
-    fi
-    COMMAND="$(compose "$SERVICES")"
-  fi
+				SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
+			fi
+		fi
+		COMMAND="$(compose "$SERVICES")"
+	fi
 
-  echo ${COMMAND}
-  ${COMMAND}
+	$__log__ -i ${COMMAND}
+	${COMMAND}
 }
 
 stop() {
-  docker stop `docker ps --format "{{.Names}}" | grep "work"`
+	docker stop $(docker ps --format "{{.Names}}" | grep "work")
 }
 
 clean() {
-  if [ $(docker ps -a --format "{{.Names}}" | grep "work" | wc -l) -gt 0 ]; then
-    docker rm `docker ps -a --format "{{.Names}}" | grep "work"`
-  fi
+	if [ $(docker ps -a --format "{{.Names}}" | grep "work" | wc -l) -gt 0 ]; then
+		docker rm $(docker ps -a --format "{{.Names}}" | grep "work")
+		$__log__ -i "docker clean up images."
+	fi
 
-  if [ "$1" == "--cache" ]; then
-    rm -rf "$ENVROOT/proc/docker"
-  fi
+	if [ "$1" == "--cache" ]; then
+		rm -rf "$ENVROOT/proc/docker"
+		$__log__ -i "docker clean up images cache."
+	fi
 }
 
 while [ "$1" != "" ]; do
-    case $1 in
-        run )           shift
-                        run $@
-                        exit
-                        ;;
-        stop )          shift
-                        stop
-                        exit
-                        ;;
-        clean )         shift
-                        clean $1
-                        exit
-                        ;;
-        -h | --help )   usage
-                        exit
-                        ;;
-        * )             usage
-                        exit 1
-    esac
-    shift
+	case $1 in
+	run)
+		shift
+		$__log__ -i "docker runs: $@"
+		run $@
+		exit
+		;;
+	stop)
+		shift
+		$__log__ -i "docker stop."
+		stop
+		exit
+		;;
+	clean)
+		shift
+		clean $1
+		exit
+		;;
+	-h | --help)
+		usage
+		exit
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+	shift
 done
