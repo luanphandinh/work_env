@@ -29,10 +29,6 @@ commands:
 	exit 1
 }
 
-# Export environment ports from config
-set -e
-. "$ENVROOT/etc/docker/.PORT"
-
 compose() {
 	compose="docker-compose"
 	PARAMS=$@
@@ -73,13 +69,13 @@ run() {
 }
 
 stop() {
-	docker stop $(docker ps --format "{{.Names}}" | grep "${__docker_service_prefix__}")
+	$__log__ -i stopped: $(docker stop $(docker ps --format "{{.Names}}" | grep "${__docker_service_prefix__}"))
 }
 
 clean() {
 	if [ $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__" | wc -l) -gt 0 ]; then
 		$__log__ -i "docker clean up images."
-		docker rm $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__")
+		$__log__ -i cleaned: $(docker rm $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__"))
 		$__log__ -i "docker clean up images done."
 	fi
 
@@ -94,6 +90,9 @@ while [ "$1" != "" ]; do
 	case $1 in
 	run)
 		shift
+		if [ -d $__docker_path__ ]; then
+			mkdir __docker_path__
+		fi
 		$__log__ -i "docker runs: $@"
 		run $@
 		exit
