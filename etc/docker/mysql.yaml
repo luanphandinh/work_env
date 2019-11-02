@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   mysql:
-    container_name: "work_${ENV}_mysql"
-    hostname: "work_${ENV}_mysql"
+    container_name: "${__docker_service_prefix__}_mysql"
+    hostname: "${__docker_service_prefix__}_mysql"
     image: mysql
     volumes:
       - '${__docker_path__}/mysql:/var/lib/mysql'

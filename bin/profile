@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+usage() {
+    cli_name=${0##*/}
+    echo "
+${0##*/}
+usage: $cli_name [options]
+options:
+    -n | --name         Taking actions on profile.
+                        If There is no profile, create one in etc/.
+    -s | --set          Set ENV variables for profile.
+    -h | --help         Help.                   
+"
+    exit 1
+}
+
+profile() {
+    set -e
+    export __profile__=$1
+    $__log__ -i "Taking action on $__profile__"
+}
+
+apply() {
+   	VARIBABLES=$@
+
+	for VARIBABLE in ${VARIBABLES}; do
+        echo "export $VARIBABLE" >> $__profiles_dir__/$__profile__
+        $__log__ -i "Set $VARIABLE for $__profile__"
+	done
+}
+
+while [ "$1" != "" ]; do
+    case $1 in
+    -n | --name)
+        shift
+        profile $1
+        ;;
+
+    -s | --set)
+        shift
+        apply $@
+        exit
+        ;;
+
+    -h | --help)
+        usage
+        exit
+        ;;
+
+    *)
+        usage
+        exit 1
+        ;;
+    esac
+    shift
+done

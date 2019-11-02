@@ -3,8 +3,8 @@ version: "3.3"
 services:
   msssql:
     image: "mcr.microsoft.com/mssql/server"
-    container_name: "work_${ENV}_msssql"
-    hostname: "work_${ENV}_msssql"
+    container_name: "${__docker_service_prefix__}_msssql"
+    hostname: "${__docker_service_prefix__}_msssql"
     environment:
       SA_PASSWORD: "Admin_pass123"
       ACCEPT_EULA: "Y"
