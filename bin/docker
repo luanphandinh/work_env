@@ -77,13 +77,15 @@ stop() {
 
 clean() {
 	if [ $(docker ps -a --format "{{.Names}}" | grep "work" | wc -l) -gt 0 ]; then
-		docker rm $(docker ps -a --format "{{.Names}}" | grep "work")
 		$__log__ -i "docker clean up images."
+		docker rm $(docker ps -a --format "{{.Names}}" | grep "work")
+		$__log__ -i "docker clean up images done."
 	fi
 
 	if [ "$1" == "--cache" ]; then
-		rm -rf "$__docker_path__"
 		$__log__ -i "docker clean up images cache."
+		rm -rf "$__docker_path__"
+		$__log__ -i "docker clean up images cache done."
 	fi
 }
 
