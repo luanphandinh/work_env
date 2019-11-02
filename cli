@@ -22,7 +22,12 @@ export __var_mail_dir__=$ENVROOT/var/mail
 set -e
 export __docker_exec__=$ENVROOT/bin/docker
 export __profile_exec__=$ENVROOT/bin/profile
+export __profile_config_file__=$ENVROOT/etc/profiles/$__profile__
 export __log__=$ENVROOT/bin/log
+
+# Export environment ports from etc/docker/
+set -e
+. "$ENVROOT/etc/docker/.PORT"
 
 usage() {
 	cli_name=${0##*/}
@@ -47,6 +52,11 @@ commands:
 	exit 1
 }
 
+apply_profile_config() {
+	set -e
+	. "$__profile_config_file__"
+}
+
 while [ "$1" != "" ]; do
 	case $1 in
 	-p | --profile)
@@ -57,6 +67,7 @@ while [ "$1" != "" ]; do
 
 	docker)
 		shift
+		apply_profile_config
 		$__log__ -i "CLI running on profile: $__profile__"
 		$__docker_exec__ $@
 		exit
