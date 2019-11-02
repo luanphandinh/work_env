@@ -2,9 +2,9 @@
 
 # All available global variables
 # Naming convention:
-	# Variables should be __<name>__
-	# Directory should be __<name>_dir__
-	# Exec file should be __<name>_exec__
+# Variables should be __<name>__
+# Directory should be __<name>_dir__
+# Exec file should be __<name>_exec__
 # Variables
 set -e
 export ENVROOT=$(cd $(dirname $0) && pwd)
@@ -28,59 +28,36 @@ usage() {
 	cli_name=${0##*/}
 	echo "
 $cli_name
-your env CLI
+your profile CLI
 version: $CLI_VERSION
 usage: $cli_name [options] [command [command's options]]
 
 options:
-    -p | --profile :  	Profile that cli with take action on.
-                  		Avoiding conflict data, accidentally delete dev data when running test.
+	-p | --profile:    Profile that cli with take action on.
+
+	-h | --help:       Help.
 
 commands:
-    docker    			Up and running dockers container
-              			All possible containers a listed in etc/docker
-              			Will create volume for corresponding containers in proc/<ENV>/docker
+    docker:     Up and running dockers container
+                All possible containers a listed in etc/docker
+                Will create volume for corresponding containers in proc/<ENV>/docker
 
-	profile				Config profile.
-
-    *         			Help.
+    profile:	Config profile.
 "
 	exit 1
 }
 
-# Handle the environment settings
-# Default environment will be dev
-# Use options -e | --env to set environment
-# Only accept dev | test
-set -e
-export ENV='dev'
-
-env() {
-	ENV=$1
-
-	if [[ -z "$ENV" ]]; then
-		ENV="dev"
-	fi
-
-	if [[ "$ENV" != "dev" ]] && [[ "$ENV" != "test" ]]; then
-		echo "-e only accept values ['dev', 'test']"
-		exit 1
-	fi
-
-	set -e
-	export ENV="$ENV"
-}
-
 while [ "$1" != "" ]; do
 	case $1 in
-	-e | --env)
+	-p | --profile)
 		shift
-		env $1
+		set -e
+		export __profile__=$1
 		;;
 
 	docker)
 		shift
-		$__log__ -i "CLI taking action on ENV: $ENV"
+		$__log__ -i "CLI running on profile: $__profile__"
 		$__docker_exec__ $@
 		exit
 		;;

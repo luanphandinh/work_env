@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   postgresql:
-    container_name: "work_${ENV}_postgresql"
-    hostname: "work_${ENV}_postgresql"
+    container_name: "${__docker_service_prefix__}_postgresql"
+    hostname: "${__docker_service_prefix__}_postgresql"
     image: postgres
     volumes:
       - '${__docker_path__}/postgresql:/var/lib/postgresql/data'

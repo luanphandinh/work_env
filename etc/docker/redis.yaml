@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   redis:
-    container_name: "work_${ENV}_redis"
-    hostname: "work_${ENV}_redis"
+    container_name: "${__docker_service_prefix__}_redis"
+    hostname: "${__docker_service_prefix__}_redis"
     image: redis:4-alpine
     ports:
       - ${REDIS_PORT}:6379

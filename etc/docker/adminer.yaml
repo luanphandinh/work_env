@@ -3,7 +3,7 @@ version: '3.3'
 services:
   adminer:
     build: ./adminer
-    container_name: "work_${ENV}_adminer"
-    hostname: "work_${ENV}_adminer"
+    container_name: "${__docker_service_prefix__}_adminer"
+    hostname: "${__docker_service_prefix__}_adminer"
     ports:
       - ${ADMINER_PORT}:8080

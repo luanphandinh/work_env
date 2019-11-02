@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   queue:
-    container_name: "work_${ENV}_queue"
+    container_name: "${__docker_service_prefix__}_queue"
     image: 'rabbitmq:3-management'
     environment:
       - RABBITMQ_DEFAULT_USER=admin

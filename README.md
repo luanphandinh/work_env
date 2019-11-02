@@ -16,21 +16,21 @@ chmod +x ./cli
 ```bash
 ./cli -h
 cli
-your env CLI
-version: 1.0.0
+your profile CLI
+version: 1.0.1
 usage: cli [options] [command [command's options]]
 
 options:
-    -e | --env :  Define environment that cli with take action on
-                  Environment: Possible values ['dev', 'test']
-                  Avoiding conflict data, accidentally delete dev data when running test
+        -p | --profile:    Profile that cli with take action on.
+
+        -h | --help:       Help.
 
 commands:
-    docker    Up and running dockers container
-              All possible containers a listed in etc/docker
-              Will create volume for corresponding containers in proc/<ENV>/docker
+    docker:     Up and running dockers container
+                All possible containers a listed in etc/docker
+                Will create volume for corresponding containers in proc/<ENV>/docker
 
-    *         Help
+    profile:    Config profile.
 ```
 
 * Docker services

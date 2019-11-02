@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   es:
-    container_name: "work_${ENV}_es"
-    hostname: "work_${ENV}_es"
+    container_name: "${__docker_service_prefix__}_es"
+    hostname: "${__docker_service_prefix__}_es"
     image: 'elasticsearch:5.5.2-alpine'
     volumes:
       - '${__docker_path__}/elasticsearch:/usr/share/elasticsearch/data'

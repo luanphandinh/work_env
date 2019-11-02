@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
-export __docker_path__=$__var_lib_dir__/docker/$ENV
+export __docker_path__=$__var_lib_dir__/docker/$__profile__
+export __docker_service_prefix__="cli_${__profile__}"
 
 usage() {
 	echo "
@@ -72,13 +73,13 @@ run() {
 }
 
 stop() {
-	docker stop $(docker ps --format "{{.Names}}" | grep "work")
+	docker stop $(docker ps --format "{{.Names}}" | grep "${__docker_service_prefix__}")
 }
 
 clean() {
-	if [ $(docker ps -a --format "{{.Names}}" | grep "work" | wc -l) -gt 0 ]; then
+	if [ $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__" | wc -l) -gt 0 ]; then
 		$__log__ -i "docker clean up images."
-		docker rm $(docker ps -a --format "{{.Names}}" | grep "work")
+		docker rm $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__")
 		$__log__ -i "docker clean up images done."
 	fi
 
