@@ -49,12 +49,8 @@ log() {
     shift
     echo -e "[ ${BEGIN_COLOR}$type${END_COLOR} ][$(date)]: $@"
 
-    dir="$ENVROOT/var/log/$(date +'%Y%m%d')"
-    if [ ! -d $dir ]; then
-        mkdir $dir
-    fi
-
-    echo "$(date): $@" >>$dir/$type.log
+    log_file="$__var_log_dir__/$(date +'%Y%m%d').log"
+    echo "[ $type ][$(date)]: $@" >> $log_file
 }
 
 while [ "$1" != "" ]; do

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+export __docker_path__=$__var_lib_dir__/docker/$ENV
+
 usage() {
 	echo "
 usage: ${0##*/} [command]
@@ -79,7 +82,7 @@ clean() {
 	fi
 
 	if [ "$1" == "--cache" ]; then
-		rm -rf "$ENVROOT/proc/docker"
+		rm -rf "$__docker_path__"
 		$__log__ -i "docker clean up images cache."
 	fi
 }
