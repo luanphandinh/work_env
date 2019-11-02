@@ -3,16 +3,7 @@
 Starting docker containers for common stuffs: mysql, adminer, es, rabbitmq, ...
 `
 
-# Start and running
-examples:
-* Docker
-```bash
-chmod +x ./cli
-
-./cli docker run mysql adminer
-```
-
-* Help
+# CLI:
 ```bash
 ./cli -h
 cli
@@ -33,7 +24,32 @@ commands:
     profile:    Config profile.
 ```
 
-* Docker services
+# Profile
+* Configure your profile
+```bash
+./cli profile -n luanphan --set SOME_VAR=SOME_VALUE SOME_OTHER_VARS=SOME_OTHER_VALUE
+```
+
+* Help
+```bash
+profile
+usage: profile [options]
+options:
+    -n | --name         Taking actions on profile.
+                        If There is no profile, create one in etc/.
+    -s | --set          Set ENV variables for profile.
+    -h | --help         Help.
+```
+
+# Docker
+* Up and running
+Simply use `docker run` to start services that available with config from `etc/docker/*.yaml`. Use `default profile` if no profile are specified when running `cli`
+
+```
+./cli docker run all
+```
+
+* Help
 ```bash
 cli docker -h
 
