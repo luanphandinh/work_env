@@ -90,8 +90,8 @@ while [ "$1" != "" ]; do
 	case $1 in
 	run)
 		shift
-		if [ -d $__docker_path__ ]; then
-			mkdir __docker_path__
+		if [ ! -d "$__docker_path__" ]; then
+			mkdir $__docker_path__
 		fi
 		$__log__ -i "docker runs: $@"
 		run $@
