@@ -8,8 +8,11 @@ usage: $cli_name [options]
 options:
     -n | --name         Taking actions on profile.
                         If There is no profile, create one in etc/.
-    -s | --set          Set ENV variables for profile.
-    -h | --help         Help.                   
+
+    -h | --help         Help.       
+            
+commands:
+    set          Set ENV variables for profile.
 "
     exit 1
 }
@@ -36,7 +39,7 @@ while [ "$1" != "" ]; do
         profile $1
         ;;
 
-    -s | --set)
+    set)
         shift
         apply $@
         exit

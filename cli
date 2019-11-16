@@ -21,7 +21,7 @@ export __var_mail_dir__=$ENVROOT/var/mail
 # bin/**
 set -e
 export __docker_exec__=$ENVROOT/bin/docker
-export __profile_exec__=$ENVROOT/bin/profile
+export __config_profile_exec__=$ENVROOT/bin/config_profile
 export __log__=$ENVROOT/bin/log
 export __debug__=$ENVROOT/bin/debug
 
@@ -44,11 +44,11 @@ options:
 	-h | --help:       Help.
 
 commands:
-    docker:     Up and running dockers container
-                All possible containers a listed in etc/docker
-                Will create volume for corresponding containers in proc/<ENV>/docker
+    docker:     	Up and running dockers container
+                	All possible containers a listed in etc/docker
+                	Will create volume for corresponding containers in proc/<ENV>/docker
 
-    profile:	Config profile.
+    config-profile:	Config profile.
 "
 	exit 1
 }
@@ -83,9 +83,9 @@ while [ "$1" != "" ]; do
 		exit
 		;;
 
-	profile)
+	config-profile)
 		shift
-		$__profile_exec__ $@
+		$__config_profile_exec__ $@
 		exit
 		;;
 
