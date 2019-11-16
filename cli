@@ -26,7 +26,7 @@ export __log__=$ENVROOT/bin/log
 export __debug__=$ENVROOT/bin/debug
 
 # Export environment ports from etc/docker/
-set -e
+set -a
 . "$ENVROOT/etc/docker/.PORT"
 
 usage() {
@@ -55,11 +55,12 @@ commands:
 
 apply_profile_config() {
 	export __profile_config_file__=$ENVROOT/etc/profiles/$__profile__
-	set -e
-	. "$__profile_config_file__"
 
 	$__debug__ "EXPORT ENV from profile: $__profile__"
 	$__debug__ `cat $__profile_config_file__`
+
+	set -a
+	. "$__profile_config_file__"
 }
 
 while [ "$1" != "" ]; do
@@ -79,7 +80,7 @@ while [ "$1" != "" ]; do
 		shift
 		apply_profile_config
 		$__log__ -i "CLI running on profile: $__profile__"
-		# $__docker_exec__ $@
+		$__docker_exec__ $@
 		exit
 		;;
 

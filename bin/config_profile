@@ -23,11 +23,11 @@ profile() {
     $__log__ -i "Taking action on $__profile__"
 }
 
-apply() {
+setEnv() {
    	VARIBABLES=$@
 
 	for VARIBABLE in ${VARIBABLES}; do
-        echo "export $VARIBABLE" >> $__profiles_dir__/$__profile__
+        echo "$VARIBABLE" >> $__profiles_dir__/$__profile__
         $__log__ -i "Set $VARIABLE for $__profile__"
 	done
 }
@@ -41,7 +41,7 @@ while [ "$1" != "" ]; do
 
     set)
         shift
-        apply $@
+        setEnv $@
         exit
         ;;
 
