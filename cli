@@ -21,12 +21,12 @@ export __var_mail_dir__=$ENVROOT/var/mail
 # bin/**
 set -e
 export __docker_exec__=$ENVROOT/bin/docker
-export __profile_exec__=$ENVROOT/bin/profile
-export __profile_config_file__=$ENVROOT/etc/profiles/$__profile__
+export __config_profile_exec__=$ENVROOT/bin/config_profile
 export __log__=$ENVROOT/bin/log
+export __debug__=$ENVROOT/bin/debug
 
 # Export environment ports from etc/docker/
-set -e
+set -a
 . "$ENVROOT/etc/docker/.PORT"
 
 usage() {
@@ -39,21 +39,27 @@ usage: $cli_name [options] [command [command's options]]
 
 options:
 	-p | --profile:    Profile that cli with take action on.
+	-d | --debug:      Turn on debug mode.
 
 	-h | --help:       Help.
 
 commands:
-    docker:     Up and running dockers container
-                All possible containers a listed in etc/docker
-                Will create volume for corresponding containers in proc/<ENV>/docker
+    docker:     	Up and running dockers container
+                	All possible containers a listed in etc/docker
+                	Will create volume for corresponding containers in proc/<ENV>/docker
 
-    profile:	Config profile.
+    config-profile:	Config profile.
 "
 	exit 1
 }
 
 apply_profile_config() {
-	set -e
+	export __profile_config_file__=$ENVROOT/etc/profiles/$__profile__/.env
+
+	$__debug__ "EXPORT ENV from profile: $__profile__"
+	$__debug__ $(cat $__profile_config_file__)
+
+	set -a
 	. "$__profile_config_file__"
 }
 
@@ -61,8 +67,19 @@ while [ "$1" != "" ]; do
 	case $1 in
 	-p | --profile)
 		shift
+
+		if [ ! -d "$__profiles_dir__/$1" ]; then
+			$__log__ -e "Profile is not existed: $1"
+			exit 1
+		fi
+
 		set -e
 		export __profile__=$1
+		;;
+
+	-d | --debug)
+		set -e
+		export DEBUG=1
 		;;
 
 	docker)
@@ -73,9 +90,9 @@ while [ "$1" != "" ]; do
 		exit
 		;;
 
-	profile)
+	config-profile)
 		shift
-		$__profile_exec__ $@
+		$__config_profile_exec__ $@
 		exit
 		;;
 

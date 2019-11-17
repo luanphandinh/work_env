@@ -8,8 +8,11 @@ usage: $cli_name [options]
 options:
     -n | --name         Taking actions on profile.
                         If There is no profile, create one in etc/.
-    -s | --set          Set ENV variables for profile.
-    -h | --help         Help.                   
+
+    -h | --help         Help.       
+            
+commands:
+    set          Set ENV variables for profile.
 "
     exit 1
 }
@@ -20,13 +23,17 @@ profile() {
     $__log__ -i "Taking action on $__profile__"
 }
 
-apply() {
-   	VARIBABLES=$@
+setEnv() {
+    env=$__profiles_dir__/$__profile__/.env
+    if [ ! -d "$__profiles_dir__/$__profile__" ]; then
+        mkdir $__profiles_dir__/$__profile__
+    fi
 
-	for VARIBABLE in ${VARIBABLES}; do
-        echo "export $VARIBABLE" >> $__profiles_dir__/$__profile__
+    VARIBABLES=$@
+    for VARIBABLE in ${VARIBABLES}; do
+        echo "$VARIBABLE" >>$env
         $__log__ -i "Set $VARIABLE for $__profile__"
-	done
+    done
 }
 
 while [ "$1" != "" ]; do
@@ -36,9 +43,9 @@ while [ "$1" != "" ]; do
         profile $1
         ;;
 
-    -s | --set)
+    set)
         shift
-        apply $@
+        setEnv $@
         exit
         ;;
 
