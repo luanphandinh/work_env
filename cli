@@ -75,6 +75,7 @@ while [ "$1" != "" ]; do
 
 		set -e
 		export __profile__=$1
+		apply_profile_config
 		;;
 
 	-d | --debug)
@@ -84,7 +85,6 @@ while [ "$1" != "" ]; do
 
 	docker)
 		shift
-		apply_profile_config
 		$__log__ -i "CLI running on profile: $__profile__"
 		$__docker_exec__ $@
 		exit
