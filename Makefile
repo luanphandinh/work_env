@@ -1,9 +1,9 @@
-test: install testing
+test: install tests
 
 install:
 	chmod +x cli
 	chmod -R +x bin/
 
-testing:
+tests:
 	chmod -R +x test/
 	test/config-profile

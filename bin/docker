@@ -41,6 +41,10 @@ compose() {
 	done
 
 	compose+=" up"
+	if [[ ! $DEBUG -eq 1 ]]; then
+		compose+=" -d"
+	fi
+
 	echo "$compose"
 }
 

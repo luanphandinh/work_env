@@ -1,2 +1,34 @@
-script:
-  - make test
+services:
+  - docker
+
+env:
+  DOCKER_COMPOSE_VERSION: 1.24.1
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+matrix:
+  include:
+    - name: "default"
+      before_script:
+        - make install
+        - ./cli docker run adminer
+      script:
+        - make tests
+        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:4000->8080/tcp" | wc -l) 1
+      after_script:
+        - ./cli docker run stop
+
+    - name: "profile"
+      before_script:
+        - make install
+        - ./cli config-profile -n test set ADMINER_PORT=4444
+        - ./cli -p test docker run adminer
+      script:
+        - make tests
+        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_test_adminer 0.0.0.0:4444->8080/tcp" | wc -l) 1
+      after_script:
+        - ./cli docker run stop
