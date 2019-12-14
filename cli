@@ -55,7 +55,15 @@ commands:
 }
 
 apply_profile_config() {
+	__dir__=$ENVROOT/etc/profile/$__profile__
+	if [ ! -d "$__dir__" ]; then
+		mkdir $__dir__
+	fi
+
 	export __profile_config_file__=$ENVROOT/etc/profile/$__profile__/.env
+	if [ ! -d "$__profile_config_file__" ]; then
+		touch $__profile_config_file__
+	fi
 
 	$__debug__ "EXPORT ENV from profile: $__profile__"
 	$__debug__ $(cat $__profile_config_file__)
@@ -68,12 +76,6 @@ while [ "$1" != "" ]; do
 	case $1 in
 	-p | --profile)
 		shift
-
-		if [ ! -d "$__profile_dir__/$1" ]; then
-			$__log__ -e "Profile is not existed: $1"
-			exit 1
-		fi
-
 		set -e
 		export __profile__=$1
 		;;
