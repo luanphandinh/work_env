@@ -18,17 +18,17 @@ matrix:
         - ./cli docker run adminer
       script:
         - make tests
+        # Make sure the docker container is bootstraped correctly
         - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:4000->8080/tcp" | wc -l) 1
-      after_script:
-        - ./cli docker run stop
+        - ./cli docker stop
 
     - name: "profile"
       before_script:
         - make install
-        - ./cli config-profile -n test set ADMINER_PORT=4444
-        - ./cli -p test docker run adminer
+        - ./cli config-profile -n any_profile_name set ADMINER_PORT=4444
+        - ./cli -p any_profile_name docker run adminer
       script:
         - make tests
-        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_test_adminer 0.0.0.0:4444->8080/tcp" | wc -l) 1
-      after_script:
-        - ./cli docker run stop
+        # Make sure the docker container is bootstraped correctly
+        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_adminer 0.0.0.0:4444->8080/tcp" | wc -l) 1
+        - ./cli -p any_profile_name docker stop

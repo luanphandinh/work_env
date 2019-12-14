@@ -49,7 +49,7 @@ commands:
                 	Will create volume for corresponding containers in proc/<ENV>/docker
 
     config-profile:	Config profile.
-	checkconf:		printenv of current profile to screen.
+	checkconf:      printenv of current profile to screen.
 "
 	exit 1
 }
