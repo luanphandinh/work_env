@@ -13,7 +13,7 @@ export __profile__="default"
 
 # Directory
 set -e
-export __profiles_dir__=$ENVROOT/etc/profiles
+export __profile_dir__=$ENVROOT/etc/profile
 export __var_log_dir__=$ENVROOT/var/log
 export __var_lib_dir__=$ENVROOT/var/lib
 export __var_mail_dir__=$ENVROOT/var/mail
@@ -54,7 +54,7 @@ commands:
 }
 
 apply_profile_config() {
-	export __profile_config_file__=$ENVROOT/etc/profiles/$__profile__/.env
+	export __profile_config_file__=$ENVROOT/etc/profile/$__profile__/.env
 
 	$__debug__ "EXPORT ENV from profile: $__profile__"
 	$__debug__ $(cat $__profile_config_file__)
@@ -68,14 +68,13 @@ while [ "$1" != "" ]; do
 	-p | --profile)
 		shift
 
-		if [ ! -d "$__profiles_dir__/$1" ]; then
+		if [ ! -d "$__profile_dir__/$1" ]; then
 			$__log__ -e "Profile is not existed: $1"
 			exit 1
 		fi
 
 		set -e
 		export __profile__=$1
-		apply_profile_config
 		;;
 
 	-d | --debug)
@@ -86,6 +85,7 @@ while [ "$1" != "" ]; do
 	docker)
 		shift
 		$__log__ -i "CLI running on profile: $__profile__"
+		apply_profile_config
 		$__docker_exec__ $@
 		exit
 		;;

@@ -24,14 +24,14 @@ profile() {
 }
 
 setEnv() {
-    env=$__profiles_dir__/$__profile__/.env
-    if [ ! -d "$__profiles_dir__/$__profile__" ]; then
-        mkdir $__profiles_dir__/$__profile__
+    env=$__profile_dir__/$__profile__/.env
+    if [ ! -d "$__profile_dir__/$__profile__" ]; then
+        mkdir $__profile_dir__/$__profile__
     fi
 
     VARIBABLES=$@
     for VARIBABLE in ${VARIBABLES}; do
-        echo "$VARIBABLE" >>$env
+        echo "$VARIBABLE" >> $env
         $__log__ -i "Set $VARIABLE for $__profile__"
     done
 }
