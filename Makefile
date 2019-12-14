@@ -6,4 +6,5 @@ install:
 
 testing:
 	chmod -R +x test/
+	test/docker
 	test/config-profile
