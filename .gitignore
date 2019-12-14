@@ -5,4 +5,4 @@ tmp/
 log/
 var/lib/
 var/mail/
-etc/profiles/
+etc/profile/
