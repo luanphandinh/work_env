@@ -1,11 +1,23 @@
-# env
-`
-Starting docker containers for common stuffs: mysql, adminer, es, rabbitmq, ...
-`
+# env [![Build Status](https://travis-ci.org/luanphandinh/env.svg?branch=master)](https://travis-ci.org/luanphandinh/env)
+* Easy, clean and faster way to spin up docker containers: mysql, adminer, es, rabbitmq, ...
+* Seprate profile from each others.
+
+# install
+```bash
+make install
+```
+
+# test
+```bash
+make test
+```
+* Note: `travis.yaml` also running some test to verify whether the docker services is bootstrap correctly.
 
 # CLI:
 ```bash
 ./cli -h
+```
+```bash
 cli
 your profile CLI
 version: 1.0.1
@@ -13,15 +25,17 @@ usage: cli [options] [command [command's options]]
 
 options:
         -p | --profile:    Profile that cli with take action on.
+        -d | --debug:      Turn on debug mode.
 
         -h | --help:       Help.
 
 commands:
-    docker:     Up and running dockers container
-                All possible containers a listed in etc/docker
-                Will create volume for corresponding containers in proc/<ENV>/docker
+    docker:             Up and running dockers container
+                        All possible containers a listed in etc/docker
+                        Will create volume for corresponding containers in proc/<ENV>/docker
 
-    profile:    Config profile.
+    config-profile:     Config profile.
+    checkconf:          printenv of current profile to screen.
 ```
 
 # Profile
