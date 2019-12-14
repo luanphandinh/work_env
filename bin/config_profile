@@ -20,7 +20,6 @@ commands:
 profile() {
     set -e
     export __profile__=$1
-    $__log__ -i "Taking action on $__profile__"
 }
 
 setEnv() {
@@ -32,7 +31,6 @@ setEnv() {
     VARIBABLES=$@
     for VARIBABLE in ${VARIBABLES}; do
         echo "$VARIBABLE" >> $env
-        $__log__ -i "Set $VARIABLE for $__profile__"
     done
 }
 

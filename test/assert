@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [ $1 == $2 ]; then
+    printf "\xE2\x9C\x94\n" >&1
+    exit 0
+fi
+
+printf "\xE2\x9D\x8C\n" >&2
+exit 1
