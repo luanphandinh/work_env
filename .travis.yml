@@ -15,26 +15,30 @@ matrix:
     - name: "default"
       before_script:
         - make install
-        - ./cli docker run adminer
+        - ./cli docker run redis
       script:
         - make tests
-        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:4000->8080/tcp" | wc -l) 1
+        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_redis 0.0.0.0:6379->6379/tcp" | wc -l) 1
+        - ./test/assert $(ls -l ./var/lib/docker/default | grep "redis" | wc -l) 1
         - ./cli docker stop
-        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:4000->8080/tcp" | wc -l) 0
+        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_redis 0.0.0.0:6379->6379/tcp" | wc -l) 0
         - ./cli docker clean
-        - ./test/assert $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:4000->8080/tcp" | wc -l) 0
+        - ./test/assert $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_default_redis 0.0.0.0:6379->6379/tcp" | wc -l) 0
         - ./cli docker clean --cache
+        - ./test/assert $(ls -l ./var/lib/docker | grep "default" | wc -l) 0
 
     - name: "profile"
       before_script:
         - make install
-        - ./cli config-profile -n any_profile_name set ADMINER_PORT=4444
-        - ./cli -p any_profile_name docker run adminer
+        - ./cli config-profile -n any_profile_name set REDIS_PORT=4444
+        - ./cli -p any_profile_name docker run redis
       script:
         - make tests
-        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_adminer 0.0.0.0:4444->8080/tcp" | wc -l) 1
+        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_redis 0.0.0.0:4444->6379/tcp" | wc -l) 1
+        - ./test/assert $(ls -l ./var/lib/docker/any_profile_name | grep "redis" | wc -l) 1
         - ./cli -p any_profile_name docker stop
-        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_adminer 0.0.0.0:4444->8080/tcp" | wc -l) 0
+        - ./test/assert $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_redis 0.0.0.0:4444->6379/tcp" | wc -l) 0
         - ./cli -p any_profile_name docker clean
-        - ./test/assert $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_adminer 0.0.0.0:4444->8080/tcp" | wc -l) 0
+        - ./test/assert $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_redis 0.0.0.0:4444->6379/tcp" | wc -l) 0
         - ./cli -p any_profile_name docker clean --cache
+        - ./test/assert $(ls -l ./var/lib/docker | grep "any_profile_name" | wc -l) 0
