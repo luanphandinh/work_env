@@ -78,10 +78,9 @@ commands:
             [--like]    To run services that contain keyword
                         eg: docker run --like sql
 
-    stop    Stop all docker containers.
-            Not yet implement stop by name.
+    stop    Stop all docker containers within profile's name.(<default> is used if not specify).
 
-    clean   Clean up all docker containers within namespace (default is work_<ENV>).
+    clean   Clean up all docker containers within profile's name (<default> is used if not specify).
 
             Options:
 
