@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 
 echo -e "CLI config-profile:"
-echo -e "\t Default profile"
-echo -e "\t\t should apply config \c"
+echo -e "Default profile"
 ./cli config-profile set FOO=DEFAULT_BAR
-./test/assert $(./cli checkconf | grep "FOO") "FOO=DEFAULT_BAR"
+./test/assert "should apply config" \
+$(./cli checkconf | grep "FOO") "FOO=DEFAULT_BAR"
 
-echo -e "\t\t should change config \c"
 ./cli config-profile set FOO=DEFAULT_BAR_CHANGED
-./test/assert $(./cli checkconf | grep "FOO") "FOO=DEFAULT_BAR_CHANGED"
+./test/assert "should change config" \
+$(./cli checkconf | grep "FOO") "FOO=DEFAULT_BAR_CHANGED"
 
-echo -e "\t <ANY> Profile:"
-echo -e "\t\t should apply config \c"
+echo -e "<ANY> Profile:"
 ./cli config-profile -n test set FOO=BAR
-./test/assert $(./cli --profile test checkconf | grep "FOO") "FOO=BAR"
-echo -e "\t\t should not affect on Default profile config \c"
-./test/assert $(./cli checkconf | grep "FOO") "FOO=DEFAULT_BAR_CHANGED"
+./test/assert "should apply config" \
+$(./cli --profile test checkconf | grep "FOO") "FOO=BAR"
 
-echo -e "\t\t should change config \c"
+./test/assert "should not affect on Default profile config" \
+$(./cli checkconf | grep "FOO") "FOO=DEFAULT_BAR_CHANGED"
+
 ./cli config-profile -n test set FOO=BAR_CHANGED
-./test/assert $(./cli --profile test checkconf | grep "FOO") "FOO=BAR_CHANGED"
+./test/assert "should change config" \
+$(./cli --profile test checkconf | grep "FOO") "FOO=BAR_CHANGED"
