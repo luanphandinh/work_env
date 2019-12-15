@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
-export __docker_path__=$__var_lib_dir__/docker/$__profile__
-export __docker_service_prefix__="cli_${__profile__}"
+declare -xr __docker_path__=$__var_lib_dir__/docker/$__profile__
+declare -xr __docker_service_prefix__="cli_${__profile__}"
 
 usage() {
-	echo "
+  echo "
 usage: ${0##*/} [command]
 commands:
 
@@ -17,109 +16,159 @@ commands:
             [--like]    To run services that contain keyword
                         eg: docker run --like sql
 
-    stop    Stop all docker containers.
-            Not yet implement stop by name.
+    stop    Stop all docker containers within profile's name.(<default> is used if not specify).
 
-    clean   Clean up all docker containers within namespace (default is work_<ENV>).
+    clean   Clean up all docker containers within profile's name (<default> is used if not specify).
 
             Options:
 
             [--cache]       To remove cache.
 "
-	exit 1
+  exit 1
 }
 
+#######################################
+# Compose service name, finding all docker-compose that exist in __env_root__/etc/docker and compose command
+# Globals:
+#   __env_root__
+#   __log__
+#   DEBUG
+# Arguments:
+#   service_names{...}
+#   ex: adminer mysql
+# Returns:
+#   docker-compose commmand
+#   ex:  docker-compose -f /Users/phanluan/env/etc/docker/adminer.yaml -f /Users/phanluan/env/etc/docker/mysql.yaml up
+#######################################
 compose() {
-	compose="docker-compose"
-	PARAMS=$@
+  compose="docker-compose"
+  PARAMS=$@
 
-	for SERVICE in ${PARAMS}; do
-		compose+=" -f $ENVROOT/etc/docker/$SERVICE"
-		if [[ ${SERVICE} != *".yaml"* ]]; then
-			compose+=".yaml"
-		fi
-	done
+  for SERVICE in ${PARAMS}; do
+    compose+=" -f $__env_root__/etc/docker/$SERVICE"
+    if [[ ${SERVICE} != *".yaml"* ]]; then
+      compose+=".yaml"
+    fi
+  done
 
-	compose+=" up"
-	if [[ ! $DEBUG -eq 1 ]]; then
-		compose+=" -d"
-	fi
+  compose+=" up"
+  if [[ ! $DEBUG -eq 1 ]]; then
+    compose+=" -d"
+  fi
 
-	echo "$compose"
+  echo "$compose"
 }
 
+#######################################
+# Up and running docker services
+# Globals:
+#   __env_root__
+#   __log__
+# Arguments:
+#   [--like] service_names{...}
+#   ex: adminer mysql
+# Returns:
+#   docker-compose commmand
+#   ex:  docker-compose -f /Users/phanluan/env/etc/docker/adminer.yaml -f /Users/phanluan/env/etc/docker/mysql.yaml up
+#######################################
 run() {
-	if [[ "$1" == "all" ]]; then
-		COMMAND="$(compose $(ls -p $ENVROOT/etc/docker | grep -v /))"
-	else
-		SERVICES=$@
-		if [[ "$1" == "--like" ]]; then
-			PARAMS=$@
+  if [[ "$1" == "all" ]]; then
+    COMMAND="$(compose $(ls -p $__env_root__/etc/docker | grep -v /))"
+  else
+    SERVICES=$@
+    if [[ "$1" == "--like" ]]; then
+      PARAMS=$@
 
-			if [[ -n "$PARAMS" ]]; then
-				FILTER=""
-				for SERVICE in ${PARAMS}; do
-					FILTER+="-e $SERVICE.*yaml "
-				done
+      if [[ -n "$PARAMS" ]]; then
+        FILTER=""
+        for SERVICE in ${PARAMS}; do
+          FILTER+="-e $SERVICE.*yaml "
+        done
 
-				SERVICES=$(ls -p $ENVROOT/etc/docker | grep ${FILTER})
-			fi
-		fi
-		COMMAND="$(compose "$SERVICES")"
-	fi
+        SERVICES=$(ls -p $__env_root__/etc/docker | grep ${FILTER})
+      fi
+    fi
+    COMMAND="$(compose "$SERVICES")"
+  fi
 
-	$__log__ -i ${COMMAND}
-	${COMMAND}
+  $__log__ -i ${COMMAND}
+  ${COMMAND}
 }
 
+#######################################
+# Stop all runing container that contain strings
+# Use case in this project is for stopping all docker image that name contains cli_<profile_name>.
+# Globals:
+#   __docker_service_prefix__
+# Arguments:
+#   None   
+# Returns:
+#   None
+#######################################
 stop() {
-	$__log__ -i stopped: $(docker stop $(docker ps --format "{{.Names}}" | grep "${__docker_service_prefix__}"))
+  $__log__ -i stopped: $(docker stop $(docker ps --format "{{.Names}}" | grep "${__docker_service_prefix__}"))
 }
 
+#######################################
+# Clean all container that contain strings
+# Use case in this project is for cleaning all docker image that name contains cli_<profile_name>.
+# Globals:
+#   __log__
+#   __docker_service_prefix__
+#   __docker_path__
+# Arguments:
+#   None   
+# Returns:
+#   None
+#######################################
 clean() {
-	if [ $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__" | wc -l) -gt 0 ]; then
-		$__log__ -i "docker clean up images."
-		$__log__ -i cleaned: $(docker rm $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__"))
-		$__log__ -i "docker clean up images done."
-	fi
+  if [ $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__" | wc -l) -gt 0 ]; then
+    $__log__ -i "docker clean up images."
+    $__log__ -i cleaned: $(docker rm $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__"))
+    $__log__ -i "docker clean up images done."
+  fi
 
-	if [ "$1" == "--cache" ]; then
-		$__log__ -i "docker clean up images cache."
-		rm -rf "$__docker_path__"
-		$__log__ -i "docker clean up images cache done."
-	fi
+  if [ "$1" == "--cache" ]; then
+    $__log__ -i "docker clean up images cache."
+    rm -rf "$__docker_path__"
+    $__log__ -i "docker clean up images cache done."
+  fi
 }
 
 while [ "$1" != "" ]; do
-	case $1 in
-	run)
-		shift
-		if [ ! -d "$__docker_path__" ]; then
-			mkdir $__docker_path__
-		fi
-		$__log__ -i "docker runs: $@"
-		run $@
-		exit
-		;;
-	stop)
-		shift
-		$__log__ -i "docker stop."
-		stop
-		exit
-		;;
-	clean)
-		shift
-		clean $1
-		exit
-		;;
-	-h | --help)
-		usage
-		exit
-		;;
-	*)
-		usage
-		exit 1
-		;;
-	esac
-	shift
+  case $1 in
+  run)
+    shift
+    if [ ! -d "$__docker_path__" ]; then
+      mkdir $__docker_path__
+    fi
+    $__log__ -i "docker runs: $@"
+    run $@
+    exit
+    ;;
+
+  stop)
+    shift
+    $__log__ -i "docker stop."
+    stop
+    exit
+    ;;
+
+  clean)
+    shift
+    clean $1
+    exit
+    ;;
+
+  -h | --help)
+    usage
+    exit
+    ;;
+
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+  shift
 done

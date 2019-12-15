@@ -6,114 +6,121 @@
 # Directory should be __<name>_dir__
 # Exec file should be __<name>_exec__
 # Variables
-set -e
-export ENVROOT=$(cd $(dirname $0) && pwd)
-export CLI_VERSION=$(cat $ENVROOT/VERSION)
-export __profile__="default"
+declare -xr __env_root__=$(cd $(dirname $0) && pwd)
+declare -xr __cli_version__=$(cat $__env_root__/VERSION)
+declare -x __profile__="default"
 
 # Directory
-set -e
-export __profile_dir__=$ENVROOT/etc/profile
-export __var_log_dir__=$ENVROOT/var/log
-export __var_lib_dir__=$ENVROOT/var/lib
-export __var_mail_dir__=$ENVROOT/var/mail
+declare -xr __profile_dir__=$__env_root__/etc/profile
+declare -xr __var_log_dir__=$__env_root__/var/log
+declare -xr __var_lib_dir__=$__env_root__/var/lib
+declare -xr __var_mail_dir__=$__env_root__/var/mail
 
 # bin/**
-set -e
-export __docker_exec__=$ENVROOT/bin/docker
-export __config_profile_exec__=$ENVROOT/bin/config_profile
-export __log__=$ENVROOT/bin/log
-export __debug__=$ENVROOT/bin/debug
+declare -xr __docker_exec__=$__env_root__/bin/docker
+declare -xr __config_profile_exec__=$__env_root__/bin/config_profile
+declare -xr __log__=$__env_root__/bin/log
+declare -xr __debug__=$__env_root__/bin/debug
 
 # Export environment ports from etc/docker/
 set -a
-. "$ENVROOT/etc/docker/.PORT"
+. "$__env_root__/etc/docker/.PORT"
 
 usage() {
-	cli_name=${0##*/}
-	echo "
+  cli_name=${0##*/}
+  echo "
 $cli_name
 your profile CLI
-version: $CLI_VERSION
+version: $__cli_version__
 usage: $cli_name [options] [command [command's options]]
 
 options:
-	-p | --profile:    Profile that cli with take action on.
-	-d | --debug:      Turn on debug mode.
+  -p | --profile:   Profile that cli with take action on.
+  -d | --debug:     Turn on debug mode.
 
-	-h | --help:       Help.
+  -h | --help:      Help.
 
 commands:
-    docker:     	Up and running dockers container
-                	All possible containers a listed in etc/docker
-                	Will create volume for corresponding containers in proc/<ENV>/docker
+  docker:           Up and running dockers container
+                    All possible containers a listed in etc/docker
+                    Will create volume for corresponding containers in proc/<ENV>/docker
 
-    config-profile:	Config profile.
-	checkconf:      printenv of current profile to screen.
+  config-profile:   Config profile.
+  checkconf:        printenv of current profile to screen.
 "
-	exit 1
+  exit 1
 }
 
+#######################################
+# Apply profile ENV variables to current shell and it's childs
+# Globals:
+#   __env_root__
+#   __profile__
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 apply_profile_config() {
-	__dir__=$ENVROOT/etc/profile/$__profile__
-	if [ ! -d "$__dir__" ]; then
-		mkdir $__dir__
-	fi
+  __dir__=$__env_root__/etc/profile/$__profile__
+  if [ ! -d "$__dir__" ]; then
+    mkdir $__dir__
+  fi
 
-	export __profile_config_file__=$ENVROOT/etc/profile/$__profile__/.env
-	if [ ! -d "$__profile_config_file__" ]; then
-		touch $__profile_config_file__
-	fi
+  export __profile_config_file__=$__env_root__/etc/profile/$__profile__/.env
+  if [ ! -d "$__profile_config_file__" ]; then
+    touch $__profile_config_file__
+  fi
 
-	$__debug__ "EXPORT ENV from profile: $__profile__"
-	$__debug__ $(cat $__profile_config_file__)
+  $__debug__ "EXPORT ENV from profile: $__profile__"
+  $__debug__ $(cat $__profile_config_file__)
 
-	set -a
-	. "$__profile_config_file__"
+  set -a
+  . "$__profile_config_file__"
 }
 
 while [ "$1" != "" ]; do
-	case $1 in
-	-p | --profile)
-		shift
-		set -e
-		export __profile__=$1
-		;;
+  case $1 in
+  -p | --profile)
+    shift
+    set -e
+    export __profile__=$1
+    ;;
 
-	-d | --debug)
-		set -e
-		export DEBUG=1
-		;;
+  -d | --debug)
+    set -e
+    export DEBUG=1
+    ;;
 
-	checkconf)
-		apply_profile_config
-		printenv
-		exit
-		;;
+  checkconf)
+    apply_profile_config
+    printenv
+    exit
+    ;;
 
-	docker)
-		shift
-		$__log__ -i "CLI running on profile: $__profile__"
-		apply_profile_config
-		$__docker_exec__ $@
-		exit
-		;;
+  docker)
+    shift
+    $__log__ -i "CLI running on profile: $__profile__"
+    apply_profile_config
+    $__docker_exec__ $@
+    exit
+    ;;
 
-	config-profile)
-		shift
-		$__config_profile_exec__ $@
-		exit
-		;;
+  config-profile)
+    shift
+    $__config_profile_exec__ $@
+    exit
+    ;;
 
-	-h | --help)
-		usage
-		exit
-		;;
+  -h | --help)
+    usage
+    exit
+    ;;
 
-	*)
-		usage
-		exit 1
-		;;
-	esac
-	shift
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+  shift
 done

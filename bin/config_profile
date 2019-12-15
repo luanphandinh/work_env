@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 usage() {
-    cli_name=${0##*/}
-    echo "
+  cli_name=${0##*/}
+  echo "
 ${0##*/}
 usage: $cli_name [options]
 options:
@@ -10,52 +10,71 @@ options:
                         If There is no profile, create one in etc/.
 
     -h | --help         Help.       
-            
+
 commands:
-    set          Set ENV variables for profile.
+    set                 Set ENV variables for profile.
 "
-    exit 1
+  exit 1
 }
 
+#######################################
+# Apply profile name to take actions on
+# Globals:
+#   None
+# Arguments:
+#   <profile_name>
+# Returns:
+#   Set __profile__ as <profile_name>
+#######################################
 profile() {
-    set -e
-    export __profile__=$1
+  set -e
+  export __profile__=$1
 }
 
-setEnv() {
-    env=$__profile_dir__/$__profile__/.env
-    if [ ! -d "$__profile_dir__/$__profile__" ]; then
-        mkdir $__profile_dir__/$__profile__
-    fi
+#######################################
+# Apply ENV value to __profile__
+# Globals:
+#   __profile__
+# Arguments:
+#   pairs of values
+#   ex: FOO=BAR
+# Returns:
+#   append FOO=BAR to $__profile_dir__/$__profile__/.env file
+#######################################
+set_env() {
+  env=$__profile_dir__/$__profile__/.env
+  if [ ! -d "$__profile_dir__/$__profile__" ]; then
+    mkdir $__profile_dir__/$__profile__
+  fi
 
-    VARIBABLES=$@
-    for VARIBABLE in ${VARIBABLES}; do
-        echo "$VARIBABLE" >> $env
-    done
+  VARIBABLES=$@
+  for VARIBABLE in ${VARIBABLES}; do
+    echo "$VARIBABLE" >> $env
+  done
 }
 
 while [ "$1" != "" ]; do
-    case $1 in
-    -n | --name)
-        shift
-        profile $1
-        ;;
-
-    set)
-        shift
-        setEnv $@
-        exit
-        ;;
-
-    -h | --help)
-        usage
-        exit
-        ;;
-
-    *)
-        usage
-        exit 1
-        ;;
-    esac
+  case $1 in
+  -n | --name)
     shift
+    profile $1
+    ;;
+
+  set)
+    shift
+    set_env $@
+    exit
+    ;;
+
+  -h | --help)
+    usage
+    exit
+    ;;
+
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+  shift
 done
