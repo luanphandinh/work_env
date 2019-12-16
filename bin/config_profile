@@ -4,7 +4,7 @@ usage() {
   cli_name=${0##*/}
   echo "
 ${0##*/}
-usage: $cli_name [options]
+usage: ${cli_name} [options]
 options:
     -n | --name         Taking actions on profile.
                         If There is no profile, create one in etc/.
@@ -42,14 +42,14 @@ profile() {
 #   append FOO=BAR to $__profile_dir__/$__profile__/.env file
 #######################################
 set_env() {
-  env=$__profile_dir__/$__profile__/.env
-  if [ ! -d "$__profile_dir__/$__profile__" ]; then
-    mkdir $__profile_dir__/$__profile__
+  env="${__profile_dir__}/${__profile__}/.env"
+  if [[ ! -d "${__profile_dir__}/${__profile__}" ]]; then
+    mkdir "${__profile_dir__}/${__profile__}"
   fi
 
   VARIBABLES=$@
   for VARIBABLE in ${VARIBABLES}; do
-    echo "$VARIBABLE" >> $env
+    echo "${VARIBABLE}" >> "${env}"
   done
 }
 

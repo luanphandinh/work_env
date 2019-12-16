@@ -4,7 +4,7 @@ usage() {
   cli_name=${0##*/}
   echo "
 ${0##*/}
-usage: $cli_name [options]
+usage: ${cli_name} [options]
 options:
   -i | --info        Log info to var/log/
   -d | --debug       Log debug to var/log/
@@ -48,14 +48,14 @@ color() {
 
 log() {
   type=$1
-  BEGIN_COLOR="$(color $type)"
+  BEGIN_COLOR="$(color ${type})"
   END_COLOR='\033[0m'
 
   shift
-  echo -e "[ ${BEGIN_COLOR}$type${END_COLOR} ][$(date)]: $@"
+  echo -e "[ ${BEGIN_COLOR}${type}${END_COLOR} ][$(date)]: $@"
 
-  log_file="$__var_log_dir__/$(date +'%Y%m%d').log"
-  echo "[ $type ][$(date)]: $@" >> $log_file
+  log_file="${__var_log_dir__}/$(date +'%Y%m%d').log"
+  echo "[ ${type} ][$(date)]: $@" >> "${log_file}"
 }
 
 while [ "$1" != "" ]; do

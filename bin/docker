@@ -45,7 +45,7 @@ compose() {
   PARAMS=$@
 
   for SERVICE in ${PARAMS}; do
-    compose+=" -f $__env_root__/etc/docker/$SERVICE"
+    compose+=" -f ${__env_root__}/etc/docker/${SERVICE}"
     if [[ ${SERVICE} != *".yaml"* ]]; then
       compose+=".yaml"
     fi
@@ -56,7 +56,7 @@ compose() {
     compose+=" -d"
   fi
 
-  echo "$compose"
+  echo "${compose}"
 }
 
 #######################################
@@ -73,22 +73,22 @@ compose() {
 #######################################
 run() {
   if [[ "$1" == "all" ]]; then
-    COMMAND="$(compose $(ls -p $__env_root__/etc/docker | grep -v /))"
+    COMMAND=$(compose $(ls -p "${__env_root__}/etc/docker" | grep -v /))
   else
     SERVICES=$@
     if [[ "$1" == "--like" ]]; then
       PARAMS=$@
 
-      if [[ -n "$PARAMS" ]]; then
+      if [[ -n "${PARAMS}" ]]; then
         FILTER=""
         for SERVICE in ${PARAMS}; do
-          FILTER+="-e $SERVICE.*yaml "
+          FILTER+="-e ${SERVICE}.*yaml "
         done
 
-        SERVICES=$(ls -p $__env_root__/etc/docker | grep ${FILTER})
+        SERVICES=$(ls -p "${__env_root__}/etc/docker" | grep ${FILTER})
       fi
     fi
-    COMMAND="$(compose "$SERVICES")"
+    COMMAND=$(compose "${SERVICES}")
   fi
 
   $__log__ -i ${COMMAND}
@@ -122,15 +122,15 @@ stop() {
 #   None
 #######################################
 clean() {
-  if [ $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__" | wc -l) -gt 0 ]; then
+  if [[ $(docker ps -a --format "{{.Names}}" | grep "${__docker_service_prefix__}" | wc -l) -gt 0 ]]; then
     $__log__ -i "docker clean up images."
-    $__log__ -i cleaned: $(docker rm $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__"))
+    $__log__ -i cleaned: $(docker rm $(docker ps -a --format "{{.Names}}" | grep "${__docker_service_prefix__}"))
     $__log__ -i "docker clean up images done."
   fi
 
   if [ "$1" == "--cache" ]; then
     $__log__ -i "docker clean up images cache."
-    rm -rf "$__docker_path__"
+    rm -rf "${__docker_path__}"
     $__log__ -i "docker clean up images cache done."
   fi
 }
@@ -139,8 +139,8 @@ while [ "$1" != "" ]; do
   case $1 in
   run)
     shift
-    if [ ! -d "$__docker_path__" ]; then
-      mkdir $__docker_path__
+    if [[ ! -d "${__docker_path__}" ]]; then
+      mkdir "${__docker_path__}"
     fi
     $__log__ -i "docker runs: $@"
     run $@
