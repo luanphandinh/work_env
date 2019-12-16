@@ -2,13 +2,13 @@ version: '3.3'
 
 services:
   queue:
-    container_name: "${__docker_service_prefix__}_queue"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_queue"
     image: 'rabbitmq:3-management'
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
     volumes:
-      - '${__docker_path__}/rabbitmq:/var/lib/rabbitmq'
+      - '${__DOCKER_PATH__}/rabbitmq:/var/lib/rabbitmq'
     ports: ['${RABBIT_MQ_PORT_1}:5672', '${RABBIT_MQ_PORT_2}:15672']
     healthcheck:
       test: ["CMD", "rabbitmqadmin", "show", "overview", "-u", "admin", "-p", "admin"]

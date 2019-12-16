@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-declare -xr __docker_path__=$__var_lib_dir__/docker/$__profile__
-declare -xr __docker_service_prefix__="cli_${__profile__}"
+declare -xr __DOCKER_PATH__="$__VAR_LIB_DIR__/docker/$__PROFILE__"
+declare -xr __DOCKER_SERVICE_PREFIX__="cli_${__PROFILE__}"
 
 usage() {
   echo "
@@ -28,10 +28,10 @@ commands:
 }
 
 #######################################
-# Compose service name, finding all docker-compose that exist in __env_root__/etc/docker and compose command
+# Compose service name, finding all docker-compose that exist in __ENV_ROOT__/etc/docker and compose command
 # Globals:
-#   __env_root__
-#   __log__
+#   __ENV_ROOT__
+#   __LOG__
 #   DEBUG
 # Arguments:
 #   service_names{...}
@@ -45,7 +45,7 @@ compose() {
   PARAMS=$@
 
   for SERVICE in ${PARAMS}; do
-    compose+=" -f $__env_root__/etc/docker/$SERVICE"
+    compose+=" -f ${__ENV_ROOT__}/etc/docker/${SERVICE}"
     if [[ ${SERVICE} != *".yaml"* ]]; then
       compose+=".yaml"
     fi
@@ -56,14 +56,14 @@ compose() {
     compose+=" -d"
   fi
 
-  echo "$compose"
+  echo "${compose}"
 }
 
 #######################################
 # Up and running docker services
 # Globals:
-#   __env_root__
-#   __log__
+#   __ENV_ROOT__
+#   __LOG__
 # Arguments:
 #   [--like] service_names{...}
 #   ex: adminer mysql
@@ -73,25 +73,25 @@ compose() {
 #######################################
 run() {
   if [[ "$1" == "all" ]]; then
-    COMMAND="$(compose $(ls -p $__env_root__/etc/docker | grep -v /))"
+    COMMAND=$(compose $(ls -p "${__ENV_ROOT__}/etc/docker" | grep -v /))
   else
     SERVICES=$@
     if [[ "$1" == "--like" ]]; then
       PARAMS=$@
 
-      if [[ -n "$PARAMS" ]]; then
+      if [[ -n "${PARAMS}" ]]; then
         FILTER=""
         for SERVICE in ${PARAMS}; do
-          FILTER+="-e $SERVICE.*yaml "
+          FILTER+="-e ${SERVICE}.*yaml "
         done
 
-        SERVICES=$(ls -p $__env_root__/etc/docker | grep ${FILTER})
+        SERVICES=$(ls -p "${__ENV_ROOT__}/etc/docker" | grep "${FILTER}")
       fi
     fi
-    COMMAND="$(compose "$SERVICES")"
+    COMMAND=$(compose "${SERVICES}")
   fi
 
-  $__log__ -i ${COMMAND}
+  $__LOG__ -i "${COMMAND}"
   ${COMMAND}
 }
 
@@ -99,39 +99,39 @@ run() {
 # Stop all runing container that contain strings
 # Use case in this project is for stopping all docker image that name contains cli_<profile_name>.
 # Globals:
-#   __docker_service_prefix__
+#   __DOCKER_SERVICE_PREFIX__
 # Arguments:
 #   None   
 # Returns:
 #   None
 #######################################
 stop() {
-  $__log__ -i stopped: $(docker stop $(docker ps --format "{{.Names}}" | grep "${__docker_service_prefix__}"))
+  $__LOG__ -i stopped: $(docker stop $(docker ps --format "{{.Names}}" | grep "${__DOCKER_SERVICE_PREFIX__}"))
 }
 
 #######################################
 # Clean all container that contain strings
 # Use case in this project is for cleaning all docker image that name contains cli_<profile_name>.
 # Globals:
-#   __log__
-#   __docker_service_prefix__
-#   __docker_path__
+#   __LOG__
+#   __DOCKER_SERVICE_PREFIX__
+#   __DOCKER_PATH__
 # Arguments:
 #   None   
 # Returns:
 #   None
 #######################################
 clean() {
-  if [ $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__" | wc -l) -gt 0 ]; then
-    $__log__ -i "docker clean up images."
-    $__log__ -i cleaned: $(docker rm $(docker ps -a --format "{{.Names}}" | grep "$__docker_service_prefix__"))
-    $__log__ -i "docker clean up images done."
+  if [[ $(docker ps -a --format "{{.Names}}" | grep "${__DOCKER_SERVICE_PREFIX__}" | wc -l) -gt 0 ]]; then
+    $__LOG__ -i "docker clean up images."
+    $__LOG__ -i "cleaned: $(docker rm $(docker ps -a --format "{{.Names}}" | grep "${__DOCKER_SERVICE_PREFIX__}"))"
+    $__LOG__ -i "docker clean up images done."
   fi
 
   if [ "$1" == "--cache" ]; then
-    $__log__ -i "docker clean up images cache."
-    rm -rf "$__docker_path__"
-    $__log__ -i "docker clean up images cache done."
+    $__LOG__ -i "docker clean up images cache."
+    rm -rf "${__DOCKER_PATH__}"
+    $__LOG__ -i "docker clean up images cache done."
   fi
 }
 
@@ -139,17 +139,17 @@ while [ "$1" != "" ]; do
   case $1 in
   run)
     shift
-    if [ ! -d "$__docker_path__" ]; then
-      mkdir $__docker_path__
+    if [[ ! -d "${__DOCKER_PATH__}" ]]; then
+      mkdir "${__DOCKER_PATH__}"
     fi
-    $__log__ -i "docker runs: $@"
+    $__LOG__ -i "docker runs: $@"
     run $@
     exit
     ;;
 
   stop)
     shift
-    $__log__ -i "docker stop."
+    $__LOG__ -i "docker stop."
     stop
     exit
     ;;

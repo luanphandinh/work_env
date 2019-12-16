@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 if [[ $DEBUG -eq 1 ]]; then
-  $__log__ -d $@
+  $__LOG__ -d $@
 fi

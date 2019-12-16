@@ -2,11 +2,11 @@ version: '3.3'
 
 services:
   mysql57:
-    container_name: "${__docker_service_prefix__}_mysql57"
-    hostname: "${__docker_service_prefix__}_mysql57"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_mysql57"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_mysql57"
     image: mysql:5.7
     volumes:
-      - '${__docker_path__}/mysql57:/var/lib/mysql'
+      - '${__DOCKER_PATH__}/mysql57:/var/lib/mysql'
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root

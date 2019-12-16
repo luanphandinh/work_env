@@ -2,37 +2,37 @@
 
 # All available global variables
 # Naming convention:
-# Variables should be __<name>__
-# Directory should be __<name>_dir__
-# Exec file should be __<name>_exec__
+# Variables should be __<NAME>__
+# Directory should be __<NAME>_DIR__
+# Exec file should be __<NAME>_EXEC__
 # Variables
-declare -xr __env_root__=$(cd $(dirname $0) && pwd)
-declare -xr __cli_version__=$(cat $__env_root__/VERSION)
-declare -x __profile__="default"
+declare -xr __ENV_ROOT__=$(cd $(dirname $0) && pwd)
+declare -xr __CLI_VERSION__=$(cat $__ENV_ROOT__/VERSION)
+declare -x __PROFILE__="default"
 
 # Directory
-declare -xr __profile_dir__=$__env_root__/etc/profile
-declare -xr __var_log_dir__=$__env_root__/var/log
-declare -xr __var_lib_dir__=$__env_root__/var/lib
-declare -xr __var_mail_dir__=$__env_root__/var/mail
+declare -xr __PROFILE_DIR__="${__ENV_ROOT__}/etc/profile"
+declare -xr __VAR_LOG_DIR__="${__ENV_ROOT__}/var/log"
+declare -xr __VAR_LIB_DIR__="${__ENV_ROOT__}/var/lib"
+declare -xr __VAR_MAIL_DIR__="${__ENV_ROOT__}/var/mail"
 
 # bin/**
-declare -xr __docker_exec__=$__env_root__/bin/docker
-declare -xr __config_profile_exec__=$__env_root__/bin/config_profile
-declare -xr __log__=$__env_root__/bin/log
-declare -xr __debug__=$__env_root__/bin/debug
+declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker"
+declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile"
+declare -xr __LOG__="${__ENV_ROOT__}/bin/log"
+declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug"
 
 # Export environment ports from etc/docker/
 set -a
-. "$__env_root__/etc/docker/.PORT"
+. "${__ENV_ROOT__}/etc/docker/.PORT"
 
 usage() {
   cli_name=${0##*/}
   echo "
-$cli_name
+${cli_name}
 your profile CLI
-version: $__cli_version__
-usage: $cli_name [options] [command [command's options]]
+version: ${__CLI_VERSION__}
+usage: ${cli_name} [options] [command [command's options]]
 
 options:
   -p | --profile:   Profile that cli with take action on.
@@ -54,29 +54,29 @@ commands:
 #######################################
 # Apply profile ENV variables to current shell and it's childs
 # Globals:
-#   __env_root__
-#   __profile__
+#   __ENV_ROOT__
+#   __PROFILE__
 # Arguments:
 #   None
 # Returns:
 #   None
 #######################################
 apply_profile_config() {
-  __dir__=$__env_root__/etc/profile/$__profile__
-  if [ ! -d "$__dir__" ]; then
-    mkdir $__dir__
+  __dir__="${__ENV_ROOT__}/etc/profile/${__PROFILE__}"
+  if [[ ! -d "${__dir__}" ]]; then
+    mkdir "${__dir__}"
   fi
 
-  export __profile_config_file__=$__env_root__/etc/profile/$__profile__/.env
-  if [ ! -d "$__profile_config_file__" ]; then
-    touch $__profile_config_file__
+  export __profile_config_file__="${__dir__}/.env"
+  if [[ ! -d "${__profile_config_file__}" ]]; then
+    touch "${__profile_config_file__}"
   fi
 
-  $__debug__ "EXPORT ENV from profile: $__profile__"
-  $__debug__ $(cat $__profile_config_file__)
+  $__DEBUG__ "EXPORT ENV from profile: ${__PROFILE__}"
+  $__DEBUG__ $(cat ${__profile_config_file__})
 
   set -a
-  . "$__profile_config_file__"
+  . "${__profile_config_file__}"
 }
 
 while [ "$1" != "" ]; do
@@ -84,7 +84,7 @@ while [ "$1" != "" ]; do
   -p | --profile)
     shift
     set -e
-    export __profile__=$1
+    export __PROFILE__=$1
     ;;
 
   -d | --debug)
@@ -100,15 +100,15 @@ while [ "$1" != "" ]; do
 
   docker)
     shift
-    $__log__ -i "CLI running on profile: $__profile__"
+    $__LOG__ -i "CLI running on profile: ${__PROFILE__}"
     apply_profile_config
-    $__docker_exec__ $@
+    $__DOCKER_EXEC__ $@
     exit
     ;;
 
   config-profile)
     shift
-    $__config_profile_exec__ $@
+    $__CONFIG_PROFILE_EXEC__ $@
     exit
     ;;
 
