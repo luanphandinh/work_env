@@ -2,11 +2,11 @@ version: '3.3'
 
 services:
   es:
-    container_name: "${__docker_service_prefix__}_es"
-    hostname: "${__docker_service_prefix__}_es"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_es"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_es"
     image: 'elasticsearch:5.5.2-alpine'
     volumes:
-      - '${__docker_path__}/elasticsearch:/usr/share/elasticsearch/data'
+      - '${__DOCKER_PATH__}/elasticsearch:/usr/share/elasticsearch/data'
     ports:
       - ${ELASTIC_SEARCH_PORT}:9200
     environment:

@@ -24,27 +24,27 @@ commands:
 # Arguments:
 #   <profile_name>
 # Returns:
-#   Set __profile__ as <profile_name>
+#   Set __PROFILE__ as <profile_name>
 #######################################
 profile() {
   set -e
-  export __profile__=$1
+  export __PROFILE__=$1
 }
 
 #######################################
-# Apply ENV value to __profile__
+# Apply ENV value to __PROFILE__
 # Globals:
-#   __profile__
+#   __PROFILE__
 # Arguments:
 #   pairs of values
 #   ex: FOO=BAR
 # Returns:
-#   append FOO=BAR to $__profile_dir__/$__profile__/.env file
+#   append FOO=BAR to $__PROFILE_DIR__/$__PROFILE__/.env file
 #######################################
 set_env() {
-  env="${__profile_dir__}/${__profile__}/.env"
-  if [[ ! -d "${__profile_dir__}/${__profile__}" ]]; then
-    mkdir "${__profile_dir__}/${__profile__}"
+  env="${__PROFILE_DIR__}/${__PROFILE__}/.env"
+  if [[ ! -d "${__PROFILE_DIR__}/${__PROFILE__}" ]]; then
+    mkdir "${__PROFILE_DIR__}/${__PROFILE__}"
   fi
 
   VARIBABLES=$@

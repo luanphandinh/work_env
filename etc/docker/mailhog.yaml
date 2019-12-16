@@ -2,12 +2,12 @@ version: '3.3'
 
 services:
   mailhog:
-    container_name: "${__docker_service_prefix__}_mailhog"
-    hostname: "${__docker_service_prefix__}_mailhog"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_mailhog"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_mailhog"
     image: mailhog/mailhog:v1.0.0
     command: ['-storage=maildir', '-maildir-path=/maildir']
     volumes:
-      - '${__var_mail_dir__}/mailhog/${__profile__}:/maildir'
+      - '${__VAR_MAIL_DIR__}/mailhog/${__PROFILE__}:/maildir'
     ports:
       - '8025:8025'
       - '1025:1025'

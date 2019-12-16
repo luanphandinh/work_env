@@ -2,13 +2,13 @@ version: '3.3'
 
 services:
   redis:
-    container_name: "${__docker_service_prefix__}_redis"
-    hostname: "${__docker_service_prefix__}_redis"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_redis"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_redis"
     image: redis:4-alpine
     ports:
       - ${REDIS_PORT}:6379
     volumes:
-      - '${__docker_path__}/redis:/var/lib/redis/'
+      - '${__DOCKER_PATH__}/redis:/var/lib/redis/'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

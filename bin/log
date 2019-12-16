@@ -54,7 +54,7 @@ log() {
   shift
   echo -e "[ ${BEGIN_COLOR}${type}${END_COLOR} ][$(date)]: $@"
 
-  log_file="${__var_log_dir__}/$(date +'%Y%m%d').log"
+  log_file="${__VAR_LOG_DIR__}/$(date +'%Y%m%d').log"
   echo "[ ${type} ][$(date)]: $@" >> "${log_file}"
 }
 

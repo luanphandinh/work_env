@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   web:
-    container_name: "${__docker_service_prefix__}_web"
-    hostname: "${__docker_service_prefix__}_web"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_web"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_web"
     image: nginx
     ports:
       - '8080:80'

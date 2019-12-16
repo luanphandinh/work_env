@@ -2,11 +2,11 @@ version: '3.3'
 
 services:
   postgresql:
-    container_name: "${__docker_service_prefix__}_postgresql"
-    hostname: "${__docker_service_prefix__}_postgresql"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_postgresql"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_postgresql"
     image: postgres
     volumes:
-      - '${__docker_path__}/postgresql:/var/lib/postgresql/data'
+      - '${__DOCKER_PATH__}/postgresql:/var/lib/postgresql/data'
     restart: always
     environment:
       POSTGRES_DB: workspace

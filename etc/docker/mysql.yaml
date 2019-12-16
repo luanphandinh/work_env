@@ -2,11 +2,11 @@ version: '3.3'
 
 services:
   mysql:
-    container_name: "${__docker_service_prefix__}_mysql"
-    hostname: "${__docker_service_prefix__}_mysql"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_mysql"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_mysql"
     image: mysql
     volumes:
-      - '${__docker_path__}/mysql:/var/lib/mysql'
+      - '${__DOCKER_PATH__}/mysql:/var/lib/mysql'
     restart: always
     command:
       - --default-authentication-plugin=mysql_native_password
