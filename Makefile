@@ -7,3 +7,7 @@ install:
 tests:
 	chmod -R +x test/
 	test/config-profile
+
+neovim: neovim-mac
+neovim-mac:
+	brew install neovim
