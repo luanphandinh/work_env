@@ -89,9 +89,9 @@ commands:
 
 # Neovim
 ```
-make nvim-mac
+make nvim
 ```
-* Should check the home/config/nvim/init.vim for more information about key mapping to get the best experience
-* Should increase keyboard setting to max `repeat key speed` to h/j/k/l move faster.
-* Could use the gruvbox theme from home/theme for iterm.
-
+Tips:
+* Check the home/config/nvim/init.vim for key mapping.
+* Increase keyboard setting to max `repeat key speed` to navigate faster.
+* Could add gruvbox theme from home/theme for iterm.
