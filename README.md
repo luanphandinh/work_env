@@ -86,3 +86,12 @@ commands:
 
             [--cache]       To remove cache.
 ```
+
+# Neovim
+```
+make nvim
+```
+Tips:
+* Check the home/config/nvim/init.vim for key mapping.
+* Increase keyboard setting to max `repeat key speed` to navigate faster.
+* Could add gruvbox theme from home/theme for iterm.

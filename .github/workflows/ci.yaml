@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install
+      run: make nvim
+
