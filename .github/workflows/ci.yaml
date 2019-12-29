@@ -7,11 +7,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macOS-latest]
+        os: [macOS-latest, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v1
 
     - name: Install
       run: make nvim
+      if: matrix.os == 'macOS-latest'
 
+    - name: Install homebrew and linux
+      run: |
+        make homebrew-linux
+      if: matrix.os == 'ubuntu-latest'
