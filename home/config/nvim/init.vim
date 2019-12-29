@@ -40,6 +40,7 @@ let NERDTreeIgnore=['\.DS_Store$', '\.git$'] " ignore files in nerd tree
 let NERDSpaceDelims=1 " NerdComenter will have extra space after comment sign
 
 nmap <C-n> :NERDTreeToggle<CR>
+nmap <C-m> :NERDTreeFind<CR>
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
 
@@ -60,7 +61,18 @@ autocmd FileType go setlocal expandtab! shiftwidth=8 tabstop=8
 " Trim trailing whitespace.
 autocmd BufWritePre * %s/\s\+$//e
 
+" coc-prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
 " #begin coc.vim
+let g:coc_global_extensions = [
+  \ 'coc-snippets',
+  \ 'coc-pairs',
+  \ 'coc-tsserver',
+  \ 'coc-eslint',
+  \ 'coc-prettier',
+  \ 'coc-json',
+  \ ]
 " This is for golang auto organize and stuff
 " https://github.com/golang/tools/blob/master/gopls/doc/vim.md
 autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
