@@ -34,9 +34,10 @@ Plug 'HerringtonDarkholme/yats.vim'
 " Initialize plugin system
 call plug#end()
 
-let $FZF_DEFAULT_COMMAND='fd --type f --hidden' " Use fd as default search
+let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git' " Use fd as default search
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['\.DS_Store$', '\.git$'] " ignore files in nerd tree
+let NERDSpaceDelims=1 " NerdComenter will have extra space after comment sign
 
 nmap <C-n> :NERDTreeToggle<CR>
 vmap ++ <plug>NERDCommenterToggle
@@ -70,9 +71,6 @@ set hidden
 " Some servers have issues with backup files, see #649
 set nobackup
 set nowritebackup
-
-" Better display for messages
-set cmdheight=2
 
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
