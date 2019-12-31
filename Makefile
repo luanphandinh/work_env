@@ -12,7 +12,13 @@ homebrew-mac:
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 homebrew-linux:
-	sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+	(cd ./tmp && curl -o homebrew-install.sh https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)
+	chmod +x ./tmp/homebrew-install.sh
+	printf '\n' | ./tmp/homebrew-install.sh
+	# test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
+	# test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+	# test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
+	# echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
 
 nvim: nvim-install nvim-config
 nvim-install:
