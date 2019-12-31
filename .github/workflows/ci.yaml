@@ -3,20 +3,25 @@ name: CI
 on: [push]
 
 jobs:
-  tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macOS-latest, ubuntu-latest]
-
+  workspace-macOS:
+    runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v1
 
-    - name: Install
-      run: make nvim
-      if: matrix.os == 'macOS-latest'
-
-    - name: Install homebrew and linux
+    - name: Install nvim
       run: |
-        make homebrew-linux
-      if: matrix.os == 'ubuntu-latest'
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        make nvim
+
+    - name: Install tmux
+      run: make tmux
+
+  workspace-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install tmux
+      run: |
+        make tmux-ubuntu
+        make tmux-config

@@ -33,3 +33,17 @@ nvim-config:
 	cp ./home/config/nvim/coc-settings.json ~/.config/nvim/
 	nvim +PlugInstall +qall
 
+tmux: tmux-mac tmux-config
+tmux-mac:
+	brew install tmux
+	tmux new -d
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+tmux-ubuntu:
+	sudo apt-get update
+	sudo apt-get install tmux
+	tmux new -d
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+tmux-config:
+	cp ./home/tmux/.tmux.conf ~/.tmux.conf
+	tmux source ~/.tmux.conf
+	~/.tmux/plugins/tpm/scripts/install_plugins.sh
