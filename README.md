@@ -1,4 +1,4 @@
-# env [![Build Status](https://travis-ci.org/luanphandinh/env.svg?branch=master)](https://travis-ci.org/luanphandinh/env)
+# env [![Build Status](https://travis-ci.org/luanphandinh/env.svg?branch=master)](https://travis-ci.org/luanphandinh/env) ![](https://github.com/luanphandinh/env/workflows/workspace/badge.svg)
 * Easy, clean and faster way to spin up docker containers: mysql, adminer, es, rabbitmq, ...
 * Seprate profile from each others.
 
@@ -88,10 +88,23 @@ commands:
 ```
 
 # Neovim
+macOs
 ```
 make nvim
 ```
+
 Tips:
 * Check the home/config/nvim/init.vim for key mapping.
 * Increase keyboard setting to max `repeat key speed` to navigate faster.
 * Could add gruvbox theme from home/theme for iterm.
+
+# Tmux
+macOs
+```
+make tmux
+```
+
+ubuntu:
+```
+make tmux-ubuntu
+```
