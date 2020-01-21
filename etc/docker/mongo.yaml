@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  mongo:
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_mongo"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_mongo"
+    image: mongo
+    volumes:
+      - '${__DOCKER_PATH__}/mongo:/data/db'
+    ports:
+      - ${MONGODB_PORT}:27017

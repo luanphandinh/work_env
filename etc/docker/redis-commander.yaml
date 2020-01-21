@@ -5,7 +5,6 @@ services:
     container_name: "${__DOCKER_SERVICE_PREFIX__}_redis_commander"
     hostname: "${__DOCKER_SERVICE_PREFIX__}_redis_commander"
     image: rediscommander/redis-commander:latest
-    restart: always
     depends_on:
       - redis
     environment:

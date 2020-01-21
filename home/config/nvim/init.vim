@@ -57,6 +57,7 @@ set shiftwidth=2
 set expandtab
 " GO code will indent with tab size 8
 autocmd FileType go setlocal expandtab! shiftwidth=8 tabstop=8
+autocmd FileType php setlocal expandtab! shiftwidth=4 tabstop=4
 
 " Trim trailing whitespace.
 autocmd BufWritePre * %s/\s\+$//e
@@ -182,7 +183,7 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
 " Add status line support, for integration with other plugin, checkout `:h coc-status`
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Using CocList
 " Show all diagnostics
