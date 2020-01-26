@@ -32,6 +32,7 @@ nvim-config:
 	cp ./home/config/nvim/init.vim ~/.config/nvim/
 	cp ./home/config/nvim/coc-settings.json ~/.config/nvim/
 	nvim +PlugInstall +qall
+	nvim -c 'CocInstall -sync|q'
 
 tmux: tmux-mac tmux-config
 tmux-mac:
