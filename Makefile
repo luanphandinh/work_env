@@ -24,6 +24,7 @@ nvim: nvim-install nvim-config
 nvim-install:
 	brew install neovim
 	brew install fd
+	brew install the_silver_searcher
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
