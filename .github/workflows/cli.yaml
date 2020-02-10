@@ -1,0 +1,49 @@
+name: cli
+
+on: [push]
+
+jobs:
+  default-profile:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cli
+      run: |
+        make install
+        source ~/.bash_profile
+        ./cli.sh docker run redis
+
+    - name: Test
+      run: |
+        make tests
+        ./test/assert "should start docker container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_redis 0.0.0.0:6379->6379/tcp" | wc -l) 1
+        ./test/assert "should binding" $(ls -l ./var/lib/docker/default | grep "redis" | wc -l) 1
+        ./cli.sh docker stop
+        ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_redis 0.0.0.0:6379->6379/tcp" | wc -l) 0
+        ./cli.sh docker clean
+        ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_default_redis 0.0.0.0:6379->6379/tcp" | wc -l) 0
+        ./cli.sh docker clean --cache
+        ./test/assert "should clean up all cache" $(ls -l ./var/lib/docker | grep "default" | wc -l) 0
+
+  custom-profile:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cli
+      run: |
+        make install
+        source ~/.bash_profile
+        ./cli.sh config-profile -n any_profile_name set REDIS_PORT=4444
+        ./cli.sh -p any_profile_name docker run redis
+
+    - name: Test
+      run: |
+         make tests
+         ./test/assert "should start docker container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_redis 0.0.0.0:4444->6379/tcp" | wc -l) 1
+         ./test/assert "should binding" $(ls -l ./var/lib/docker/any_profile_name | grep "redis" | wc -l) 1
+         ./cli.sh -p any_profile_name docker stop
+         ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_redis 0.0.0.0:4444->6379/tcp" | wc -l) 0
+         ./cli.sh -p any_profile_name docker clean
+         ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_any_profile_name_redis 0.0.0.0:4444->6379/tcp" | wc -l) 0
+         ./cli.sh -p any_profile_name docker clean --cache
+         ./test/assert "should clean up all cache" $(ls -l ./var/lib/docker | grep "any_profile_name" | wc -l) 0

@@ -30,6 +30,10 @@ Plug 'scrooloose/nerdcommenter'
 
 " TS syntax
 Plug 'HerringtonDarkholme/yats.vim'
+Plug 'autozimu/LanguageClient-neovim', {
+      \ 'branch': 'next',
+      \ 'do': 'bash install.sh',
+      \ }
 
 " Initialize plugin system
 call plug#end()

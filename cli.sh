@@ -17,10 +17,10 @@ declare -xr __VAR_LIB_DIR__="${__ENV_ROOT__}/var/lib"
 declare -xr __VAR_MAIL_DIR__="${__ENV_ROOT__}/var/mail"
 
 # bin/**
-declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker"
-declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile"
-declare -xr __LOG__="${__ENV_ROOT__}/bin/log"
-declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug"
+declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker.sh"
+declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile.sh"
+declare -xr __LOG__="${__ENV_ROOT__}/bin/log.sh"
+declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug.sh"
 
 # Export environment ports from etc/docker/
 set -a
