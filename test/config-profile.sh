@@ -15,7 +15,7 @@ echo -e "<ANY> Profile:"
 ./test/assert "should apply config" \
 $(./cli.sh --profile test checkconf | grep "FOO") "FOO=BAR"
 
-./test/assert.sh "should not affect on Default profile config" \
+./test/assert "should not affect on Default profile config" \
 $(./cli.sh checkconf | grep "FOO") "FOO=DEFAULT_BAR_CHANGED"
 
 ./cli.sh config-profile -n test set FOO=BAR_CHANGED
