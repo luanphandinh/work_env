@@ -1,24 +1,13 @@
 test: install tests
 
 install:
-	chmod +x cli
+	chmod +x cli.sh
 	chmod -R +x bin/
+	grep -q "alias cli=$(pwd)/cli.sh" ~/.bash_profile || echo "alias cli=$(pwd)/cli.sh" >> ~/.bash_profile
 
 tests:
 	chmod -R +x test/
-	test/config-profile
-
-homebrew-mac:
-	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-homebrew-linux:
-	(cd ./tmp && curl -o homebrew-install.sh https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)
-	chmod +x ./tmp/homebrew-install.sh
-	printf '\n' | ./tmp/homebrew-install.sh
-	# test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
-	# test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-	# test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
-	# echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+	test/config-profile.sh
 
 nvim: nvim-install nvim-config
 nvim-install:
