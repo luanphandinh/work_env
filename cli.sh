@@ -92,6 +92,13 @@ while [ "$1" != "" ]; do
     export DEBUG=1
     ;;
 
+  run)
+    shift
+    apply_profile_config
+    $@
+    exit
+    ;;
+
   checkconf)
     apply_profile_config
     printenv
