@@ -7,7 +7,6 @@ services:
     image: mysql:5.7
     volumes:
       - '${__DOCKER_PATH__}/mysql57:/var/lib/mysql'
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: workspace
