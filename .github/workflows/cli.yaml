@@ -33,7 +33,7 @@ jobs:
       run: |
         make install
         source ~/.bash_profile
-        ./cli.sh config-profile -n any_profile_name set REDIS_PORT=4444
+        ./cli.sh -p any_profile_name set REDIS_PORT=4444
         ./cli.sh -p any_profile_name docker run redis
 
     - name: Test
