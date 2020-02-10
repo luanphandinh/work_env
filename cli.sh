@@ -35,17 +35,22 @@ version: ${__CLI_VERSION__}
 usage: ${cli_name} [options] [command [command's options]]
 
 options:
-  -p | --profile:   Profile that cli with take action on.
-  -d | --debug:     Turn on debug mode.
+  -p | --profile <profile_name>:  Profile that cli with take action on.
+                                  Auto create new one if not exist.
+                                  defualt <profile_name>: default.
 
-  -h | --help:      Help.
+  -d | --debug:                   Turn on debug mode.
+
+  -h | --help:                    Help.
 
 commands:
   docker:           Up and running dockers container
                     All possible containers a listed in etc/docker
-                    Will create volume for corresponding containers in proc/<ENV>/docker
+                    Will create volume for corresponding containers in var/lib/<profile_name>/docker
 
-  config-profile:   Config profile.
+  set:              Config profile.
+                    eg: ./cli.sh -p luanphan set SOME_VAR=SOME_VALUE OTHER_VAR=OVER_VALUE
+
   checkconf:        printenv of current profile to screen.
 "
   exit 1
@@ -110,6 +115,12 @@ while [ "$1" != "" ]; do
     $__LOG__ -i "CLI running on profile: ${__PROFILE__}"
     apply_profile_config
     $__DOCKER_EXEC__ $@
+    exit
+    ;;
+
+  set)
+    shift
+    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ set $@
     exit
     ;;
 

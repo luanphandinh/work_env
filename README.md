@@ -1,41 +1,46 @@
-# env [![Build Status](https://travis-ci.org/luanphandinh/env.svg?branch=master)](https://travis-ci.org/luanphandinh/env) ![](https://github.com/luanphandinh/env/workflows/workspace/badge.svg)
+# env ![](https://github.com/luanphandinh/env/workflows/workspace/badge.svg) ![](https://github.com/luanphandinh/env/workflows/cli/badge.svg)
 * Easy, clean and faster way to spin up docker containers: mysql, adminer, es, rabbitmq, ...
-* Seprate profile from each others.
+* Seprate profile and highly confirgurable.
 
 # install
 ```bash
 make install
+source ~/.bash_profile
 ```
 
 # test
 ```bash
-make test
+make tests
 ```
-* Note: `travis.yaml` also running some test to verify whether the docker services is bootstrap correctly.
 
 # CLI:
 ```bash
 ./cli -h
 ```
 ```bash
-cli
+cli.sh
 your profile CLI
-version: 1.1.0
-usage: cli [options] [command [command's options]]
+version: 1.1.1
+usage: cli.sh [options] [command [command's options]]
 
 options:
-        -p | --profile:    Profile that cli with take action on.
-        -d | --debug:      Turn on debug mode.
+  -p | --profile <profile_name>:  Profile that cli with take action on.
+                                  Auto create new one if not exist.
+                                  defualt <profile_name>: default.
 
-        -h | --help:       Help.
+  -d | --debug:                   Turn on debug mode.
+
+  -h | --help:                    Help.
 
 commands:
-    docker:             Up and running dockers container
-                        All possible containers a listed in etc/docker
-                        Will create volume for corresponding containers in proc/<ENV>/docker
+  docker:           Up and running dockers container
+                    All possible containers a listed in etc/docker
+                    Will create volume for corresponding containers in var/lib/<profile_name>/docker
 
-    config-profile:     Config profile.
-    checkconf:          printenv of current profile to screen.
+  set:              Config profile.
+                    eg: ./cli.sh -p luanphan set SOME_VAR=SOME_VALUE OTHER_VAR=OVER_VALUE
+
+  checkconf:        printenv of current profile to screen.
 ```
 
 # Profile
