@@ -104,6 +104,11 @@ while [ "$1" != "" ]; do
     $@
     exit;;
 
+  set)
+    shift
+    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ set $@
+    exit;;
+
   checkenv)
     apply_profile_config
     printenv
@@ -115,16 +120,16 @@ while [ "$1" != "" ]; do
     $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ checkconf $@
     exit;;
 
+  cleanconf)
+    shift
+    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ clean
+    exit;;
+
   docker)
     shift
     $__LOG__ -i "CLI running on profile: ${__PROFILE__}"
     apply_profile_config
     $__DOCKER_EXEC__ $@
-    exit;;
-
-  set)
-    shift
-    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ set $@
     exit;;
 
   config-profile)

@@ -6,6 +6,10 @@ echo -e "Default profile"
 ./test/assert "should apply config" \
 $(./cli.sh checkenv | grep "FOO") "FOO=DEFAULT_BAR"
 
+./cli.sh cleanconf
+./test/assert "should clean config" \
+$(./cli.sh checkenv | grep "FOO") ""
+
 ./cli.sh config-profile set FOO=DEFAULT_BAR_CHANGED
 ./test/assert "should change config" \
 $(./cli.sh checkenv | grep "FOO") "FOO=DEFAULT_BAR_CHANGED"
@@ -21,3 +25,7 @@ $(./cli.sh checkenv | grep "FOO") "FOO=DEFAULT_BAR_CHANGED"
 ./cli.sh config-profile -n test set FOO=BAR_CHANGED
 ./test/assert "should change config" \
 $(./cli.sh --profile test checkenv | grep "FOO") "FOO=BAR_CHANGED"
+
+./cli.sh config-profile -n test clean
+./test/assert "should clean config" \
+$(./cli.sh --profile test checkenv | grep "FOO") ""
