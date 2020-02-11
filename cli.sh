@@ -11,6 +11,7 @@ declare -xr __CLI_VERSION__=$(cat $__ENV_ROOT__/VERSION)
 declare -x __PROFILE__="default"
 
 # Directory
+declare -xr __DOCKER_DIR__="${__ENV_ROOT__}/etc/docker"
 declare -xr __PROFILE_DIR__="${__ENV_ROOT__}/etc/profile"
 declare -xr __VAR_LOG_DIR__="${__ENV_ROOT__}/var/log"
 declare -xr __VAR_LIB_DIR__="${__ENV_ROOT__}/var/lib"
@@ -24,7 +25,7 @@ declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug.sh"
 
 # Export environment ports from etc/docker/
 set -a
-. "${__ENV_ROOT__}/etc/docker/.PORT"
+. "${__DOCKER_DIR__}/.PORT"
 
 usage() {
   cli_name=${0##*/}
@@ -101,44 +102,48 @@ while [ "$1" != "" ]; do
     shift
     apply_profile_config
     $@
-    exit
-    ;;
+    exit;;
 
-  checkconf)
+  set)
+    shift
+    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ set $@
+    exit;;
+
+  checkenv)
     apply_profile_config
     printenv
-    exit
-    ;;
+    exit;;
+
+  checkconf)
+    shift
+    apply_profile_config
+    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ checkconf $@
+    exit;;
+
+  cleanconf)
+    shift
+    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ clean
+    exit;;
 
   docker)
     shift
     $__LOG__ -i "CLI running on profile: ${__PROFILE__}"
     apply_profile_config
     $__DOCKER_EXEC__ $@
-    exit
-    ;;
-
-  set)
-    shift
-    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ set $@
-    exit
-    ;;
+    exit;;
 
   config-profile)
     shift
     $__CONFIG_PROFILE_EXEC__ $@
-    exit
-    ;;
+    exit;;
 
   -h | --help)
     usage
-    exit
-    ;;
+    exit;;
 
   *)
     usage
-    exit 1
-    ;;
+    exit 1;;
   esac
   shift
 done

@@ -9,10 +9,12 @@ options:
     -n | --name         Taking actions on profile.
                         If There is no profile, create one in etc/.
 
-    -h | --help         Help.       
+    -h | --help         Help.
 
 commands:
     set                 Set ENV variables for profile.
+    clean               Clean all ENV variables for profile.
+    checkconf           List ENV variables for profile.
 "
   exit 1
 }
@@ -53,6 +55,25 @@ set_env() {
   done
 }
 
+clean_env() {
+  env="${__PROFILE_DIR__}/${__PROFILE__}/.env"
+  if [[ ! -d "${__PROFILE_DIR__}/${__PROFILE__}" ]]; then
+    return
+  fi
+
+  > "${env}"
+}
+
+list_env() {
+  if [[ "--all" = $1 || "-a" = $1 ]]; then
+    echo "=============== DEFAULT_CLI_CONFIG ==============="
+    cat "${__DOCKER_DIR__}/.PORT"
+  fi
+
+  echo "=============== ${__PROFILE__}_CONFIG ==============="
+  cat "${__PROFILE_DIR__}/${__PROFILE__}/.env"
+}
+
 while [ "$1" != "" ]; do
   case $1 in
   -n | --name)
@@ -63,18 +84,25 @@ while [ "$1" != "" ]; do
   set)
     shift
     set_env $@
-    exit
-    ;;
+    exit;;
+
+  clean)
+    shift
+    clean_env $@
+    exit;;
+
+  checkconf)
+    shift
+    list_env $@
+    exit;;
 
   -h | --help)
     usage
-    exit
-    ;;
+    exit;;
 
   *)
     usage
-    exit 1
-    ;;
+    exit 1;;
   esac
   shift
 done
