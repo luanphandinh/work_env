@@ -29,3 +29,7 @@ $(./cli.sh --profile test checkenv | grep "FOO") "FOO=BAR_CHANGED"
 ./cli.sh config-profile -n test clean
 ./test/assert "should clean config" \
 $(./cli.sh --profile test checkenv | grep "FOO") ""
+
+./cli.sh -p var set THIS=THIS SHOULD=SHOULD BE=BE CLI=CLI VARIABLES=VARIABLES
+./test/assert "should apply cli env variables" \
+$(./cli.sh -p var run ./test/run_test.sh | grep "THIS") "THISSHOULDBECLIVARIABLES"

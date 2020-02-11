@@ -1,0 +1,1 @@
+echo "${THIS}${SHOULD}${BE}${CLI}${VARIABLES}"
