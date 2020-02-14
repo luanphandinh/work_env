@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+  vault:
+    image: "vault"
+    container_name: "${__DOCKER_SERVICE_PREFIX__}_vault"
+    hostname: "${__DOCKER_SERVICE_PREFIX__}_vault"
+    volumes:
+      - '${__DOCKER_DIR__}/vault/config:/vault/config'
+      - '${__DOCKER_PATH__}/vault/policies:/vault/policies'
+      - '${__DOCKER_PATH__}/vault/data:/vault/data'
+    environment:
+      - VAULT_ADDR=http://0.0.0.0:${VAULT_PORT}
+      - VAULT_API_ADDR=http://0.0.0.0:${VAULT_PORT}
+      - VAULT_ADDRESS=http://0.0.0.0:${VAULT_PORT}
+    ports:
+      - "${VAULT_PORT}:8200"
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/vault.json
