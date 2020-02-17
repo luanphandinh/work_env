@@ -6,7 +6,7 @@ ENV_PATTERN="\[env\]"
 
 DOCKERS=""
 PROFILE=""
-ENV_CONFIG=""
+ENV_CONFIG=()
 
 LOCK_ON=""
 
@@ -25,10 +25,27 @@ isLock() {
 
 pushConfig() {
   if isLock; then
-    if [[ "$1" != ${LOCK_ON} ]]; then
-      echo $1
+    if [[ $1 == ${LOCK_ON} ]]; then
+      continue
+    fi
+
+    if [[ "${LOCK_ON}" == "${ENV_PATTERN}" ]]; then
+      ENV_CONFIG+=("$1")
     fi
   fi
+}
+
+compile() {
+  cmd="${__ENV_ROOT__}/cli.sh -d"
+  if [[ ! -z "${PROFILE}" ]]; then
+    cmd+=" -p ${PROFILE}"
+  fi
+
+  if [[ ! -z "${DOCKERS}" ]]; then
+    cmd+=" docker run ${DOCKERS}"
+  fi
+
+  echo "${cmd}"
 }
 
 run() {
@@ -48,11 +65,20 @@ run() {
     fi
 
     if [[ "${line}" =~ ${ENV_PATTERN} ]]; then
-      lock "${ENV_PATTERN}"
+      lock ${ENV_PATTERN}
     fi
 
-    pushConfig $line
+    pushConfig "${line}"
   done < "$configFile"
+
+  $__DEBUG__ "DOCKERS: ${DOCKERS}"
+  $__DEBUG__ "PROFILE: ${PROFILE}"
+  for conf in "${ENV_CONFIG[@]}";
+  do
+    $__DEBUG__ "${conf}"
+  done
+
+  # $(compile)
 }
 
 run $@

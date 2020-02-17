@@ -19,6 +19,7 @@ declare -xr __VAR_MAIL_DIR__="${__ENV_ROOT__}/var/mail"
 
 # bin/**
 declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker.sh"
+declare -xr __RUNNER_EXEC__="${__ENV_ROOT__}/bin/runner.sh"
 declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile.sh"
 declare -xr __LOG__="${__ENV_ROOT__}/bin/log.sh"
 declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug.sh"
@@ -53,6 +54,10 @@ commands:
                     eg: ./cli.sh -p luanphan set SOME_VAR=SOME_VALUE OTHER_VAR=OVER_VALUE
 
   checkconf:        printenv of current profile to screen.
+  cleanconf:        clean all config of current profile.
+
+  up:               up and running runner.cli
+                    **implementing**
 "
   exit 1
 }
@@ -97,6 +102,11 @@ while [ "$1" != "" ]; do
     set -e
     export DEBUG=1
     ;;
+
+  up)
+    shift
+    $__RUNNER_EXEC__ $1
+    exit;;
 
   run)
     shift
