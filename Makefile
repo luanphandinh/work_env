@@ -3,7 +3,7 @@ test: install tests
 install:
 	chmod +x cli.sh
 	chmod -R +x bin/
-	grep -q "alias cli=$(pwd)/cli.sh" ~/.bash_profile || echo "alias cli=$(pwd)/cli.sh" >> ~/.bash_profile
+	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.bash_profile || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.bash_profile
 
 tests:
 	chmod -R +x test/

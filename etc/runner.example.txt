@@ -1,0 +1,7 @@
+[profile:sso]
+
+[env]
+ADMINER_PORT=5555
+MYSQL_PORT=9999
+
+[dockers: adminer mysql redis redis-commander]
