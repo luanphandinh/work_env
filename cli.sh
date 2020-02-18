@@ -21,6 +21,7 @@ declare -xr __VAR_MAIL_DIR__="${__ENV_ROOT__}/var/mail"
 declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker.sh"
 declare -xr __RUNNER_EXEC__="${__ENV_ROOT__}/bin/runner.sh"
 declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile.sh"
+declare -xr __MAKE_EXEC__="${__ENV_ROOT__}/bin/make.sh"
 declare -xr __LOG__="${__ENV_ROOT__}/bin/log.sh"
 declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug.sh"
 
@@ -73,16 +74,8 @@ commands:
 #   None
 #######################################
 apply_profile_config() {
-  __dir__="${__ENV_ROOT__}/etc/profile/${__PROFILE__}"
-  if [[ ! -d "${__dir__}" ]]; then
-    mkdir "${__dir__}"
-  fi
-
-  export __profile_config_file__="${__dir__}/.env"
-  if [[ ! -d "${__profile_config_file__}" ]]; then
-    touch "${__profile_config_file__}"
-  fi
-
+  $__MAKE_EXEC__ profile $__PROFILE__
+  __profile_config_file__="${__PROFILE_DIR__}/${__PROFILE__}/.env"
   $__DEBUG__ "EXPORT ENV from profile: ${__PROFILE__}"
   $__DEBUG__ $(cat ${__profile_config_file__})
 
@@ -96,6 +89,8 @@ while [ "$1" != "" ]; do
     shift
     set -e
     export __PROFILE__=$1
+    $__DEBUG__ -i "CLI running on profile: ${__PROFILE__}"
+    apply_profile_config
     ;;
 
   -d | --debug)
@@ -110,7 +105,6 @@ while [ "$1" != "" ]; do
 
   run)
     shift
-    apply_profile_config
     $@
     exit;;
 
@@ -126,7 +120,6 @@ while [ "$1" != "" ]; do
 
   checkconf)
     shift
-    apply_profile_config
     $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ checkconf $@
     exit;;
 
@@ -137,8 +130,6 @@ while [ "$1" != "" ]; do
 
   docker)
     shift
-    $__LOG__ -i "CLI running on profile: ${__PROFILE__}"
-    apply_profile_config
     $__DOCKER_EXEC__ $@
     exit;;
 
