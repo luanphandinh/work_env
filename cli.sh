@@ -16,10 +16,14 @@ declare -xr __PROFILE_DIR__="${__ENV_ROOT__}/etc/profile"
 declare -xr __VAR_LOG_DIR__="${__ENV_ROOT__}/var/log"
 declare -xr __VAR_LIB_DIR__="${__ENV_ROOT__}/var/lib"
 declare -xr __VAR_MAIL_DIR__="${__ENV_ROOT__}/var/mail"
+declare -xr __TMP_DIR__="${__ENV_ROOT__}/tmp"
 
 # bin/**
 declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker.sh"
+declare -xr __RUNNER_EXEC__="${__ENV_ROOT__}/bin/runner.sh"
 declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile.sh"
+declare -xr __MAKE_EXEC__="${__ENV_ROOT__}/bin/make.sh"
+declare -xr __CLEANUP_EXEC__="${__ENV_ROOT__}/bin/cleanup.sh"
 declare -xr __LOG__="${__ENV_ROOT__}/bin/log.sh"
 declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug.sh"
 
@@ -39,9 +43,8 @@ options:
   -p | --profile <profile_name>:  Profile that cli with take action on.
                                   Auto create new one if not exist.
                                   defualt <profile_name>: default.
-
   -d | --debug:                   Turn on debug mode.
-
+  -c | --cleanup:                 Clean up tmps.
   -h | --help:                    Help.
 
 commands:
@@ -53,6 +56,10 @@ commands:
                     eg: ./cli.sh -p luanphan set SOME_VAR=SOME_VALUE OTHER_VAR=OVER_VALUE
 
   checkconf:        printenv of current profile to screen.
+  cleanconf:        clean all config of current profile.
+
+  up:               up and running runner.cli
+                    **implementing**
 "
   exit 1
 }
@@ -68,16 +75,8 @@ commands:
 #   None
 #######################################
 apply_profile_config() {
-  __dir__="${__ENV_ROOT__}/etc/profile/${__PROFILE__}"
-  if [[ ! -d "${__dir__}" ]]; then
-    mkdir "${__dir__}"
-  fi
-
-  export __profile_config_file__="${__dir__}/.env"
-  if [[ ! -d "${__profile_config_file__}" ]]; then
-    touch "${__profile_config_file__}"
-  fi
-
+  $__MAKE_EXEC__ profile $__PROFILE__
+  __profile_config_file__="${__PROFILE_DIR__}/${__PROFILE__}/.env"
   $__DEBUG__ "EXPORT ENV from profile: ${__PROFILE__}"
   $__DEBUG__ $(cat ${__profile_config_file__})
 
@@ -87,10 +86,19 @@ apply_profile_config() {
 
 while [ "$1" != "" ]; do
   case $1 in
+  -tmp)
+    $__DEBUG__ "EXPORT ENV from config file"
+    $__DEBUG__ $(cat "${__TMP_DIR__}/.env")
+    set -a
+    . "${__TMP_DIR__}/.env"
+    ;;
+
   -p | --profile)
     shift
     set -e
     export __PROFILE__=$1
+    $__DEBUG__ -i "CLI running on profile: ${__PROFILE__}"
+    apply_profile_config
     ;;
 
   -d | --debug)
@@ -98,9 +106,13 @@ while [ "$1" != "" ]; do
     export DEBUG=1
     ;;
 
+  up)
+    shift
+    $__RUNNER_EXEC__ $1
+    exit;;
+
   run)
     shift
-    apply_profile_config
     $@
     exit;;
 
@@ -116,7 +128,6 @@ while [ "$1" != "" ]; do
 
   checkconf)
     shift
-    apply_profile_config
     $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ checkconf $@
     exit;;
 
@@ -127,8 +138,6 @@ while [ "$1" != "" ]; do
 
   docker)
     shift
-    $__LOG__ -i "CLI running on profile: ${__PROFILE__}"
-    apply_profile_config
     $__DOCKER_EXEC__ $@
     exit;;
 
