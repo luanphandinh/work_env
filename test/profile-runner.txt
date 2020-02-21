@@ -1,0 +1,6 @@
+[profile:runner]
+
+[env]
+REDIS_PORT=9999
+
+[dockers: redis redis-commander]

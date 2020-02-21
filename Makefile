@@ -4,6 +4,7 @@ install:
 	chmod +x cli.sh
 	chmod -R +x bin/
 	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.bash_profile || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.bash_profile
+	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.bash_rc || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.bash_rc
 
 tests:
 	chmod -R +x test/

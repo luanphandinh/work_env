@@ -25,18 +25,16 @@ isLock() {
 
 pushConfig() {
   if isLock; then
-    if [[ $1 == ${LOCK_ON} ]]; then
-      continue
-    fi
-
-    if [[ "${LOCK_ON}" == "${ENV_PATTERN}" ]]; then
-      ENV_CONFIG+=("$1")
+    if [[ ! $1 == ${LOCK_ON} ]]; then
+      if [[ "${LOCK_ON}" == "${ENV_PATTERN}" ]]; then
+        ENV_CONFIG+=("$1")
+      fi
     fi
   fi
 }
 
 compile() {
-  cmd="${__ENV_ROOT__}/cli.sh -d"
+  cmd="${__ENV_ROOT__}/cli.sh"
 
   if [[ ! -z "${PROFILE}" ]]; then
     cmd+=" -p ${PROFILE}"
