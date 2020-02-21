@@ -1,4 +1,4 @@
-[profile:sso]
+[profile: sso]
 
 [env]
 ADMINER_PORT=5555

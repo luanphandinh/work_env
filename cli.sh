@@ -16,12 +16,14 @@ declare -xr __PROFILE_DIR__="${__ENV_ROOT__}/etc/profile"
 declare -xr __VAR_LOG_DIR__="${__ENV_ROOT__}/var/log"
 declare -xr __VAR_LIB_DIR__="${__ENV_ROOT__}/var/lib"
 declare -xr __VAR_MAIL_DIR__="${__ENV_ROOT__}/var/mail"
+declare -xr __TMP_DIR__="${__ENV_ROOT__}/tmp"
 
 # bin/**
 declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker.sh"
 declare -xr __RUNNER_EXEC__="${__ENV_ROOT__}/bin/runner.sh"
 declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile.sh"
 declare -xr __MAKE_EXEC__="${__ENV_ROOT__}/bin/make.sh"
+declare -xr __CLEANUP_EXEC__="${__ENV_ROOT__}/bin/cleanup.sh"
 declare -xr __LOG__="${__ENV_ROOT__}/bin/log.sh"
 declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug.sh"
 
@@ -41,9 +43,8 @@ options:
   -p | --profile <profile_name>:  Profile that cli with take action on.
                                   Auto create new one if not exist.
                                   defualt <profile_name>: default.
-
   -d | --debug:                   Turn on debug mode.
-
+  -c | --cleanup:                 Clean up tmps.
   -h | --help:                    Help.
 
 commands:
@@ -85,6 +86,13 @@ apply_profile_config() {
 
 while [ "$1" != "" ]; do
   case $1 in
+  -tmp)
+    $__DEBUG__ "EXPORT ENV from config file"
+    $__DEBUG__ $(cat "${__TMP_DIR__}/.env")
+    set -a
+    . "${__TMP_DIR__}/.env"
+    ;;
+
   -p | --profile)
     shift
     set -e
