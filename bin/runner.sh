@@ -33,7 +33,7 @@ pushConfig() {
   fi
 }
 
-compile() {
+run_docker() {
   cmd="${__ENV_ROOT__}/cli.sh"
 
   if [[ ! -z "${PROFILE}" ]]; then
@@ -79,8 +79,8 @@ run() {
     pushConfig "${line}"
   done < "$configFile"
 
-  echo "$(compile)"
-  $(compile)
+  echo "$(run_docker)"
+  $(run_docker)
 }
 
 run $@

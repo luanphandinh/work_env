@@ -1,10 +1,12 @@
+SHELL := /bin/bash
 test: install tests
 
 install:
 	chmod +x cli.sh
 	chmod -R +x bin/
-	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.bash_profile || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.bash_profile
-	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.bash_rc || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.bash_rc
+	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.bash_profile 2>/dev/null || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.bash_profile
+	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.bashrc 2>/dev/null || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.bashrc
+	grep -q "alias cli=$(shell pwd)/cli.sh" ~/.zshrc 2>/dev/null || echo "alias cli=$(shell pwd)/cli.sh" >> ~/.zshrc
 
 tests:
 	chmod -R +x test/
