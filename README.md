@@ -2,29 +2,32 @@
 Easy, clean and faster way to spin up docker containers: mysql, adminer, es, rabbitmq, ...\
 Seprate profile and highly confirgurable.
 
-# install
+## install
 ```bash
 make install
 source ~/.bash_profile
 ```
 
-# help
+## help
 ```bash
 cli -h
 cli docker -h
 ```
 
-# docker
-## run
+## docker
+run:
 ```
 ./cli.sh docker run mysql adminer
 ```
+The command above will look into `./env/etc/docker/` and find `mysql.yaml`, `adminer.yaml` and use `docker-compose` to start docker services.
 
-## run with profile (`./cli.sh -p <profile_name> docker run mysql adminer`):
+run with profile (`./cli.sh -p <profile_name> docker run mysql adminer`):
 ```
 ./cli.sh -p new_to_env docker run mysql adminer
 ```
 
+Add new docker-compose file that not existed in current repository\
+Simply add `<service_name>.yml` into `env/etc/docker`.\
 ```
 cli/etc
   |__docker
@@ -39,10 +42,7 @@ cli/etc
   |     |   |__ .env
 ```
 
-To add and running new docker container that not existed in current repository\
-You can simply add `<service_name>.yml` into `env/etc/docker`.\
-
-## example:
+example file (`etc/docker/mysql.yaml`):
 ```yaml
 version: '3.3'
 
@@ -64,7 +64,7 @@ services:
       - ${MYSQL_PORT}:3306
 ```
 
-## configs:
+configs:
 * `__DOCKER_PATH__` refer to `var/lib/docker/<current_profile>/`\
 Highly recommended to use this path, it allows you to seperate your runtime data with profile
 * `__DOCKER_DIR__` refer to current config path `env/etc/docker/`
@@ -74,20 +74,20 @@ Seem more at `env/etc/docker/vault.yaml`
 * `*_PORTS` can be found under `env/etc/docker/.PORTS`.\
 Highly recommend your new service has default dynamic env binding port to outside, as it will be easier to running with profiles later
 
-# Profile
+## Profile
 
-## set
+set:
 ```
 ./cli.sh -p new_to_env set ADMINER_PORT=4444
 ```
 
-Then run docker service with profile
+Then run docker service with profile:
 ```
 ./cli.sh -p new_to_env docker run adminer
 ```
 This will up and running `cli_new_to_env_adminer` container on port `4444`, cause the profile override the default `ADMINER_PORT=4000`
 
-## run
+run:
 ```
 # given you alias /path/to/env/cli.sh with cli.
 cli -p new_to_env run npm run dev
@@ -95,7 +95,7 @@ cli -p new_to_env run npm run dev
 
 Suppose you have service written in javascript, you can facilitate using profile with all its `.env` config and apply to process that run `npm run dev`.
 
-# Config file
+## Config file:
 ```txt
 # config.dev.txt
 [profile:runner]
