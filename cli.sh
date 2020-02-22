@@ -43,6 +43,9 @@ options:
   -p | --profile <profile_name>:  Profile that cli with take action on.
                                   Auto create new one if not exist.
                                   defualt <profile_name>: default.
+
+  --env-file /path/to/.env:       Custom environment file.
+
   -d | --debug:                   Turn on debug mode.
   -c | --cleanup:                 Clean up tmps.
   -h | --help:                    Help.
@@ -58,8 +61,7 @@ commands:
   checkconf:        printenv of current profile to screen.
   cleanconf:        clean all config of current profile.
 
-  up:               up and running runner.cli
-                    **implementing**
+  up:               up and running config file
 "
   exit 1
 }
@@ -86,11 +88,12 @@ apply_profile_config() {
 
 while [ "$1" != "" ]; do
   case $1 in
-  -tmp)
-    $__DEBUG__ "EXPORT ENV from config file"
-    $__DEBUG__ $(cat "${__TMP_DIR__}/.env")
+  --env-file)
+    shift
+    $__DEBUG__ "EXPORT ENV from env file"
+    $__DEBUG__ $(cat "${1}")
     set -a
-    . "${__TMP_DIR__}/.env"
+    . "${1}"
     ;;
 
   -p | --profile)
