@@ -1,0 +1,11 @@
+[profile:service]
+
+[env]
+NAME=CLI
+ADMINER_PORT=5555
+
+[dockers: adminer]
+
+[exec:node]
+echo "Running a nodejs service"
+node ${__ENV_ROOT__}/test/service.js

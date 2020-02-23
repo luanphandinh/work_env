@@ -41,3 +41,21 @@ jobs:
          ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:9999->6379/tcp" | wc -l) 0
          ./cli.sh -p runner docker clean --cache
          ./test/assert "should clean up all cache" $(ls -l ./var/lib/docker | grep "runner" | wc -l) 0
+
+  runner-services:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cli
+      run: |
+        make install
+        ./cli.sh up test/services-runner.txt
+
+    - name: Test
+      run: |
+        ./test/assert "should start docker container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 1
+        ./cli.sh -p service docker stop
+        ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
+        ./cli.sh -p service docker clean
+        ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
+        ./test/assert "should start service with env config" $(curl --silent http://localhost:8000/ | grep "Hello CLI" | wc -l) 1
