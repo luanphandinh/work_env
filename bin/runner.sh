@@ -33,7 +33,7 @@ pushConfig() {
   fi
 }
 
-compile() {
+run_docker() {
   cmd="${__ENV_ROOT__}/cli.sh"
 
   if [[ ! -z "${PROFILE}" ]]; then
@@ -41,7 +41,7 @@ compile() {
   fi
 
   if [[ ! -z "${__TMP_DIR__}" ]]; then
-    cmd+=" -tmp"
+    cmd+=" --env-file ${__TMP_DIR__}/.env"
     > "${__TMP_DIR__}/.env"
     for conf in "${ENV_CONFIG[@]}";
     do
@@ -79,8 +79,8 @@ run() {
     pushConfig "${line}"
   done < "$configFile"
 
-  echo "$(compile)"
-  $(compile)
+  echo "$(run_docker)"
+  $(run_docker)
 }
 
 run $@

@@ -27,7 +27,6 @@ jobs:
     - name: Install cli
       run: |
         make install
-        source ~/.bash_profile
         ./cli.sh -p runner set REDIS_PORT=4444
         ./cli.sh up test/profile-runner.txt
 

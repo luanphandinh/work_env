@@ -1,6 +1,9 @@
 name: workspace
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'Makefile'
 
 jobs:
   workspace-macOS:
