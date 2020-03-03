@@ -15,6 +15,7 @@ commands:
     set                 Set ENV variables for profile.
     clean               Clean all ENV variables for profile.
     checkconf           List ENV variables for profile.
+    edit                Open profile/.env file to edit.
 "
   exit 1
 }
@@ -74,6 +75,23 @@ list_env() {
   cat "${__PROFILE_DIR__}/${__PROFILE__}/.env"
 }
 
+edit() {
+  if [[ $(nvim --version) ]]; then
+    nvim "${__PROFILE_DIR__}/${__PROFILE__}/.env"
+    return
+  fi
+
+  if [[ $(vim --version) ]]; then
+    vim "${__PROFILE_DIR__}/${__PROFILE__}/.env"
+    return
+  fi
+
+  if [[ $(nano --version) ]]; then
+    nano "${__PROFILE_DIR__}/${__PROFILE__}/.env"
+    return
+  fi
+}
+
 while [ "$1" != "" ]; do
   case $1 in
   -n | --name)
@@ -94,6 +112,11 @@ while [ "$1" != "" ]; do
   checkconf)
     shift
     list_env $@
+    exit;;
+
+  edit)
+    shift
+    edit $__PROFILE__
     exit;;
 
   -h | --help)
