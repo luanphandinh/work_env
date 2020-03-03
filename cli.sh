@@ -58,6 +58,7 @@ commands:
   set:              Config profile.
                     eg: ./cli.sh -p luanphan set SOME_VAR=SOME_VALUE OTHER_VAR=OVER_VALUE
 
+  edit:             use nvim/vim or nano to edit profile .env file
   checkconf:        printenv of current profile to screen.
   cleanconf:        clean all config of current profile.
 
@@ -142,6 +143,11 @@ while [ "$1" != "" ]; do
   docker)
     shift
     $__DOCKER_EXEC__ $@
+    exit;;
+
+  edit)
+    shift
+    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ edit
     exit;;
 
   config-profile)
