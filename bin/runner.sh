@@ -116,9 +116,11 @@ run() {
   done < "$configFile"
 
   $__LOG__ -i "Run and send to background: $(run_docker)"
-  $(run_docker)
-  echo $(exec_services)
+  $(run_docker) &
+  $P1=$1
   $(exec_services)
+  $P2=$2
+  wait $P1 $P2
 }
 
 run $@
