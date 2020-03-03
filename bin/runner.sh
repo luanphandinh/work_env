@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
-DOCKERS_PATTERN="\[dockers\:.*\]"
-PROFILE_PATTERN="\[profile\:.*\]"
-ENV_PATTERN="\[env\]"
+DOCKERS_PATTERN="[dockers:"
+PROFILE_PATTERN="[profile:"
+ENV_PATTERN="[env]"
+EXEC_PATTERN="[exec:"
 
 DOCKERS=""
 PROFILE=""
 ENV_CONFIG=()
+EXEC_CMDS=()
 
 LOCK_ON=""
 
@@ -15,7 +17,7 @@ unlock() {
 }
 
 lock() {
-  LOCK_ON=$1
+  LOCK_ON="${1}"
 }
 
 isLock() {
@@ -25,16 +27,20 @@ isLock() {
 
 pushConfig() {
   if isLock; then
-    if [[ ! $1 == ${LOCK_ON} ]]; then
+    if [[ ! "${1}" =~ "${LOCK_ON}" ]]; then
       if [[ "${LOCK_ON}" == "${ENV_PATTERN}" ]]; then
         ENV_CONFIG+=("$1")
+      fi
+
+      if [[ "${LOCK_ON}" =~ "${EXEC_PATTERN}" ]]; then
+        EXEC_CMDS+=("$1")
       fi
     fi
   fi
 }
 
-run_docker() {
-  cmd="${__ENV_ROOT__}/cli.sh"
+cli_command() {
+  local cmd="${__ENV_ROOT__}/cli.sh"
 
   if [[ ! -z "${PROFILE}" ]]; then
     cmd+=" -p ${PROFILE}"
@@ -49,38 +55,70 @@ run_docker() {
     done
   fi
 
+  echo "${cmd}" | tr -s " "
+}
+
+exec_services() {
+  if [[ ${#EXEC_CMDS[@]} -gt 0 ]]; then
+    local cli=$(cli_command)
+
+    ITER=0
+    for conf in "${EXEC_CMDS[@]}";
+    do
+      cmd+=" ${conf}"
+      ITER=$(expr $ITER + 1)
+      if [[ $ITER -lt ${#EXEC_CMDS[@]} ]]; then
+        cmd+=" &&"
+      fi
+    done
+
+    if [[ $DEBUG != 1 ]]; then
+      cmd+=" &"
+    fi
+
+    echo "${cli} run ${cmd}" | tr -s " "
+  fi
+}
+
+run_docker() {
+  local cmd=$(cli_command)
   if [[ ! -z "${DOCKERS}" ]]; then
     cmd+=" docker run ${DOCKERS}"
+    echo "${cmd}" | tr -s " "
   fi
-
-  echo "${cmd}" | tr -s " "
 }
 
 run() {
   configFile=$1
   while read -r line;
   do
-    if [[ "${line}" =~ ${DOCKERS_PATTERN} ]]; then
+    if [[ "${line}" =~ "${DOCKERS_PATTERN}" ]]; then
       DOCKERS="${line/\[dockers\:/}"
       DOCKERS="${DOCKERS/]/}"
       unlock
     fi
 
-    if [[ "${line}" =~ ${PROFILE_PATTERN} ]]; then
+    if [[ "${line}" =~ "${PROFILE_PATTERN}" ]]; then
       PROFILE="${line/\[profile\:/}"
       PROFILE="${PROFILE/]/}"
       unlock
     fi
 
-    if [[ "${line}" =~ ${ENV_PATTERN} ]]; then
+    if [[ "${line}" =~ "${ENV_PATTERN}" ]]; then
       lock ${ENV_PATTERN}
+    fi
+
+    if [[ "${line}" =~ "${EXEC_PATTERN}" ]]; then
+      lock ${line}
     fi
 
     pushConfig "${line}"
   done < "$configFile"
 
-  echo "$(run_docker)"
+  $__LOG__ -i "Run and send to background: $(run_docker)"
   $(run_docker)
+  echo $(exec_services)
+  $(exec_services)
 }
 
 run $@

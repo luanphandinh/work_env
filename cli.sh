@@ -116,7 +116,7 @@ while [ "$1" != "" ]; do
 
   run)
     shift
-    $@
+    eval $@
     exit;;
 
   set)

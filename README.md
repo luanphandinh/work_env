@@ -104,6 +104,9 @@ Suppose you have service written in javascript, you can facilitate using profile
 REDIS_PORT=9999
 
 [dockers: redis redis-commander mysql adminer]
+[exec: node]
+echo "Running node service"
+node ./test/service.js
 ```
 run:
 
