@@ -9,6 +9,7 @@ DOCKERS=""
 PROFILE=""
 ENV_CONFIG=()
 EXEC_CMDS=()
+SERVICES=()
 
 LOCK_ON=""
 
@@ -62,7 +63,7 @@ exec_services() {
   if [[ ${#EXEC_CMDS[@]} -gt 0 ]]; then
     local cli=$(cli_command)
 
-    ITER=0
+    local ITER=0
     for conf in "${EXEC_CMDS[@]}";
     do
       cmd+=" ${conf}"
@@ -92,6 +93,10 @@ run() {
   configFile=$1
   while read -r line;
   do
+    if [[ ! $line = *[!\ ]* ]]; then
+      continue
+    fi
+
     if [[ "${line}" =~ "${DOCKERS_PATTERN}" ]]; then
       DOCKERS="${line/\[dockers\:/}"
       DOCKERS="${DOCKERS/]/}"
@@ -109,16 +114,27 @@ run() {
     fi
 
     if [[ "${line}" =~ "${EXEC_PATTERN}" ]]; then
+      if [[ isLock ]]; then
+        SERVICES+=("$(exec_services)")
+        EXEC_CMDS=()
+      fi
       lock ${line}
     fi
 
     pushConfig "${line}"
   done < "$configFile"
 
+  SERVICES+=("$(exec_services)")
+
   $__LOG__ -i "Run and send to background: $(run_docker)"
-  $(run_docker)
-  echo $(exec_services)
-  $(exec_services)
+  $(run_docker) &
+
+  for service in "${SERVICES[@]}";
+  do
+    $service &
+  done
+
+  wait
 }
 
 run $@

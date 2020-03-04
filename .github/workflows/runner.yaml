@@ -58,4 +58,5 @@ jobs:
         ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
         ./cli.sh -p service docker clean
         ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
-        ./test/assert "should start service with env config" $(curl --silent http://localhost:8000/ | grep "Hello CLI" | wc -l) 1
+        ./test/assert "should start node service with env config" $(curl --silent http://localhost:8000/ | grep "Hello CLI" | wc -l) 1
+        ./test/assert "should start php service with env config" $(curl --silent http://localhost:8080/ | grep "Welcome to CLI" | wc -l) 1
