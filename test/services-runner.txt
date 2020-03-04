@@ -8,4 +8,10 @@ ADMINER_PORT=5555
 
 [exec:node]
 echo "Running a nodejs service"
-node ${__ENV_ROOT__}/test/service.js
+cd $__ENV_ROOT__/test/
+node ./service.js
+
+[exec:php]
+echo "Running a php service"
+cd $__ENV_ROOT__/test/
+php -S localhost:8080 router.php
