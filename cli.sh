@@ -21,11 +21,12 @@ declare -xr __TMP_DIR__="${__ENV_ROOT__}/tmp"
 # bin/**
 declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker.sh"
 declare -xr __RUNNER_EXEC__="${__ENV_ROOT__}/bin/runner.sh"
-declare -xr __CONFIG_PROFILE_EXEC__="${__ENV_ROOT__}/bin/config_profile.sh"
 declare -xr __MAKE_EXEC__="${__ENV_ROOT__}/bin/make.sh"
 declare -xr __CLEANUP_EXEC__="${__ENV_ROOT__}/bin/cleanup.sh"
 declare -xr __LOG__="${__ENV_ROOT__}/bin/log.sh"
 declare -xr __DEBUG__="${__ENV_ROOT__}/bin/debug.sh"
+
+. ${__ENV_ROOT__}/bin/config_profile.sh
 
 # Export environment ports from etc/docker/
 set -a
@@ -122,7 +123,7 @@ while [ "$1" != "" ]; do
 
   set)
     shift
-    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ set $@
+    set_env $@
     exit;;
 
   checkenv)
@@ -132,12 +133,12 @@ while [ "$1" != "" ]; do
 
   checkconf)
     shift
-    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ checkconf $@
+    list_env $@
     exit;;
 
   cleanconf)
     shift
-    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ clean
+    clean_env
     exit;;
 
   docker)
@@ -147,12 +148,7 @@ while [ "$1" != "" ]; do
 
   edit)
     shift
-    $__CONFIG_PROFILE_EXEC__ -n $__PROFILE__ edit
-    exit;;
-
-  config-profile)
-    shift
-    $__CONFIG_PROFILE_EXEC__ $@
+    edit_env
     exit;;
 
   -h | --help)
