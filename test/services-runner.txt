@@ -6,6 +6,10 @@ ADMINER_PORT=5555
 
 [dockers: adminer]
 
+# [exec:commented]
+// cd somewhere???
+# should not run this
+
 [exec:node]
 echo "Running a nodejs service"
 cd $__ENV_ROOT__/test/
