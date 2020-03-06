@@ -97,6 +97,10 @@ run() {
       continue
     fi
 
+    if [[ $line =~ ^\#.*|^\/\/.* ]];then
+      continue
+    fi
+
     if [[ "${line}" =~ "${DOCKERS_PATTERN}" ]]; then
       DOCKERS="${line/\[dockers\:/}"
       DOCKERS="${DOCKERS/]/}"
