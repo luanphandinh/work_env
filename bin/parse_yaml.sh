@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
+
 # From https://github.com/jasperes/bash-yaml/blob/master/script/yaml.sh
 # Base on https://gist.github.com/pkuczynski/8665367
-
 parse_yaml() {
   local yaml_file=$1
   local prefix=$2

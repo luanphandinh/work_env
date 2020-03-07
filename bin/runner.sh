@@ -82,9 +82,10 @@ exec_services() {
 }
 
 run_docker() {
+  local names=$1
   local cmd=$(cli_command)
-  if [[ ! -z "${DOCKERS}" ]]; then
-    cmd+=" docker run ${DOCKERS}"
+  if [[ ! -z "${names}" ]]; then
+    cmd+=" docker run ${names}"
     echo "${cmd}" | tr -s " "
   fi
 }
@@ -131,7 +132,7 @@ run() {
   SERVICES+=("$(exec_services)")
 
   $__LOG__ -i "Run and send to background: $(run_docker)"
-  $(run_docker) &
+  $(run_docker "${DOCKERS}") &
 
   for service in "${SERVICES[@]}";
   do
