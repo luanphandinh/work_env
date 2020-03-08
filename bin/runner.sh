@@ -86,7 +86,7 @@ exec_services() {
 }
 
 run_docker() {
-  local names=$1
+  local names=$@
   local cmd=$(cli_command)
   if [[ ! -z "${names}" ]]; then
     cmd+=" docker run ${names}"

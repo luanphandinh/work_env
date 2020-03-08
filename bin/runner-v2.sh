@@ -7,9 +7,9 @@ eval "$(parse_yaml $1 config_)"
 V2_EXECS=()
 
 # Dockers
-PROFILE=$config_service_profile
-ENV_CONFIG=$config_service_env
-V2_EXECS+=("$(run_docker "${config_dockers[@]}")")
+PROFILE=$config_profile
+ENV_CONFIG=(${config_env[@]})
+V2_EXECS+=("$(run_docker ${config_dockers[@]})")
 
 # All the services
 for service in "${config_services[@]}"; do
@@ -25,6 +25,9 @@ for service in "${config_services[@]}"; do
 
   cli=$(cli_command "${service}")
   cmd="(cd ${SERVICE_PATH} && ${RUN})"
+  if [[ $DEBUG != 1 ]]; then
+    cmd+=" &"
+  fi
   V2_EXECS+=("${cli} run ${cmd}")
 done
 

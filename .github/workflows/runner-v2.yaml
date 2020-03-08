@@ -1,0 +1,63 @@
+name: runner-v2
+
+on: [push]
+
+jobs:
+  default-profile:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cli
+      run: |
+        make install
+        ./cli.sh upv2 ./test/configs/default-docker.yaml
+
+    - name: Test
+      run: |
+        ./test/assert "should start docker container with env from config" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:6200->8080/tcp" | wc -l) 1
+        ./test/assert "should start docker from default" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_redis 0.0.0.0:6379->6379/tcp" | wc -l) 1
+        ./cli.sh docker stop
+        ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:6200->8080/tcp" | wc -l) 0
+        ./cli.sh docker clean
+        ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_default_adminer 0.0.0.0:6200->8080/tcp" | wc -l) 0
+
+  runner-profile:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cli
+      run: |
+        make install
+        ./cli.sh -p runner set REDIS_PORT=4444
+        ./cli.sh upv2 test/configs/with-profile.yaml
+
+    - name: Test
+      run: |
+         make tests
+         ./test/assert "should start docker container and override port with runner profile config" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:9999->6379/tcp" | wc -l) 1
+         ./test/assert "should binding" $(ls -l ./var/lib/docker/runner| grep "redis" | wc -l) 1
+         ./cli.sh -p runner docker stop
+         ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:9999->6379/tcp" | wc -l) 0
+         ./cli.sh -p runner docker clean
+         ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:9999->6379/tcp" | wc -l) 0
+         ./cli.sh -p runner docker clean --cache
+         ./test/assert "should clean up all cache" $(ls -l ./var/lib/docker | grep "runner" | wc -l) 0
+
+  runner-services:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cli
+      run: |
+        make install
+        ./cli.sh upv2 test/configs/runner.yaml
+
+    - name: Test
+      run: |
+        ./test/assert "should start docker container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 1
+        ./cli.sh -p service docker stop
+        ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
+        ./cli.sh -p service docker clean
+        ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
+        ./test/assert "should start node service with env config" $(curl --silent http://localhost:8000/ | grep "Bonjour CLI" | wc -l) 1
+        ./test/assert "should start php service with env config" $(curl --silent http://localhost:8080/ | grep "Bonjour to CLI_PHP" | wc -l) 1
