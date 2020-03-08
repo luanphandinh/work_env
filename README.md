@@ -111,7 +111,53 @@ node ./test/service.js
 run:
 
 ```bash
-./cli.sh up config.dev.txt
+./cli.sh -d up config.dev.txt
+```
+
+## Config file v2:
+```bash
+./cli.sh -d upv2 config.dev.yaml
+```
+
+```yaml
+profile: service
+env:
+  - ADMINER_PORT=5555
+dockers:
+  - redis
+  - adminer
+
+services:
+  - node
+  - php
+  # - not_run
+
+service:
+  node:
+    profile: pt
+    env:
+      - NAME=CLI
+      - SAY=Bonjour
+    path: $__ENV_ROOT__/test/
+    run: node ./service.js
+  php:
+    env:
+      - SAY=Bonjour
+      - NAME=CLI_PHP
+    path: $__ENV_ROOT__/test/
+    run: php -S localhost:8080 router.php
+  not_run:
+    env:
+      - SAY=This should not be running
+      - NAME=CLI_PHP
+    path: $__ENV_ROOT__/somewhere/
+    run: php -S localhost:8080 router.php
+  # also_not_run:
+    # env:
+      # - SAY=This should not be running
+      # - NAME=CLI_PHP
+    # path: $__ENV_ROOT__/somewhere/
+    # run: php -S localhost:8080 router.php
 ```
 
 env scope:
