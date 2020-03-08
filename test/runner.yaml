@@ -10,9 +10,13 @@ service:
   node:
     profile: pt
     env:
-      - ADMINER_PORT=9999
-      - PASSWORD=1223
-    run:
-      - echo "Running a nodejs service"
-      - cd $__ENV_ROOT__/test/
-      - node ./service.js
+      - NAME=CLI
+      - SAY=Bonjour
+    path: $__ENV_ROOT__/test/
+    run: node ./service.js
+  php:
+    env:
+      - SAY=Bonjour
+      - NAME=CLI_PHP
+    path: $__ENV_ROOT__/test/
+    run: cd $__ENV_ROOT__/test/ && php -S localhost:8080 router.php

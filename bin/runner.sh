@@ -41,20 +41,24 @@ pushConfig() {
 }
 
 cli_command() {
+  local name=$1
   local cmd="${__ENV_ROOT__}/cli.sh"
 
   if [[ ! -z "${PROFILE}" ]]; then
     cmd+=" -p ${PROFILE}"
   fi
 
-  if [[ ! -z "${__TMP_DIR__}" ]]; then
-    cmd+=" --env-file ${__TMP_DIR__}/.env"
-    > "${__TMP_DIR__}/.env"
-    for conf in "${ENV_CONFIG[@]}";
-    do
-      echo "${conf}" >> "${__TMP_DIR__}/.env"
-    done
+  env_file="${__TMP_DIR__}/.env"
+  if [[ ! -z "${name}" ]]; then
+    env_file+=".${name}"
   fi
+
+  cmd+=" --env-file ${env_file}"
+  > "${env_file}"
+  for conf in "${ENV_CONFIG[@]}";
+  do
+    echo "${conf}" >> "${env_file}"
+  done
 
   echo "${cmd}" | tr -s " "
 }
