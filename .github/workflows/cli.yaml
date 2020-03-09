@@ -10,7 +10,7 @@ jobs:
     - name: Install cli
       run: |
         make install
-        ./cli.sh docker run redis
+        ./cli.sh -s docker run redis
 
     - name: Test
       run: |
@@ -32,7 +32,7 @@ jobs:
       run: |
         make install
         ./cli.sh -p any_profile_name set REDIS_PORT=4444
-        ./cli.sh -p any_profile_name docker run redis
+        ./cli.sh -p any_profile_name --silent docker run redis
 
     - name: Test
       run: |

@@ -77,7 +77,7 @@ exec_services() {
       fi
     done
 
-    if [[ $DEBUG != 1 ]]; then
+    if [[ $ENV_SILENT == 1 ]]; then
       cmd+=" &"
     fi
 

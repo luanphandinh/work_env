@@ -52,7 +52,7 @@ compose() {
   done
 
   compose+=" up"
-  if [[ ! $DEBUG -eq 1 ]]; then
+  if [[ $ENV_SILENT -eq 1 ]]; then
     compose+=" -d"
   fi
 
@@ -101,7 +101,7 @@ run() {
 # Globals:
 #   __DOCKER_SERVICE_PREFIX__
 # Arguments:
-#   None   
+#   None
 # Returns:
 #   None
 #######################################
@@ -117,7 +117,7 @@ stop() {
 #   __DOCKER_SERVICE_PREFIX__
 #   __DOCKER_PATH__
 # Arguments:
-#   None   
+#   None
 # Returns:
 #   None
 #######################################
