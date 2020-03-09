@@ -41,20 +41,24 @@ pushConfig() {
 }
 
 cli_command() {
+  local name=$1
   local cmd="${__ENV_ROOT__}/cli.sh"
 
   if [[ ! -z "${PROFILE}" ]]; then
     cmd+=" -p ${PROFILE}"
   fi
 
-  if [[ ! -z "${__TMP_DIR__}" ]]; then
-    cmd+=" --env-file ${__TMP_DIR__}/.env"
-    > "${__TMP_DIR__}/.env"
-    for conf in "${ENV_CONFIG[@]}";
-    do
-      echo "${conf}" >> "${__TMP_DIR__}/.env"
-    done
+  env_file="${__TMP_DIR__}/.env"
+  if [[ ! -z "${name}" ]]; then
+    env_file+=".${name}"
   fi
+
+  cmd+=" --env-file ${env_file}"
+  > "${env_file}"
+  for conf in "${ENV_CONFIG[@]}";
+  do
+    echo "${conf}" >> "${env_file}"
+  done
 
   echo "${cmd}" | tr -s " "
 }
@@ -82,9 +86,10 @@ exec_services() {
 }
 
 run_docker() {
+  local names=$@
   local cmd=$(cli_command)
-  if [[ ! -z "${DOCKERS}" ]]; then
-    cmd+=" docker run ${DOCKERS}"
+  if [[ ! -z "${names}" ]]; then
+    cmd+=" docker run ${names}"
     echo "${cmd}" | tr -s " "
   fi
 }
@@ -131,7 +136,7 @@ run() {
   SERVICES+=("$(exec_services)")
 
   $__LOG__ -i "Run and send to background: $(run_docker)"
-  $(run_docker) &
+  $(run_docker "${DOCKERS}") &
 
   for service in "${SERVICES[@]}";
   do
@@ -141,4 +146,4 @@ run() {
   wait
 }
 
-run $@
+# run $@

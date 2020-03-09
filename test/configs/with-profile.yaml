@@ -1,0 +1,7 @@
+profile: runner
+env:
+  - ADMINER_PORT=6200
+  - REDIS_PORT=9999
+
+dockers:
+  - redis

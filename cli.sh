@@ -21,6 +21,7 @@ declare -xr __TMP_DIR__="${__ENV_ROOT__}/tmp"
 # bin/**
 declare -xr __DOCKER_EXEC__="${__ENV_ROOT__}/bin/docker.sh"
 declare -xr __RUNNER_EXEC__="${__ENV_ROOT__}/bin/runner.sh"
+declare -xr __RUNNER_V2_EXEC__="${__ENV_ROOT__}/bin/runner-v2.sh"
 declare -xr __MAKE_EXEC__="${__ENV_ROOT__}/bin/make.sh"
 declare -xr __CLEANUP_EXEC__="${__ENV_ROOT__}/bin/cleanup.sh"
 declare -xr __LOG__="${__ENV_ROOT__}/bin/log.sh"
@@ -113,7 +114,7 @@ while [ "$1" != "" ]; do
 
   up)
     shift
-    $__RUNNER_EXEC__ $1
+    $__RUNNER_V2_EXEC__ $1
     exit;;
 
   run)
