@@ -146,4 +146,4 @@ run() {
   wait
 }
 
-run $@
+# run $@

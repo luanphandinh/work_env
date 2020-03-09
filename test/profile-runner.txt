@@ -1,7 +1,0 @@
-[profile:runner]
-
-[env]
-ADMINER_PORT=5555
-REDIS_PORT=9999
-
-[dockers: adminer redis redis-commander]

@@ -96,27 +96,8 @@ cli -p new_to_env run npm run dev
 Suppose you have service written in javascript, you can facilitate using profile with all its `.env` config and apply to process that run `npm run dev`.
 
 ## Config file:
-```txt
-# config.dev.txt
-[profile:runner]
-
-[env]
-REDIS_PORT=9999
-
-[dockers: redis redis-commander mysql adminer]
-[exec: node]
-echo "Running node service"
-node ./test/service.js
-```
-run:
-
 ```bash
-./cli.sh -d up config.dev.txt
-```
-
-## Config file v2:
-```bash
-./cli.sh -d upv2 config.dev.yaml
+./cli.sh -d up config.dev.yaml
 ```
 
 ```yaml

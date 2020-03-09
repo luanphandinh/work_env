@@ -1,4 +1,0 @@
-[env]
-ADMINER_PORT=6200
-
-[dockers: adminer]

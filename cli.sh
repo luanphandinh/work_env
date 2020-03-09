@@ -114,11 +114,6 @@ while [ "$1" != "" ]; do
 
   up)
     shift
-    $__RUNNER_EXEC__ $1
-    exit;;
-
-  upv2)
-    shift
     $__RUNNER_V2_EXEC__ $1
     exit;;
 
