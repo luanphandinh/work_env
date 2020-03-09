@@ -25,7 +25,7 @@ for service in "${config_services[@]}"; do
 
   cli=$(cli_command "${service}")
   cmd="(cd ${SERVICE_PATH} && ${RUN})"
-  if [[ $DEBUG != 1 ]]; then
+  if [[ $ENV_SILENT == 1 ]]; then
     cmd+=" &"
   fi
   V2_EXECS+=("${cli} run ${cmd}")

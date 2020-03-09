@@ -48,7 +48,8 @@ options:
 
   --env-file /path/to/.env:       Custom environment file.
 
-  -d | --debug:                   Turn on debug mode.
+  -d | --debug:                   Turn on debug mode, logging some useful information, nothing more.
+  -s | --silent:                  Run dockers and services in background.
   -c | --cleanup:                 Clean up tmps.
   -h | --help:                    Help.
 
@@ -110,6 +111,11 @@ while [ "$1" != "" ]; do
   -d | --debug)
     set -e
     export DEBUG=1
+    ;;
+
+  -s | --silent)
+    set -e
+    export ENV_SILENT=1
     ;;
 
   up)

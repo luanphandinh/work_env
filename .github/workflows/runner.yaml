@@ -10,7 +10,7 @@ jobs:
     - name: Install cli
       run: |
         make install
-        ./cli.sh up ./test/configs/default-docker.yaml
+        ./cli.sh -s up ./test/configs/default-docker.yaml
 
     - name: Test
       run: |
@@ -29,7 +29,7 @@ jobs:
       run: |
         make install
         ./cli.sh -p runner set REDIS_PORT=4444
-        ./cli.sh up test/configs/with-profile.yaml
+        ./cli.sh -s up test/configs/with-profile.yaml
 
     - name: Test
       run: |
@@ -50,7 +50,7 @@ jobs:
     - name: Install cli
       run: |
         make install
-        ./cli.sh up test/configs/runner.yaml
+        ./cli.sh --silent up test/configs/runner.yaml
 
     - name: Test
       run: |

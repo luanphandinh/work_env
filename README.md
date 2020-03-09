@@ -3,10 +3,11 @@ Easy, clean and faster way to spin up docker containers: mysql, adminer, es, rab
 Seprate profile and highly confirgurable.
 
 ## install
+clone this project to anywhwere in your computer, then `cd <path_to_project>`
 ```bash
 make install
-source ~/.bash_profile
 ```
+`cli` is the `alias` refer to `<path_to_project>/cli.sh` file, if the `make install` command doesn't include the `alias cli -> <path_to_project>/cli.sh`, you could create alias on your own.
 
 ## help
 ```bash
@@ -17,13 +18,13 @@ cli docker -h
 ## docker
 run:
 ```
-./cli.sh docker run mysql adminer
+cli docker run mysql adminer
 ```
 The command above will look into `./env/etc/docker/` and find `mysql.yaml`, `adminer.yaml` and use `docker-compose` to start docker services.
 
-run with profile (`./cli.sh -p <profile_name> docker run mysql adminer`):
+run with profile (`cli -p <profile_name> docker run mysql adminer`):
 ```
-./cli.sh -p new_to_env docker run mysql adminer
+cli -p new_to_env docker run mysql adminer
 ```
 
 Add new docker-compose file that not existed in current repository\
@@ -78,18 +79,17 @@ Highly recommend your new service has default dynamic env binding port to outsid
 
 set:
 ```
-./cli.sh -p new_to_env set ADMINER_PORT=4444
+cli -p new_to_env set ADMINER_PORT=4444
 ```
 
 Then run docker service with profile:
 ```
-./cli.sh -p new_to_env docker run adminer
+cli -p new_to_env docker run adminer
 ```
 This will up and running `cli_new_to_env_adminer` container on port `4444`, cause the profile override the default `ADMINER_PORT=4000`
 
 run:
 ```
-# given you alias /path/to/env/cli.sh with cli.
 cli -p new_to_env run npm run dev
 ```
 
@@ -97,7 +97,7 @@ Suppose you have service written in javascript, you can facilitate using profile
 
 ## Config file:
 ```bash
-./cli.sh -d up config.dev.yaml
+cli.sh up config.dev.yaml
 ```
 
 ```yaml
