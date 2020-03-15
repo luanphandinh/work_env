@@ -1,3 +1,4 @@
+version: '2.0'
 profile: runner
 env:
   - ADMINER_PORT=6200
