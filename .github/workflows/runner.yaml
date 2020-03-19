@@ -34,12 +34,13 @@ jobs:
     - name: Test
       run: |
          make tests
-         ./test/assert "should start docker container and override port with runner profile config" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:9999->6379/tcp" | wc -l) 1
+         ./test/assert "should start docker container and run with import profile config" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:4444->6379/tcp" | wc -l) 1
+         ./test/assert "should start docker container and override port with runner profile config" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_runner_adminer 0.0.0.0:6200->8080/tcp" | wc -l) 1
          ./test/assert "should binding" $(ls -l ./var/lib/docker/runner| grep "redis" | wc -l) 1
          ./cli.sh -p runner docker stop
-         ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:9999->6379/tcp" | wc -l) 0
+         ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:4444->6379/tcp" | wc -l) 0
          ./cli.sh -p runner docker clean
-         ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:9999->6379/tcp" | wc -l) 0
+         ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_runner_redis 0.0.0.0:4444->6379/tcp" | wc -l) 0
          ./cli.sh -p runner docker clean --cache
          ./test/assert "should clean up all cache" $(ls -l ./var/lib/docker | grep "runner" | wc -l) 0
 

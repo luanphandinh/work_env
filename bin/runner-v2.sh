@@ -7,17 +7,19 @@ eval "$(parse_yaml $1 config_)"
 V2_EXECS=()
 
 # Dockers
-PROFILE=$config_profile
+PROFILE=$config_import_profile
 ENV_CONFIG=(${config_env[@]})
 V2_EXECS+=("$(run_docker ${config_dockers[@]})")
 
 # All the services
 for service in "${config_services[@]}"; do
-  service_profile="config_service_${service}_profile"
+  service_profile="config_service_${service}_import_profile"
   service_env="config_service_${service}_env[*]"
   service_path="config_service_${service}_path"
   service_run="config_service_${service}_run"
 
+  # VARIABLES that runner.sh uses.
+  # FUNCS: cli_command, run_docker.
   PROFILE=${!service_profile}
   ENV_CONFIG=(${!service_env})
   SERVICE_PATH=${!service_path}

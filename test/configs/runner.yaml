@@ -1,4 +1,5 @@
-profile: service
+version: '2.0'
+import_profile: service
 env:
   - ADMINER_PORT=5555
 dockers:
@@ -12,7 +13,7 @@ services:
 
 service:
   node:
-    profile: pt
+    import_profile: pt
     env:
       - NAME=CLI
       - SAY=Bonjour

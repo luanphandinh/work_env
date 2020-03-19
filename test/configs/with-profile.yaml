@@ -1,7 +1,8 @@
-profile: runner
+version: '2.0'
+import_profile: runner
 env:
   - ADMINER_PORT=6200
-  - REDIS_PORT=9999
 
 dockers:
   - redis
+  - adminer

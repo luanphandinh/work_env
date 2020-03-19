@@ -65,7 +65,7 @@ commands:
   checkconf:        printenv of current profile to screen.
   cleanconf:        clean all config of current profile.
 
-  up:               up and running config file
+  up:               up and running config file, see more at ./test/configs/runner.yaml
 "
   exit 1
 }
