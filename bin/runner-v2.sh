@@ -12,20 +12,20 @@ ENV_CONFIG=(${config_env[@]})
 V2_EXECS+=("$(run_docker ${config_dockers[@]})")
 
 # All the services
-for service in "${config_services[@]}"; do
-  service_profile="config_service_${service}_import_profile"
-  service_env="config_service_${service}_env[*]"
-  service_path="config_service_${service}_path"
-  service_run="config_service_${service}_run"
+for job in "${config_run[@]}"; do
+  job_profile="config_jobs_${job}_import_profile"
+  job_env="config_jobs_${job}_env[*]"
+  job_path="config_jobs_${job}_path"
+  job_run="config_jobs_${job}_run"
 
   # VARIABLES that runner.sh uses.
   # FUNCS: cli_command, run_docker.
-  PROFILE=${!service_profile}
-  ENV_CONFIG=(${!service_env})
-  SERVICE_PATH=${!service_path}
-  RUN=${!service_run}
+  PROFILE=${!job_profile}
+  ENV_CONFIG=(${!job_env})
+  SERVICE_PATH=${!job_path}
+  RUN=${!job_run}
 
-  cli=$(cli_command "${service}")
+  cli=$(cli_command "${job}")
   cmd="(cd ${SERVICE_PATH} && ${RUN})"
   if [[ $ENV_SILENT == 1 ]]; then
     cmd+=" &"

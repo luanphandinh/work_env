@@ -6,12 +6,12 @@ dockers:
   - redis
   - adminer
 
-services:
+run:
   - node
   - php
   # - not_run
 
-service:
+jobs:
   node:
     import_profile: pt
     env:
