@@ -48,12 +48,17 @@ cli_command() {
     cmd+=" -p ${PROFILE}"
   fi
 
+  # TODO: [#Config]
+  # Trick to any process that run from any jobs.
+  # Will apply tmp/.env from parent global config.
   env_file="${__TMP_DIR__}/.env"
+  cmd+=" --env-file ${env_file}"
+
   if [[ ! -z "${name}" ]]; then
     env_file+=".${name}"
+    cmd+=" --env-file ${env_file}"
   fi
 
-  cmd+=" --env-file ${env_file}"
   > "${env_file}"
   for conf in "${ENV_CONFIG[@]}";
   do

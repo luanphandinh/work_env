@@ -5,7 +5,7 @@ declare -xr __DOCKER_SERVICE_PREFIX__="cli_${__PROFILE__}"
 
 usage() {
   echo "
-usage: ${0##*/} [command]
+usage: ${0##*/} { run name... | stop | clean [ --cache ] }
 commands:
 
     run     Start all specify docker containers.

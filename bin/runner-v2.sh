@@ -3,29 +3,37 @@
 . "${__ENV_ROOT__}/bin/parse_yaml.sh"
 . "${__ENV_ROOT__}/bin/runner.sh"
 
-eval "$(parse_yaml $1 config_)"
+eval "$(parse_yaml $1 global_config_)"
 V2_EXECS=()
 
 # Dockers
-PROFILE=$config_import_profile
-ENV_CONFIG=(${config_env[@]})
-V2_EXECS+=("$(run_docker ${config_dockers[@]})")
+PROFILE=$global_config_import_profile
+ENV_CONFIG=(${global_config_env[@]})
+V2_EXECS+=("$(run_docker ${global_config_dockers[@]})")
 
+# TODO: [#Config]
+# Global config need to apply tmp/.env file first
+# The parse again with $config_jobs to run jobs base on tmp/.env of global config
+env_file="${__TMP_DIR__}/.env"
+set -a
+. "${env_file}"
+
+eval "$(parse_yaml $1 config_)"
 # All the services
-for service in "${config_services[@]}"; do
-  service_profile="config_service_${service}_import_profile"
-  service_env="config_service_${service}_env[*]"
-  service_path="config_service_${service}_path"
-  service_run="config_service_${service}_run"
+for job in "${config_run[@]}"; do
+  job_profile="config_jobs_${job}_import_profile"
+  job_env="config_jobs_${job}_env[*]"
+  job_path="config_jobs_${job}_path"
+  job_run="config_jobs_${job}_run"
 
   # VARIABLES that runner.sh uses.
   # FUNCS: cli_command, run_docker.
-  PROFILE=${!service_profile}
-  ENV_CONFIG=(${!service_env})
-  SERVICE_PATH=${!service_path}
-  RUN=${!service_run}
+  PROFILE=${!job_profile}
+  ENV_CONFIG=(${!job_env})
+  SERVICE_PATH=${!job_path}
+  RUN=${!job_run}
 
-  cli=$(cli_command "${service}")
+  cli=$(cli_command "${job}")
   cmd="(cd ${SERVICE_PATH} && ${RUN})"
   if [[ $ENV_SILENT == 1 ]]; then
     cmd+=" &"

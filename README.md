@@ -101,9 +101,10 @@ cli.sh up config.dev.yaml
 ```
 
 ```yaml
-profile: service
+import_profile: service
 env:
   - ADMINER_PORT=5555
+  - SAY=Bonjour
 dockers:
   - redis
   - adminer
@@ -115,15 +116,15 @@ services:
 
 service:
   node:
-    profile: pt
+    import_profile: pt
     env:
       - NAME=CLI
-      - SAY=Bonjour
+      - SAY=$SAY
     path: $__ENV_ROOT__/test/
     run: node ./service.js
   php:
     env:
-      - SAY=Bonjour
+      - SAY=$SAY
       - NAME=CLI_PHP
     path: $__ENV_ROOT__/test/
     run: php -S localhost:8080 router.php
