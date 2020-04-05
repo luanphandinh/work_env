@@ -96,7 +96,6 @@ while [ "$1" != "" ]; do
     shift
     $__DEBUG__ "EXPORT ENV from env file"
     $__DEBUG__ $(cat "${1}")
-    set -a
     . "${1}"
     ;;
 
