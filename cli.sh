@@ -38,13 +38,14 @@ usage() {
   echo "
 ${cli_name}
 your profile CLI
-version: ${__CLI_VERSION__}
-usage: ${cli_name} [options] [command [command's options]]
+version:  ${__CLI_VERSION__}
+usage:    ${cli_name} [ cli's options ] {command } [command's options]
+          ${cli_name} [ -p | -d | -s | -h ] { docker | up | set | edit | checkconf } [ -h ]
 
 options:
   -p | --profile <profile_name>:  Profile that cli with take action on.
                                   Auto create new one if not exist.
-                                  defualt <profile_name>: default.
+                                  default <profile_name>: default.
 
   --env-file /path/to/.env:       Custom environment file.
 
@@ -58,13 +59,12 @@ commands:
                     All possible containers a listed in etc/docker
                     Will create volume for corresponding containers in var/lib/<profile_name>/docker
 
-  set:              Config profile.
+  set:              Set env variables for profile respectively.
                     eg: ./cli.sh -p luanphan set SOME_VAR=SOME_VALUE OTHER_VAR=OVER_VALUE
 
   edit:             use nvim/vim or nano to edit profile .env file
   checkconf:        printenv of current profile to screen.
   cleanconf:        clean all config of current profile.
-
   up:               up and running config file, see more at ./test/configs/runner.yaml
 "
   exit 1

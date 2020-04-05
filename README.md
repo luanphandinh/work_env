@@ -101,7 +101,7 @@ cli.sh up config.dev.yaml
 ```
 
 ```yaml
-profile: service
+import_profile: service
 env:
   - ADMINER_PORT=5555
 dockers:
@@ -115,7 +115,7 @@ services:
 
 service:
   node:
-    profile: pt
+    import_profile: pt
     env:
       - NAME=CLI
       - SAY=Bonjour
