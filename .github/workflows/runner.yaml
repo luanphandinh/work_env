@@ -74,11 +74,7 @@ jobs:
 
     - name: Test
       run: |
-        ./test/assert "should start docker container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 1
-        ./cli.sh -p service docker stop
-        ./test/assert "should stop container" $(docker ps --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
-        ./cli.sh -p service docker clean
-        ./test/assert "should clean up container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
+        ./test/assert "should not start docker container" $(docker ps -a --format "{{.Names}} {{.Ports}}" | grep "cli_service_adminer 0.0.0.0:5555->8080/tcp" | wc -l) 0
         ./test/assert "should start node service with env config" $(curl --silent http://localhost:8000/ | grep "Bonjour CLI" | wc -l) 1
         ./test/assert "should run something with env config" $(cat ./tmp/willdo.test | grep "THIS WILLDO" | wc -l) 1
         ./test/assert "should start not php service with env config" $(curl --silent http://localhost:8080/ | grep "Bonjour to CLI_PHP" | wc -l) 0

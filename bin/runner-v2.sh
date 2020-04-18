@@ -3,29 +3,31 @@
 . "${__ENV_ROOT__}/bin/parse_yaml.sh"
 . "${__ENV_ROOT__}/bin/runner.sh"
 
-eval "$(parse_yaml $1 global_config_)"
-V2_EXECS=()
-
-# Dockers
-PROFILE=$global_config_import_profile
-ENV_CONFIG=(${global_config_env[@]})
-V2_EXECS+=("$(run_docker ${global_config_dockers[@]})")
 
 # TODO: [#Config]
 # Global config need to apply tmp/.env file first
 # The parse again with $config_jobs to run jobs base on tmp/.env of global config
+eval "$(parse_yaml $1 global_config_)"
+PROFILE=$global_config_import_profile
+ENV_CONFIG=(${global_config_env[@]})
+$(cli_command)
 env_file="${__TMP_DIR__}/.env"
 set -a
 . "${env_file}"
 
+
 eval "$(parse_yaml $1 config_)"
 run_jobs=()
+V2_EXECS=()
 shift
 if [[ -z "$@" ]]; then
   for register_job in ${config_run[@]}; do
     run_jobs+=("${register_job}")
   done
   $__LOG__ -i "Run all jobs in runner description file: ${run_jobs[@]}"
+
+  # Dockers
+  V2_EXECS+=("$(run_docker ${global_config_dockers[@]})")
 else
   for param in ${@}; do
     for register_job in ${config_run[@]}; do
@@ -34,6 +36,8 @@ else
       fi
     done
   done
+  # TODO: could be depends_on to make service bootstrap docker later
+  $__LOG__ -w "Will not run dockers for optional services."
   $__LOG__ -i "Run jobs: ${run_jobs[@]}"
 fi
 
