@@ -1,8 +1,10 @@
 version: '2.0'
 import_profile: service
+
 env:
   - ADMINER_PORT=5555
   - SAY=Bonjour
+
 dockers:
   - redis
   - adminer
@@ -10,9 +12,17 @@ dockers:
 run:
   - node
   - php
+  - something
   # - not_run
 
 jobs:
+  something:
+    env:
+      - THIS=THIS
+      - WILLDO=WILLDO
+    path: $__ENV_ROOT__/test/
+    run: chmod +x ./willdo.sh && ./willdo.sh
+
   node:
     import_profile: pt
     env:
@@ -20,12 +30,14 @@ jobs:
       - SAY=$SAY
     path: $__ENV_ROOT__/test/
     run: node ./service.js
+
   php:
     env:
       - SAY=$SAY
       - NAME=CLI_PHP
     path: $__ENV_ROOT__/test/
     run: php -S localhost:8080 router.php
+
   not_run:
     env:
       - SAY=This should not be running

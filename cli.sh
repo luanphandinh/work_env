@@ -119,7 +119,7 @@ while [ "$1" != "" ]; do
 
   up)
     shift
-    $__RUNNER_V2_EXEC__ $1
+    $__RUNNER_V2_EXEC__ $@
     exit;;
 
   run)
