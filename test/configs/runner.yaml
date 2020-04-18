@@ -10,9 +10,16 @@ dockers:
 run:
   - node
   - php
+  - something
   # - not_run
 
 jobs:
+  something:
+    env:
+      - THIS=THIS
+      - WILLDO=WILLDO
+    path: $__ENV_ROOT__/test/
+    run: chmod +x ./willdo.sh && ./willdo.sh
   node:
     import_profile: pt
     env:
