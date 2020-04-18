@@ -96,25 +96,42 @@ cli -p new_to_env run npm run dev
 Suppose you have service written in javascript, you can facilitate using profile with all its `.env` config and apply to process that run `npm run dev`.
 
 ## Config file:
+Run all services:
 ```bash
-cli.sh up config.dev.yaml
+cli up ./test/config.dev.yaml
+```
+
+Run optional services:
+```
+cli up ./test/config.dev.yaml node something
 ```
 
 ```yaml
+version: '2.1'
 import_profile: service
+
 env:
   - ADMINER_PORT=5555
   - SAY=Bonjour
+
 dockers:
   - redis
   - adminer
 
-services:
+run:
   - node
   - php
+  - something
   # - not_run
 
-service:
+jobs:
+  something:
+    env:
+      - THIS=THIS
+      - WILLDO=WILLDO
+    path: $__ENV_ROOT__/test/
+    run: chmod +x ./willdo.sh && ./willdo.sh
+
   node:
     import_profile: pt
     env:
@@ -122,12 +139,14 @@ service:
       - SAY=$SAY
     path: $__ENV_ROOT__/test/
     run: node ./service.js
+
   php:
     env:
       - SAY=$SAY
       - NAME=CLI_PHP
     path: $__ENV_ROOT__/test/
     run: php -S localhost:8080 router.php
+
   not_run:
     env:
       - SAY=This should not be running
