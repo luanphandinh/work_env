@@ -19,8 +19,26 @@ set -a
 . "${env_file}"
 
 eval "$(parse_yaml $1 config_)"
-# All the services
-for job in "${config_run[@]}"; do
+run_jobs=()
+shift
+if [[ -z "$@" ]]; then
+  for register_job in ${config_run[@]}; do
+    run_jobs+=("${register_job}")
+  done
+  $__LOG__ -i "Run all jobs in runner description file: ${run_jobs[@]}"
+else
+  for param in ${@}; do
+    for register_job in ${config_run[@]}; do
+      if [[ "${param}" == "${register_job}" ]]; then
+        run_jobs+=("${param}")
+      fi
+    done
+  done
+  $__LOG__ -i "Run jobs: ${run_jobs[@]}"
+fi
+
+# Run jobs
+for job in "${run_jobs[@]}"; do
   job_profile="config_jobs_${job}_import_profile"
   job_env="config_jobs_${job}_env[*]"
   job_path="config_jobs_${job}_path"
