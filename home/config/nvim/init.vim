@@ -38,13 +38,21 @@ Plug 'autozimu/LanguageClient-neovim', {
 " Initialize plugin system
 call plug#end()
 
-let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git' " Use fd as default search
+" let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git' " Use fd as default search
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['\.DS_Store$', '\.git$'] " ignore files in nerd tree
 let NERDSpaceDelims=1 " NerdComenter will have extra space after comment sign
 
 nmap <C-n> :NERDTreeToggle<CR>
 nmap <C-m> :NERDTreeFind<CR>
+" copy and paste to clipboard
+set clipboard=unnamed,unnamedplus
+nmap <C-s> :w <CR>
+" Open files search
+nmap <C-p> :Files <CR>
+nmap <C-f> :Ag <CR>
+
+" Toggle comments
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
 
