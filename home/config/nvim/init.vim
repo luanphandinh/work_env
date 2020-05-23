@@ -45,6 +45,11 @@ let NERDSpaceDelims=1 " NerdComenter will have extra space after comment sign
 
 nmap <C-n> :NERDTreeToggle<CR>
 nmap <C-m> :NERDTreeFind<CR>
+" copy and paste to clipboard
+set clipboard=unnamed,unnamedplus
+nmap <C-s> :w <CR>
+
+" Toggle comments
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
 
