@@ -12,13 +12,18 @@ tests:
 	chmod -R +x test/
 	test/config-profile.sh
 
-nvim: nvim-install nvim-config
-nvim-install:
+nvim: nvim-install-mac nvim-config
+nvim-ubuntu: nvim-install-ubuntu nvim-config
+nvim-install-mac:
 	brew install neovim
 	brew install fd
 	brew install the_silver_searcher
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+nvim-install-ubuntu:
+	sudo apt-get install neovim
+	sudo apt-get install silversearcher-ag
 
 nvim-config:
 	test -d ~/.config/nvim || mkdir ~/.config/nvim
