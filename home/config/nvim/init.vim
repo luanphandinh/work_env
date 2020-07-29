@@ -52,6 +52,9 @@ nmap <C-s> :w <CR>
 nmap <C-p> :Files <CR>
 nmap <C-f> :Ag <CR>
 
+" hightlight current line
+set cursorline
+
 " Toggle comments
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
