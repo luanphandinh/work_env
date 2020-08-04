@@ -160,6 +160,12 @@ while [ "$1" != "" ]; do
     exit
     ;;
 
+  list|ls)
+    shift
+    ls $__DOCKER_DIR__
+    exit
+    ;;
+
   -h | --help)
     usage
     exit
