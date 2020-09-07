@@ -67,8 +67,8 @@ set shell=sh
 
 " Most of the time using space for indent
 set smarttab
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 set expandtab
 " GO code will indent with tab size 8
 autocmd FileType go setlocal expandtab! shiftwidth=8 tabstop=8
