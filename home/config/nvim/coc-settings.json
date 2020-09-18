@@ -21,5 +21,7 @@
       "filetypes": ["sh"],
       "ignoredRootPaths": ["~"]
     }
-  }
+  },
+  "prettier.useTabs": true,
+  "prettier.tabWidth": 4
 }

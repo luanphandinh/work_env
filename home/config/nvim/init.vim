@@ -38,19 +38,28 @@ Plug 'autozimu/LanguageClient-neovim', {
 " Initialize plugin system
 call plug#end()
 
-" let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git' " Use fd as default search
+let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git' " Use fd as default search
 let NERDTreeShowHidden=1
+let g:NERDTreeWinSize=40
 let NERDTreeIgnore=['\.DS_Store$', '\.git$'] " ignore files in nerd tree
 let NERDSpaceDelims=1 " NerdComenter will have extra space after comment sign
 
 nmap <C-n> :NERDTreeToggle<CR>
 nmap <C-m> :NERDTreeFind<CR>
 " copy and paste to clipboard
-set clipboard=unnamed,unnamedplus
+" set clipboard=unnamed,unnamedplus
 nmap <C-s> :w <CR>
 " Open files search
 nmap <C-p> :Files <CR>
 nmap <C-f> :Ag <CR>
+" Preview window
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+
+command! -bang -nargs=* Ag
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 
 " hightlight current line
 set cursorline
@@ -72,7 +81,6 @@ set shiftwidth=4
 set expandtab
 " GO code will indent with tab size 8
 autocmd FileType go setlocal expandtab! shiftwidth=8 tabstop=8
-autocmd FileType php setlocal expandtab! shiftwidth=4 tabstop=4
 
 " Trim trailing whitespace.
 autocmd BufWritePre * %s/\s\+$//e
