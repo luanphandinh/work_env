@@ -16,13 +16,13 @@
       }
     },
     "terraform": {
-        "command": "terraform-lsp",
-        "filetypes": [
-            "terraform",
-            "tf"
-        ],
-        "initializationOptions": {},
-        "settings": {}
+      "command": "terraform-lsp",
+      "filetypes": [
+        "terraform",
+        "tf"
+      ],
+      "initializationOptions": {},
+      "settings": {}
     },
     "bash": {
       "command": "bash-language-server",
