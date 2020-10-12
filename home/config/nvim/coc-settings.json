@@ -15,6 +15,15 @@
         "usePlaceholders": true
       }
     },
+    "terraform": {
+        "command": "terraform-lsp",
+        "filetypes": [
+            "terraform",
+            "tf"
+        ],
+        "initializationOptions": {},
+        "settings": {}
+    },
     "bash": {
       "command": "bash-language-server",
       "args": ["start"],

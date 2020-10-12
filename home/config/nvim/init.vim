@@ -1,42 +1,5 @@
-" Specify a directory for plugins
-call plug#begin('~/.vim/plugged')
-
-" Code server
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" Useful for search
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-
-" Tree view
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'airblade/vim-gitgutter'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-
-" Able to use Ctrl + h/j/k/l to move beteen panel
-Plug 'christoomey/vim-tmux-navigator'
-
-" Icons
-" Need to install 'font-firacode-nerd-font-mono'
-Plug 'ryanoasis/vim-devicons'
-
-" Theme
-" Using iterm2 should also import gruvbox-dark.itermcolors from /theme
-Plug 'morhetz/gruvbox'
-
-" Commenter
-Plug 'scrooloose/nerdcommenter'
-
-" TS syntax
-Plug 'HerringtonDarkholme/yats.vim'
-Plug 'autozimu/LanguageClient-neovim', {
-      \ 'branch': 'next',
-      \ 'do': 'bash install.sh',
-      \ }
-
-" Initialize plugin system
-call plug#end()
+source ~/.config/nvim/plugins.vim
+source ~/.config/nvim/editor.vim
 
 let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git' " Use fd as default search
 let NERDTreeShowHidden=1
@@ -73,20 +36,6 @@ colorscheme gruvbox
 set nu " line numbers
 set mouse=a
 set shell=sh
-
-" Most of the time using space for indent
-set smarttab
-set tabstop=4
-set shiftwidth=4
-set expandtab
-" GO code will indent with tab size 8
-autocmd FileType go setlocal expandtab! shiftwidth=8 tabstop=8
-
-" Trim trailing whitespace.
-autocmd BufWritePre * %s/\s\+$//e
-
-" coc-prettier
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 " #begin coc.vim
 let g:coc_global_extensions = [
