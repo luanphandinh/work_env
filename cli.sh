@@ -62,7 +62,9 @@ commands:
   set:              Set env variables for profile respectively.
                     eg: ./cli.sh -p luanphan set SOME_VAR=SOME_VALUE OTHER_VAR=OVER_VALUE
 
-  edit:             use nvim/vim or nano to edit profile .env file
+  edit:             use nvim/vim or nano to edit profile .env file.
+  editor:           use nvim/vim or nano to edit nvim editor options.
+  sync:             sync config from env repo into current user HOME.
   checkconf:        printenv of current profile to screen.
   cleanconf:        clean all config of current profile.
   up:               up and running config file, see more at ./test/configs/runner.yaml
@@ -155,6 +157,17 @@ while [ "$1" != "" ]; do
   edit)
     shift
     edit_env
+    exit;;
+
+  editor)
+    shift
+    edit "${__ENV_ROOT__}/home/config/nvim/editor.vim"
+    exit;;
+
+  sync)
+    shift
+    cd && cd "${__ENV_ROOT__}"
+    make nvim-config
     exit;;
 
   -h | --help)

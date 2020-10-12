@@ -27,8 +27,7 @@ nvim-install-ubuntu:
 
 nvim-config:
 	test -d ~/.config/nvim || mkdir ~/.config/nvim
-	cp ./home/config/nvim/init.vim ~/.config/nvim/
-	cp ./home/config/nvim/coc-settings.json ~/.config/nvim/
+	cp -r ./home/config/nvim/ ~/.config/nvim/
 	nvim +PlugInstall +qall
 	nvim -c 'CocInstall -sync|q'
 
