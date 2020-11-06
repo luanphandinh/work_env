@@ -6,3 +6,4 @@ log/
 var/lib/
 var/mail/
 etc/profile/
+bin/build/

@@ -1,6 +1,10 @@
 SHELL := /bin/bash
 test: install tests
 
+build:
+	go build -o ./bin/build/cli -v ./bin/src/cli
+	./bin/build/cli
+
 install:
 	chmod +x cli.sh
 	chmod -R +x bin/
