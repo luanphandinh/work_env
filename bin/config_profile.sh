@@ -41,19 +41,23 @@ list_env() {
   cat "${__PROFILE_DIR__}/${__PROFILE__}/.env"
 }
 
-edit_env() {
+edit() {
   if [[ $(nvim --version) ]]; then
-    nvim "${__PROFILE_DIR__}/${__PROFILE__}/.env"
+    nvim "${1}"
     return
   fi
 
   if [[ $(vim --version) ]]; then
-    vim "${__PROFILE_DIR__}/${__PROFILE__}/.env"
+    vim "${1}"
     return
   fi
 
   if [[ $(nano --version) ]]; then
-    nano "${__PROFILE_DIR__}/${__PROFILE__}/.env"
+    nano "${1}"
     return
   fi
+}
+
+edit_env() {
+  edit "${__PROFILE_DIR__}/${__PROFILE__}/.env"
 }

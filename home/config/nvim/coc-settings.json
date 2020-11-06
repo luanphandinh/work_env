@@ -15,6 +15,15 @@
         "usePlaceholders": true
       }
     },
+    "terraform": {
+      "command": "terraform-lsp",
+      "filetypes": [
+        "terraform",
+        "tf"
+      ],
+      "initializationOptions": {},
+      "settings": {}
+    },
     "bash": {
       "command": "bash-language-server",
       "args": ["start"],
@@ -22,13 +31,6 @@
       "ignoredRootPaths": ["~"]
     }
   },
-  "coc.preferences.formatOnSaveFiletypes": [
-    "javascript",
-    "typescript",
-    "typescriptreact",
-    "json",
-    "javascriptreact",
-    "typescript.tsx",
-    "graphql"
-  ]
+  "prettier.useTabs": true,
+  "prettier.tabWidth": 4
 }
