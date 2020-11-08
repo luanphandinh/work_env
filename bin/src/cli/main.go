@@ -2,10 +2,12 @@ package main
 
 import "fmt"
 
+import "os"
+
 type CLIExecutable func(args []string) error
 
 type CLI struct {
-	Commands []CLIExecutable
+	Commands []Command
 }
 
 type Command struct {
@@ -15,5 +17,18 @@ type Command struct {
 }
 
 func main() {
-	fmt.Println("Hello cli v3, with gooooooooooo laaaaaaaaaaang")
+	cli := &CLI{
+		Commands: []Command{
+			{
+				Name: "help",
+				Usage: "help command",
+				Exec: func(args []string) error {
+					fmt.Println(args)
+					return nil
+				},
+			},
+		},
+	}
+
+	cli.Commands[0].Exec(os.Args)
 }
