@@ -3,6 +3,7 @@ test: install tests
 
 build:
 	go build -o ./bin/build/cli -v ./bin/src/cli
+	chmod +x ./bin/build/cli
 	./bin/build/cli
 
 install:

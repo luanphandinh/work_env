@@ -1,15 +1,20 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"errors"
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
 )
 
-type CLIExecutable func(args []string) error
-
-type CLI struct {
-	Commands []Command
+type CLIConfig struct {
+	CurrentProfile string `json:"current_profile"`
 }
+
+type CLIExecutable func(context *CLI) error
 
 type Command struct {
 	Name        string
@@ -19,11 +24,28 @@ type Command struct {
 	Exec        CLIExecutable
 }
 
-func (cli *CLI) run(args []string) {
-	cmdName, args := args[0], args[1:]
+type CLI struct {
+	Config   *CLIConfig
+	Commands []Command
+	args     []string
+}
+
+func (cli *CLI) run() {
+	cli.init()
+	if len(cli.args) <= 1 {
+		cli.help()
+		return
+	}
+
+	cmdName := cli.args[1]
+	cli.args = cli.args[2:]
+	fmt.Println(fmt.Sprintf("Executing command %s", cmdName))
 	for _, cmd := range cli.Commands {
 		if cmd.Name == cmdName {
-			cmd.Exec(args)
+			err := cmd.Exec(cli)
+			if err != nil {
+				log.Fatal(err)
+			}
 			return
 		}
 	}
@@ -44,33 +66,90 @@ commands:
 	}
 }
 
+func (cli *CLI) init() {
+	cli.args = os.Args
+	cli.loadConfig(GetConfigFile())
+}
+
+func execCmd(c string, args ...string) error {
+	cmd := exec.Command(c, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cli *CLI) loadConfig(path string) error {
+	if fileExists(path) {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		json.Unmarshal(data, cli.Config)
+	}
+
+	if cli.Config == nil {
+		cli.Config = &CLIConfig{
+			CurrentProfile: "default",
+		}
+	}
+
+	return nil
+}
+
+func (cli *CLI) saveConfig(path string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	config, _ := json.Marshal(*cli.Config)
+
+	file.Write(config)
+	return nil
+}
+
+
+func configExec(cli *CLI) error {
+	if len(cli.args) <= 1 {
+		return errors.New("Too few arguments provided.")
+	}
+	opt := cli.args[0]
+	cli.args = cli.args[1:]
+	switch opt {
+	case "--current-profile":
+		cli.Config.CurrentProfile = cli.args[0]
+		return cli.saveConfig(GetConfigFile())
+	}
+
+	return errors.New("Invalid options.")
+}
+
 func main() {
 	cli := &CLI{
 		Commands: []Command{
 			{
-				Name:  "help",
-				Usage: "just help.",
+				Name:        "help",
+				Usage:       "just help.",
 				Description: "help command",
-				Exec: func(args []string) error {
-					fmt.Println(args)
+				Exec: func(cli *CLI) error {
 					return nil
 				},
 			},
 			{
-				Name:  "docker",
-				Usage: "To be defined",
-				Description: "Up and running docker containers.",
-				Exec: func(args []string) error {
-					fmt.Println(args)
-					return nil
-				},
+				Name:        "config",
+				Usage:       "To be defined",
+				Description: "Set cli configuration",
+				Exec:        configExec,
 			},
 		},
 	}
 
-	if len(os.Args) > 1 {
-		cli.run(os.Args[1:])
-	} else {
-		cli.help()
-	}
+	cli.run()
 }
