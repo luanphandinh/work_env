@@ -2,10 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"errors"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"os"
 	"os/exec"
 )
@@ -14,7 +12,7 @@ type CLIConfig struct {
 	CurrentProfile string `json:"current_profile"`
 }
 
-type CLIExecutable func(context *CLI) error
+type CLIExecutable func(context *CLI)
 
 type Command struct {
 	Name        string
@@ -30,23 +28,41 @@ type CLI struct {
 	args     []string
 }
 
-func (cli *CLI) run() {
-	cli.init()
+// Shift args by 1
+// Return the shifted arguments
+func (cli *CLI) ShiftArg() string {
 	if len(cli.args) <= 1 {
-		cli.help()
-		return
+		panic("Too few arguments")
 	}
 
-	cmdName := cli.args[1]
-	cli.args = cli.args[2:]
-	fmt.Println(fmt.Sprintf("Executing command %s", cmdName))
+	arg := cli.args[0]
+	cli.args = cli.args[1:]
+
+	return arg
+}
+
+func (cli *CLI) init() {
+	if len(os.Args) <= 1 {
+		cli.help()
+		panic(nil)
+	}
+
+	cli.args = os.Args[1:]
+	cli.loadConfig(GetConfigFile())
+}
+
+func (cli *CLI) Run() {
+	defer func () {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+		}
+	}()
+
+	cli.init()
+	cmdName := cli.ShiftArg()
 	for _, cmd := range cli.Commands {
 		if cmd.Name == cmdName {
-			err := cmd.Exec(cli)
-			if err != nil {
-				log.Fatal(err)
-			}
-			return
+			cmd.Exec(cli)
 		}
 	}
 }
@@ -64,11 +80,6 @@ commands:
 	for _, cmd := range cli.Commands {
 		fmt.Println(fmt.Sprintf("\t%s \t\t\t%s", cmd.Name, cmd.Description))
 	}
-}
-
-func (cli *CLI) init() {
-	cli.args = os.Args
-	cli.loadConfig(GetConfigFile())
 }
 
 func execCmd(c string, args ...string) error {
@@ -102,33 +113,25 @@ func (cli *CLI) loadConfig(path string) error {
 	return nil
 }
 
-func (cli *CLI) saveConfig(path string) error {
+func (cli *CLI) saveConfig(path string) {
 	file, err := os.Create(path)
 	if err != nil {
-		return err
+		panic(err)
 	}
 	defer file.Close()
 
 	config, _ := json.Marshal(*cli.Config)
 
 	file.Write(config)
-	return nil
 }
 
-
-func configExec(cli *CLI) error {
-	if len(cli.args) <= 1 {
-		return errors.New("Too few arguments provided.")
-	}
-	opt := cli.args[0]
-	cli.args = cli.args[1:]
+func configExec(cli *CLI) {
+	opt := cli.ShiftArg()
 	switch opt {
 	case "--current-profile":
 		cli.Config.CurrentProfile = cli.args[0]
-		return cli.saveConfig(GetConfigFile())
+		cli.saveConfig(GetConfigFile())
 	}
-
-	return errors.New("Invalid options.")
 }
 
 func main() {
@@ -138,8 +141,8 @@ func main() {
 				Name:        "help",
 				Usage:       "just help.",
 				Description: "help command",
-				Exec: func(cli *CLI) error {
-					return nil
+				Exec: func(cli *CLI) {
+					return
 				},
 			},
 			{
@@ -151,5 +154,5 @@ func main() {
 		},
 	}
 
-	cli.run()
+	cli.Run()
 }
