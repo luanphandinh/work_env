@@ -2,20 +2,24 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 func ProfileExec(cli *CLI) {
+	path := getFilePath(fmt.Sprintf("%s/%s", PROFILE_DIR, config.CurrentProfile), ".env")
+	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	check(err)
+	defer file.Close()
+
 	for {
 		set := cli.ShiftArg()
 		if set == "" {
 			break
 		}
 
-		path := getFilePath(fmt.Sprintf("%s/%s", PROFILE_DIR, config.CurrentProfile), ".env")
 		data := []byte(set)
 		data = append(data, "\n"...)
-		err := ioutil.WriteFile(path, data, 0644)
+		_, err := file.Write(data)
 		check(err)
 	}
 }
