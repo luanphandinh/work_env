@@ -24,11 +24,11 @@ func dirExists(dir string) bool {
 	return info.IsDir()
 }
 
+// Check for dir path
+// If path does not exist, go and create new one
 func getDirPath(dir string) string {
 	home, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
+	check(err)
 
 	var path string
 	if dir != "" {
@@ -42,13 +42,14 @@ func getDirPath(dir string) string {
 	}
 
 	err = os.MkdirAll(path, 0777)
-	if err != nil {
-		panic(err)
-	}
+	check(err)
 
 	return path
 }
 
+// Get file base on directory
+// If directory path doesn't exist, create new one.
+// If file doesn't exist, create new one
 func getFilePath(dir string, file string) string {
 	path := fmt.Sprintf("%s/%s", getDirPath(dir), file)
 	if fileExists(path) {
@@ -56,13 +57,13 @@ func getFilePath(dir string, file string) string {
 	}
 
 	_, err := os.Create(path)
-	if err != nil {
-		panic(err)
-	}
+	check(err)
 
 	return path
 }
 
+// Read content of given file.
+// If any error, will return in err.
 func getFileContent(dir string, file string) ([]byte, error) {
 	path := getFilePath(dir, file)
 	if fileExists(path) {

@@ -1,8 +1,6 @@
 package main
 
-import (
-	"os"
-)
+import "os"
 
 func main() {
 	cli := &CLI{
@@ -11,15 +9,19 @@ func main() {
 				Name:        "help",
 				Usage:       "just help.",
 				Description: "help command",
-				Exec: func(cli *CLI) {
-					return
-				},
+				Exec:        Help,
 			},
 			{
 				Name:        "config",
 				Usage:       "To be defined",
 				Description: "Set cli configuration",
-				Exec:        configExec,
+				Exec:        ConfigExec,
+			},
+			{
+				Name:        "set",
+				Usage:       "To be defined",
+				Description: "Set environment variables",
+				Exec:        ProfileExec,
 			},
 		},
 	}

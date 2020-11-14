@@ -46,11 +46,11 @@ func saveConfig(cli *CLI) {
 	file.Write(config)
 }
 
-func configExec(cli *CLI) {
-	opt := cli.ShiftArg()
+func ConfigExec(cli *CLI) {
+	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "--current-profile":
-		config.CurrentProfile = cli.ShiftArg()
+		config.CurrentProfile = cli.ShiftStrictArg()
 		saveConfig(cli)
 	}
 }
