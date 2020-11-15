@@ -11,11 +11,11 @@ type CLIConfig struct {
 	CurrentProfile string `json:"current_profile"`
 }
 
-var config = &CLIConfig{
-	CurrentProfile: "default",
-}
+func (cli *CLI) LoadConfig() error {
+	cli.Config = &CLIConfig{
+		CurrentProfile: "default",
+	}
 
-func loadConfig() error {
 	data, err := getFileContent(CONFIG_DIR, CONFIG_FILE)
 	if err != nil {
 		return err
@@ -25,7 +25,7 @@ func loadConfig() error {
 		return errors.New("Invalid data")
 	}
 
-	err = json.Unmarshal(data, config)
+	err = json.Unmarshal(data, cli.Config)
 	if err != nil {
 		return err
 	}
@@ -33,15 +33,13 @@ func loadConfig() error {
 	return nil
 }
 
-func saveConfig(cli *CLI) {
+func (cli *CLI) SaveConfig() {
 	file, err := os.Create(getFilePath(CONFIG_DIR, CONFIG_FILE))
-	if err != nil {
-		panic(err)
-	}
 	defer file.Close()
-	fmt.Println(config)
+	check(err)
+	fmt.Println(&cli.Config)
 
-	config, _ := json.Marshal(config)
+	config, _ := json.Marshal(cli.Config)
 
 	file.Write(config)
 }
@@ -50,7 +48,9 @@ func ConfigExec(cli *CLI) {
 	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "--current-profile":
-		config.CurrentProfile = cli.ShiftStrictArg()
-		saveConfig(cli)
+		cli.Config.CurrentProfile = cli.ShiftStrictArg()
+		cli.SaveConfig()
+	case "print":
+		fmt.Println(cli.Config)
 	}
 }

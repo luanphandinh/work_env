@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"runtime/debug"
 	"os"
 	"os/exec"
+	"runtime/debug"
 )
 
 type CLIExecutable func(context *CLI)
@@ -19,6 +19,7 @@ type Command struct {
 
 type CLI struct {
 	Commands []Command
+	Config   *CLIConfig
 	args     []string
 }
 
@@ -46,8 +47,9 @@ func (cli *CLI) ShiftArg() string {
 	return arg
 }
 
-func (cli *CLI) init() {
+func (cli *CLI) Init() {
 	cli.args = os.Args[1:]
+	cli.LoadConfig()
 }
 
 func (cli *CLI) Run() {
@@ -55,10 +57,10 @@ func (cli *CLI) Run() {
 		if r := recover(); r != nil {
 			fmt.Println(r)
 			debug.PrintStack()
+			Help(cli)
 		}
 	}()
 
-	cli.init()
 	cmdName := cli.ShiftStrictArg()
 	for _, cmd := range cli.Commands {
 		if cmd.Name == cmdName {

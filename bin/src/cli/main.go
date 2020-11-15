@@ -18,9 +18,9 @@ func main() {
 				Exec:        ConfigExec,
 			},
 			{
-				Name:        "set",
+				Name:        "profile",
 				Usage:       "To be defined",
-				Description: "Set environment variables",
+				Description: "Config profile environment variables",
 				Exec:        ProfileExec,
 			},
 		},
@@ -29,7 +29,7 @@ func main() {
 	if len(os.Args) <= 1 {
 		Help(cli)
 	} else {
-		loadConfig()
+		cli.Init()
 		cli.Run()
 	}
 }
