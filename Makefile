@@ -4,7 +4,9 @@ test: install tests
 build:
 	go build -o ./bin/build/cli -v ./bin/src/cli
 	chmod +x ./bin/build/cli
-	./bin/build/cli
+	grep -q "alias cli2=$(shell pwd)/bin/build/cli" ~/.bash_profile 2>/dev/null || echo "alias cli2=$(shell pwd)/bin/build/cli" >> ~/.bash_profile
+	grep -q "alias cli2=$(shell pwd)/bin/build/cli" ~/.bashrc 2>/dev/null || echo "alias cli2=$(shell pwd)/bin/build/cli" >> ~/.bashrc
+	grep -q "alias cli2=$(shell pwd)/bin/build/cli" ~/.zshrc 2>/dev/null || echo "alias cli2=$(shell pwd)/bin/build/cli" >> ~/.zshrc
 
 install:
 	chmod +x cli.sh
