@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"runtime/debug"
 )
 
 type CLIExecutable func(context *CLI)
@@ -53,15 +52,15 @@ func (cli *CLI) Init() {
 }
 
 func (cli *CLI) Run() {
+	cmdName := ""
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println(r)
-			debug.PrintStack()
-			Help(cli)
+			Help(cli, cmdName)
 		}
 	}()
 
-	cmdName := cli.ShiftStrictArg()
+	cmdName = cli.ShiftStrictArg()
 	for _, cmd := range cli.Commands {
 		if cmd.Name == cmdName {
 			cmd.Exec(cli)

@@ -9,17 +9,17 @@ func main() {
 				Name:        "help",
 				Usage:       "just help.",
 				Description: "help command",
-				Exec:        Help,
+				Exec:        HelpExec,
 			},
 			{
 				Name:        "config",
-				Usage:       "To be defined",
+				Usage:       CONFIG_USAGE,
 				Description: "Set cli configuration",
 				Exec:        ConfigExec,
 			},
 			{
 				Name:        "profile",
-				Usage:       "To be defined",
+				Usage:       PROFILE_USAGE,
 				Description: "Config profile environment variables",
 				Exec:        ProfileExec,
 			},
@@ -27,7 +27,7 @@ func main() {
 	}
 
 	if len(os.Args) <= 1 {
-		Help(cli)
+		HelpExec(cli)
 	} else {
 		cli.Init()
 		cli.Run()
