@@ -17,17 +17,18 @@ nvim-ubuntu: nvim-install-ubuntu nvim-config
 nvim-install-mac:
 	brew install neovim
 	brew install fd
-	brew install the_silver_searcher
+	brew install ripgrep
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 nvim-install-ubuntu:
 	sudo apt-get install neovim
-	sudo apt-get install silversearcher-ag
+	sudo apt-get install fd-find
+	sudo apt-get install ripgrep
 
 nvim-config:
 	test -d ~/.config/nvim || mkdir ~/.config/nvim
-	cp -r ./home/config/nvim/ ~/.config/nvim/
+	cp -r ./home/config/nvim/. ~/.config/nvim/
 	nvim +PlugInstall +qall
 	nvim -c 'CocInstall -sync|q'
 
