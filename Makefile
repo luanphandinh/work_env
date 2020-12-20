@@ -25,6 +25,8 @@ nvim-install-ubuntu:
 	sudo apt-get install neovim
 	sudo apt-get install fd-find
 	sudo apt-get install ripgrep
+	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 nvim-config:
 	test -d ~/.config/nvim || mkdir ~/.config/nvim
