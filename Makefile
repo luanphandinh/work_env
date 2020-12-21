@@ -51,3 +51,8 @@ tmux-config:
 	cp ./home/tmux/.tmux.conf ~/.tmux.conf
 	tmux source ~/.tmux.conf
 	~/.tmux/plugins/tpm/scripts/install_plugins.sh
+
+nodejs:
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+	nvm install 14
+	nvm use 14
