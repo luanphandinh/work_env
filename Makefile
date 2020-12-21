@@ -12,6 +12,9 @@ tests:
 	chmod -R +x test/
 	test/config-profile.sh
 
+mac: nvim-install-mac nvim-config tmux-mac tmux-config
+ubuntu: nvim-install-ubuntu nvim-config tmux-ubuntu tmux-config
+
 nvim: nvim-install-mac nvim-config
 nvim-ubuntu: nvim-install-ubuntu nvim-config
 nvim-install-mac:
