@@ -32,6 +32,7 @@ nvim-install-ubuntu:
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 nvim-config:
+	test -d ~/.config || mkdir ~/.config
 	test -d ~/.config/nvim || mkdir ~/.config/nvim
 	cp -r ./home/config/nvim/. ~/.config/nvim/
 	nvim +PlugInstall +qall
