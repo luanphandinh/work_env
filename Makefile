@@ -58,6 +58,11 @@ nodejs:
 	nvm install 14
 	nvm use 14
 
+sudo-user:
+	test $(name)
+	adduser $(name)
+	usermod -aG sudo $(name)
+
 nginx:
 	test $(domain)
 	@echo "Installing packages:"
