@@ -57,3 +57,17 @@ nodejs:
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 	nvm install 14
 	nvm use 14
+
+nginx:
+	sudo apt update
+	sudo apt install
+	sudo apt install nginx
+	sudo ufw allow 'Nginx HTTP'
+	sudo mkdir -p /var/www/$(domain)/html
+	sudo chown -R ${USER}:${USER} /var/www/$(domain)/html
+	sudo chown -R ${USER}:${USER} /etc/nginx/sites-available/
+	sudo chmod -R 755 /var/www/$(domain)
+	DOMAIN=$(domain) envsubst < ./etc/nginx/sites-available/index.template.html > /var/www/$(domain)/html/index.html
+	DOMAIN=$(domain) envsubst < ./etc/nginx/sites-available/template > /etc/nginx/sites-available/$(domain)
+	sudo ln -sfn /etc/nginx/sites-available/$(domain) /etc/nginx/sites-enabled/
+	sudo systemctl restart nginx
