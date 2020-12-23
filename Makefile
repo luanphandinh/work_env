@@ -83,4 +83,5 @@ nginx:
 	sudo apt install certbot python3-certbot-nginx
 	sudo ufw allow 'Nginx Full'
 	sudo certbot --nginx -d $(domain) -d www.$(domain)
+	sudo systemctl restart nginx
 
