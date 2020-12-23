@@ -1,7 +1,7 @@
 source ~/.config/nvim/plugins.vim
 source ~/.config/nvim/editor.vim
 
-let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git' " Use fd as default search
+let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git || fdfind --type f --hidden --exclude .git' " Use fd as default search
 let NERDTreeShowHidden=1
 let g:NERDTreeWinSize=40
 let NERDTreeIgnore=['\.DS_Store$', '\.git$'] " ignore files in nerd tree
