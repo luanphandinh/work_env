@@ -1,7 +1,7 @@
 " Most of the time using space for indent
 set smarttab
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 set expandtab
 
 " specific filetypes
