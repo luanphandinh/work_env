@@ -60,7 +60,7 @@ func printEnv(cli *CLI) []byte {
 	return data
 }
 
-func fixEnv(cli *CLI) {
+func getEnv(cli *CLI) map[string]string {
 	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
 	file, err := os.Open(path)
 	defer file.Close()
@@ -78,13 +78,19 @@ func fixEnv(cli *CLI) {
 		check(err)
 		vars := strings.SplitN(line, "=", 2)
 		if len(vars) == 2 {
-			envsMap[vars[0]] = vars[1]
+			envsMap[vars[0]] = strings.TrimSuffix(vars[1], "\n")
 		}
 	}
 
+	return envsMap
+}
+
+func fixEnv(cli *CLI) {
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
+	envsMap := getEnv(cli)
 	envs := make([]string, len(envsMap))
 	for key, value := range envsMap {
-		envs = append(envs, fmt.Sprintf("%s=%s", key, value))
+		envs = append(envs, fmt.Sprintf("%s=%s\n", key, value))
 	}
 
 	wFile, err := os.Create(path)

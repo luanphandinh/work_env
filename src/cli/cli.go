@@ -106,7 +106,13 @@ func (cli *CLI) GetConfigs() map[string]interface{} {
 	return cli.cfgs
 }
 
-func execCmd(c string, args ...string) error {
+// GetArgs returns all available args
+func (cli *CLI) GetArgs() []string {
+	return cli.args
+}
+
+// ExecCmd execute "c" command with given args..
+func (cli *CLI) ExecCmd(c string, args ...string) error {
 	cmd := exec.Command(c, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
