@@ -2,7 +2,7 @@ SHELL := /bin/bash
 test: install tests
 
 build:
-	go build -o ./bin/build/cli -v ./src/cli
+	go build -o ./bin/build/cli -v ./src
 	chmod +x ./bin/build/cli
 	grep -q "alias cli2=$(shell pwd)/bin/build/cli" ~/.bash_profile 2>/dev/null || echo "alias cli2=$(shell pwd)/bin/build/cli" >> ~/.bash_profile
 	grep -q "alias cli2=$(shell pwd)/bin/build/cli" ~/.bashrc 2>/dev/null || echo "alias cli2=$(shell pwd)/bin/build/cli" >> ~/.bashrc
