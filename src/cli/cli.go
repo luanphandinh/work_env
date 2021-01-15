@@ -22,9 +22,9 @@ type CLI struct {
 	args     []string
 }
 
-// Shift args by 1
+// ShiftStrictArg shift cli.args by 1
 // Return the shifted arguments
-// Will panic if there is no more arguments
+// Will panic if there is no more arguments in args bag
 func (cli *CLI) ShiftStrictArg() string {
 	if len(cli.args) < 1 {
 		panic("Too few arguments")
@@ -33,8 +33,8 @@ func (cli *CLI) ShiftStrictArg() string {
 	return cli.ShiftArg()
 }
 
-// Get the first arg
-// If ther is no arguments left, return empty string
+// ShiftArg return the shifted first arg
+// If there is no arguments left, return empty string
 func (cli *CLI) ShiftArg() string {
 	if len(cli.args) < 1 {
 		return ""
@@ -46,11 +46,14 @@ func (cli *CLI) ShiftArg() string {
 	return arg
 }
 
+// Init cli
+// set cli.args to os.Args
 func (cli *CLI) Init() {
 	cli.args = os.Args[1:]
 	cli.LoadConfig()
 }
 
+// Run CLI command base on cli.args
 func (cli *CLI) Run() {
 	cmdName := ""
 	defer func() {
