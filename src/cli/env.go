@@ -1,39 +1,39 @@
 package main
 
 import (
-	"fmt"
-	"strings"
-	"io"
 	"bufio"
+	"fmt"
+	"io"
 	"os"
+	"strings"
 )
 
-func ProfileExec(cli *CLI) {
+func EnvExec(cli *CLI) {
 	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "set":
-		SetProfileEnv(cli)
-	case "get":
-		data := GetProfileEnv(cli)
+		SetEnv(cli)
+	case "print":
+		data := PrintEnv(cli)
 		fmt.Println(string(data))
 	case "fix":
-		FixProfileEnv(cli)
+		FixEnv(cli)
 	case "clean":
-		CleanProfileEnv(cli)
+		CleanEnv(cli)
 	default:
 		panic("")
 	}
 }
 
-func CleanProfileEnv(cli *CLI) {
-	path := getFilePath(fmt.Sprintf("%s/%s", PROFILE_DIR, cli.Config.CurrentProfile), ".env")
+func CleanEnv(cli *CLI) {
+	path := getFilePath(fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile), ".env")
 	file, err := os.Create(path)
 	defer file.Close()
 	check(err)
 }
 
-func SetProfileEnv(cli *CLI) {
-	path := getFilePath(fmt.Sprintf("%s/%s", PROFILE_DIR, cli.Config.CurrentProfile), ".env")
+func SetEnv(cli *CLI) {
+	path := getFilePath(fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile), ".env")
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	defer file.Close()
 	check(err)
@@ -51,16 +51,16 @@ func SetProfileEnv(cli *CLI) {
 	}
 }
 
-func GetProfileEnv(cli *CLI) []byte {
-	path := fmt.Sprintf("%s/%s", PROFILE_DIR, cli.Config.CurrentProfile)
+func PrintEnv(cli *CLI) []byte {
+	path := fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile)
 	data, err := getFileContent(path, ".env")
 	check(err)
 
 	return data
 }
 
-func FixProfileEnv(cli *CLI) {
-	path := getFilePath(fmt.Sprintf("%s/%s", PROFILE_DIR, cli.Config.CurrentProfile), ".env")
+func FixEnv(cli *CLI) {
+	path := getFilePath(fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile), ".env")
 	file, err := os.Open(path)
 	defer file.Close()
 	check(err)
@@ -94,4 +94,3 @@ func FixProfileEnv(cli *CLI) {
 		wFile.WriteString(value)
 	}
 }
-

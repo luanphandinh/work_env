@@ -13,15 +13,15 @@ func main() {
 			},
 			{
 				Name:        "config",
-				Usage:       CONFIG_USAGE,
+				Usage:       configUsage,
 				Description: "Set cli configuration",
 				Exec:        ConfigExec,
 			},
 			{
-				Name:        "profile",
-				Usage:       PROFILE_USAGE,
-				Description: "Config profile environment variables",
-				Exec:        ProfileExec,
+				Name:        "env",
+				Usage:       envUsage,
+				Description: "Config environment variables",
+				Exec:        EnvExec,
 			},
 		},
 	}

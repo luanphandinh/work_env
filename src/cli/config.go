@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"errors"
+	"fmt"
 	"os"
 )
 
@@ -16,7 +16,7 @@ func (cli *CLI) LoadConfig() error {
 		CurrentProfile: "default",
 	}
 
-	data, err := getFileContent(CONFIG_DIR, CONFIG_FILE)
+	data, err := getFileContent(configDir, configFile)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (cli *CLI) LoadConfig() error {
 }
 
 func (cli *CLI) SaveConfig() {
-	file, err := os.Create(getFilePath(CONFIG_DIR, CONFIG_FILE))
+	file, err := os.Create(getFilePath(configDir, configFile))
 	defer file.Close()
 	check(err)
 	fmt.Println(&cli.Config)
