@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"fmt"
@@ -6,7 +6,8 @@ import (
 	"os"
 )
 
-func fileExists(filename string) bool {
+// FileExists return true if given file name exist.
+func FileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return false
@@ -15,7 +16,8 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func dirExists(dir string) bool {
+// DirExists return true if give Dir is exist.
+func DirExists(dir string) bool {
 	info, err := os.Stat(dir)
 	if os.IsNotExist(err) {
 		return false
@@ -24,9 +26,9 @@ func dirExists(dir string) bool {
 	return info.IsDir()
 }
 
-// Check for dir path
-// If path does not exist, go and create new one
-func getDirPath(dir string) string {
+// GetDirPath return file path corresponding to user HomeDir
+// and will create new file if there is none.
+func GetDirPath(dir string) string {
 	home, err := os.UserHomeDir()
 	check(err)
 
@@ -37,7 +39,7 @@ func getDirPath(dir string) string {
 		path = fmt.Sprintf("%s/cli_beta", home)
 	}
 
-	if dirExists(path) {
+	if DirExists(path) {
 		return path
 	}
 
@@ -47,12 +49,12 @@ func getDirPath(dir string) string {
 	return path
 }
 
-// Get file base on directory
+// GetFilePath base on directory
 // If directory path doesn't exist, create new one.
 // If file doesn't exist, create new one
-func getFilePath(dir string, file string) string {
-	path := fmt.Sprintf("%s/%s", getDirPath(dir), file)
-	if fileExists(path) {
+func GetFilePath(dir string, file string) string {
+	path := fmt.Sprintf("%s/%s", GetDirPath(dir), file)
+	if FileExists(path) {
 		return path
 	}
 
@@ -62,11 +64,11 @@ func getFilePath(dir string, file string) string {
 	return path
 }
 
-// Read content of given file.
+// GetFileContent read and return content of given file.
 // If any error, will return in err.
-func getFileContent(dir string, file string) ([]byte, error) {
-	path := getFilePath(dir, file)
-	if fileExists(path) {
+func GetFileContent(dir string, file string) ([]byte, error) {
+	path := GetFilePath(dir, file)
+	if FileExists(path) {
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
 			return nil, err
@@ -76,4 +78,10 @@ func getFileContent(dir string, file string) ([]byte, error) {
 	}
 
 	return nil, nil
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func HelpExec(cli *CLI) {
+func helpExec(cli *CLI) {
 	fmt.Print(
 		`
 your profile CLI
@@ -17,7 +17,7 @@ commands:
 	}
 }
 
-func Help(cli *CLI, cmdName string) {
+func help(cli *CLI, cmdName string) {
 	if cmdName != "" {
 		for _, cmd := range cli.Commands {
 			if cmd.Name == cmdName {
@@ -25,7 +25,7 @@ func Help(cli *CLI, cmdName string) {
 			}
 		}
 	} else {
-		HelpExec(cli)
+		helpExec(cli)
 	}
 
 }

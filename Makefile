@@ -18,7 +18,7 @@ install:
 tests:
 	chmod -R +x test/
 	test/config-profile.sh
-	go test -v ./src/cli/...
+	go test -v ./src/...
 
 sudo-user:
 	test $(name)

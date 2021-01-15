@@ -2,38 +2,39 @@ package main
 
 import (
 	"bufio"
+	"env/src/util"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 )
 
-func EnvExec(cli *CLI) {
+func envExec(cli *CLI) {
 	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "set":
-		SetEnv(cli)
+		setEnv(cli)
 	case "print":
-		data := PrintEnv(cli)
+		data := printEnv(cli)
 		fmt.Println(string(data))
 	case "fix":
-		FixEnv(cli)
+		fixEnv(cli)
 	case "clean":
-		CleanEnv(cli)
+		cleanEnv(cli)
 	default:
 		panic("")
 	}
 }
 
-func CleanEnv(cli *CLI) {
-	path := getFilePath(fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile), ".env")
+func cleanEnv(cli *CLI) {
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
 	file, err := os.Create(path)
 	defer file.Close()
 	check(err)
 }
 
-func SetEnv(cli *CLI) {
-	path := getFilePath(fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile), ".env")
+func setEnv(cli *CLI) {
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	defer file.Close()
 	check(err)
@@ -51,16 +52,16 @@ func SetEnv(cli *CLI) {
 	}
 }
 
-func PrintEnv(cli *CLI) []byte {
-	path := fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile)
-	data, err := getFileContent(path, ".env")
+func printEnv(cli *CLI) []byte {
+	path := fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli))
+	data, err := util.GetFileContent(path, ".env")
 	check(err)
 
 	return data
 }
 
-func FixEnv(cli *CLI) {
-	path := getFilePath(fmt.Sprintf("%s/%s", porfileDir, cli.Config.CurrentProfile), ".env")
+func fixEnv(cli *CLI) {
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
 	file, err := os.Open(path)
 	defer file.Close()
 	check(err)

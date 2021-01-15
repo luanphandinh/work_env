@@ -2,21 +2,19 @@ package main
 
 import (
 	"encoding/json"
+	"env/src/util"
 	"errors"
 	"fmt"
 	"os"
 )
 
-type CLIConfig struct {
-	CurrentProfile string `json:"current_profile"`
+func getCurrentProfile(cli *CLI) string {
+	return cli.GetConfig("current_profile").(string)
 }
 
-func (cli *CLI) LoadConfig() error {
-	cli.Config = &CLIConfig{
-		CurrentProfile: "default",
-	}
-
-	data, err := getFileContent(configDir, configFile)
+func loadConfig(cli *CLI) error {
+	cli.SetConfig("current_profile", "default")
+	data, err := util.GetFileContent(configDir, configFile)
 	if err != nil {
 		return err
 	}
@@ -25,32 +23,35 @@ func (cli *CLI) LoadConfig() error {
 		return errors.New("Invalid data")
 	}
 
-	err = json.Unmarshal(data, cli.Config)
+	var objmap map[string]json.RawMessage
+	err = json.Unmarshal(data, &objmap)
 	if err != nil {
 		return err
+	}
+
+	if currentProfile := objmap["current_profile"]; currentProfile != nil {
+		cli.SetConfig("current_profile", string(currentProfile))
 	}
 
 	return nil
 }
 
-func (cli *CLI) SaveConfig() {
-	file, err := os.Create(getFilePath(configDir, configFile))
+func saveConfig(cli *CLI) {
+	file, err := os.Create(util.GetFilePath(configDir, configFile))
 	defer file.Close()
 	check(err)
-	fmt.Println(&cli.Config)
-
-	config, _ := json.Marshal(cli.Config)
+	config, _ := json.Marshal(cli.GetConfigs())
 
 	file.Write(config)
 }
 
-func ConfigExec(cli *CLI) {
+func configExec(cli *CLI) {
 	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "--current-profile":
-		cli.Config.CurrentProfile = cli.ShiftStrictArg()
-		cli.SaveConfig()
+		cli.SetConfig("current_profile", cli.ShiftStrictArg())
+		saveConfig(cli)
 	case "print":
-		fmt.Println(cli.Config)
+		fmt.Println(cli.GetConfigs())
 	}
 }

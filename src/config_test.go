@@ -1,30 +1,19 @@
 package main
 
 import (
+	"env/src/assert"
+	"os"
 	"testing"
 )
 
 func TestConfigSetCurrentProfile(t *testing.T) {
-	cli := &CLI{}
-	cli.Init()
+	os.Args = []string{"cli", "config", "--current-profile", "unit_test"}
+	envCli.Run()
+	assert.StringNotEquals(t, envCli.GetConfig("current_profile").(string), "default")
+	assert.StringEquals(t, envCli.GetConfig("current_profile").(string), "unit_test")
 
-	cli.Config.CurrentProfile = "unit_test"
-	cli.SaveConfig()
-	cli.LoadConfig()
-	if cli.Config.CurrentProfile != "unit_test" {
-		t.Fail()
-	}
-
-	cli.Config.CurrentProfile = "unit_test_again"
-	cli.LoadConfig()
-	if cli.Config.CurrentProfile != "unit_test" {
-		t.Fail()
-	}
-
-	cli.Config.CurrentProfile = "unit_test_again"
-	cli.SaveConfig()
-	cli.LoadConfig()
-	if cli.Config.CurrentProfile != "unit_test_again" {
-		t.Fail()
-	}
+	os.Args = []string{"cli", "config", "--current-profile", "default"}
+	envCli.Run()
+	assert.StringEquals(t, envCli.GetConfig("current_profile").(string), "default")
+	assert.StringNotEquals(t, envCli.GetConfig("current_profile").(string), "unit_test")
 }
