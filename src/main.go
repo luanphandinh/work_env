@@ -40,6 +40,12 @@ var envCli *CLI = &CLI{
 			Description: "Config environment variables",
 			Exec:        envExec,
 		},
+		{
+			Name:        "exec",
+			Usage:       "exec ...",
+			Description: "Execute given command, anything env that available for current profile will also be applied",
+			Exec:        exec,
+		},
 	},
 }
 
