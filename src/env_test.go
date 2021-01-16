@@ -8,10 +8,10 @@ import (
 )
 
 func TestEnvSet(t *testing.T) {
-	os.Args = []string{"cli", "config", "--current-profile", "unit_test"}
+	os.Args = []string{"cli", "set", "config", "--current-profile", "unit_test"}
 	envCli.Run()
 	// Clean current profile
-	os.Args = []string{"cli", "env", "clean"}
+	os.Args = []string{"cli", "delete", "env"}
 	envCli.Run()
 	data := printEnv(envCli)
 	if len(data) > 0 {
@@ -19,7 +19,7 @@ func TestEnvSet(t *testing.T) {
 	}
 
 	// Set environment values
-	os.Args = []string{"cli", "env", "set", "WHERE=CLI=GITHUB", "OK=YES"}
+	os.Args = []string{"cli", "set", "env", "WHERE=CLI=GITHUB", "OK=YES"}
 	envCli.Run()
 	data = printEnv(envCli)
 	expected := `WHERE=CLI=GITHUB
@@ -32,7 +32,7 @@ OK=YES
 	}
 
 	// Set environment values with duplicated key
-	os.Args = []string{"cli", "env", "set", "WHERE=CLI=GITHUB2"}
+	os.Args = []string{"cli", "set", "env", "WHERE=CLI=GITHUB2"}
 	envCli.Run()
 	data = printEnv(envCli)
 	expected = `WHERE=CLI=GITHUB
@@ -45,7 +45,7 @@ WHERE=CLI=GITHUB2
 	}
 
 	// Fix environment value, remove duplicated keys
-	os.Args = []string{"cli", "env", "fix"}
+	os.Args = []string{"cli", "fix", "env"}
 	envCli.Run()
 	data = printEnv(envCli)
 	expected1 := `WHERE=CLI=GITHUB2
@@ -60,7 +60,7 @@ WHERE=CLI=GITHUB2
 	}
 
 	// Clean profile again
-	os.Args = []string{"cli", "env", "clean"}
+	os.Args = []string{"cli", "delete", "env"}
 	envCli.Run()
 	data = printEnv(envCli)
 	if len(data) > 0 {

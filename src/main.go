@@ -15,36 +15,68 @@ var envCli *CLI = &CLI{
 	},
 	HandlePanic: func(cli *CLI, e interface{}) {
 		fmt.Println(e)
-		if cmd := cli.GetLastExecutedCommand(); cmd != nil {
-			fmt.Println(cmd.Usage)
-		} else {
-			helpExec(cli)
-		}
 	},
 	Commands: []cli.Command{
-		{
-			Name:        "help",
-			Usage:       "just help.",
-			Description: "help command",
-			Exec:        helpExec,
-		},
-		{
-			Name:        "config",
-			Usage:       configUsage,
-			Description: "Set cli configuration",
-			Exec:        configExec,
-		},
-		{
-			Name:        "env",
-			Usage:       envUsage,
-			Description: "Config environment variables",
-			Exec:        envExec,
-		},
 		{
 			Name:        "exec",
 			Usage:       "exec ...",
 			Description: "Execute given command, anything env that available for current profile will also be applied",
 			Exec:        exec,
+		},
+		{
+			Name:        "set",
+			Usage:       "Set resources",
+			Description: "Set use to config value for availabe resources",
+			Commands: []cli.Command{
+				{
+					Name:        "env",
+					Description: "Set env variable",
+					Exec:        setEnv,
+				},
+				{
+					Name:        "config",
+					Description: "update current context",
+					Exec:        setConfig,
+				},
+			},
+		},
+		{
+			Name:        "describe",
+			Description: "describe information of specific resource.",
+			Commands: []cli.Command{
+				{
+					Name:        "env",
+					Description: "describe env variable for current profile",
+					Exec:        describeEnv,
+				},
+				{
+					Name:        "config",
+					Description: "describe current context.",
+					Exec:        describeConfig,
+				},
+			},
+		},
+		{
+			Name:        "fix",
+			Description: "try to fix information of specific resource.",
+			Commands: []cli.Command{
+				{
+					Name:        "env",
+					Description: "list all env variables for current profile",
+					Exec:        fixEnv,
+				},
+			},
+		},
+		{
+			Name:        "delete",
+			Description: "delete resource.",
+			Commands: []cli.Command{
+				{
+					Name:        "env",
+					Description: "delete all env variables for current profile",
+					Exec:        cleanEnv,
+				},
+			},
 		},
 	},
 }

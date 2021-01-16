@@ -45,13 +45,18 @@ func saveConfig(cli *CLI) {
 	file.Write(config)
 }
 
-func configExec(cli *CLI) {
+func describeConfig(cli *CLI) {
+	fmt.Print("Context:\n\n")
+	for k, v := range cli.GetConfigs() {
+		fmt.Println(fmt.Sprintf("  %s: %s\n", k, v))
+	}
+}
+
+func setConfig(cli *CLI) {
 	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "--current-profile":
 		cli.SetConfig("current_profile", cli.ShiftStrictArg())
 		saveConfig(cli)
-	case "print":
-		fmt.Println(cli.GetConfigs())
 	}
 }
