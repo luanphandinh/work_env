@@ -85,6 +85,15 @@ func getEnv(cli *CLI) map[string]string {
 	return envsMap
 }
 
+func describeEnv(cli *CLI) {
+	envs := getEnv(cli)
+	fmt.Println(fmt.Sprintf("%s \t\t\t%s", "Key", "Value"))
+	fmt.Println(fmt.Sprintf("%s \t\t\t%s", "======", "======"))
+	for k, v := range envs {
+		fmt.Println(fmt.Sprintf("%s \t\t\t%s", k, v))
+	}
+}
+
 func fixEnv(cli *CLI) {
 	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
 	envsMap := getEnv(cli)

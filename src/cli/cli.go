@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 )
@@ -10,12 +11,14 @@ import (
 type Executable func(context *CLI)
 
 // Command declare basic struct of a simple command
+// Command can be nested inside command.
+// If Command have other commands within it, Exec will be ignored.
 type Command struct {
 	Name        string
 	Usage       string
 	Description string
-	Args        []string
 	Exec        Executable
+	Commands    []Command
 }
 
 // CLI main object for CLI
@@ -53,12 +56,6 @@ func (cli *CLI) ShiftArg() string {
 	return arg
 }
 
-// Init cli
-// set cli.args to os.Args
-// func (cli *CLI) Init() {
-// cli.LoadConfig()
-// }
-
 func (cli *CLI) init() {
 	cli.args = os.Args[1:]
 	cli.cfgs = make(map[string]interface{}, 0)
@@ -74,15 +71,54 @@ func (cli *CLI) Run() {
 	defer func() {
 		if r := recover(); r != nil {
 			cli.HandlePanic(cli, r)
+			cli.help()
 		}
 	}()
 
+	cli.invokeCommand(cli.Commands)
+}
+
+func (cli *CLI) invokeCommand(cmds []Command) {
 	name := cli.ShiftStrictArg()
-	for _, cmd := range cli.Commands {
+
+	for _, cmd := range cmds {
 		if cmd.Name == name {
 			cli.cmd = &cmd
-			cmd.Exec(cli)
+			if cmd.Exec != nil {
+				cmd.Exec(cli)
+				return
+			}
+
+			if len(cmd.Commands) > 0 {
+				cli.invokeCommand(cmd.Commands)
+				return
+			}
 		}
+	}
+
+	panic("")
+}
+
+func (cli *CLI) help() {
+	if cli.cmd == nil {
+		fmt.Print(
+			`
+CLI control your local development environment
+version:  2.1
+
+commands:
+`)
+		printCommand(cli.Commands)
+	} else {
+		fmt.Println(fmt.Sprintf("%s %s\n", cli.cmd.Name, cli.cmd.Description))
+		fmt.Printf("Commands:\n\n")
+		printCommand(cli.cmd.Commands)
+	}
+}
+
+func printCommand(cmds []Command) {
+	for _, cmd := range cmds {
+		fmt.Println(fmt.Sprintf("\t%s \t\t\t%s", cmd.Name, cmd.Description))
 	}
 }
 
