@@ -27,14 +27,14 @@ func envExec(cli *CLI) {
 }
 
 func cleanEnv(cli *CLI) {
-	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", profileDir, getCurrentProfile(cli)), ".env")
 	file, err := os.Create(path)
 	defer file.Close()
 	check(err)
 }
 
 func setEnv(cli *CLI) {
-	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", profileDir, getCurrentProfile(cli)), ".env")
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	defer file.Close()
 	check(err)
@@ -53,7 +53,7 @@ func setEnv(cli *CLI) {
 }
 
 func printEnv(cli *CLI) []byte {
-	path := fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli))
+	path := fmt.Sprintf("%s/%s", profileDir, getCurrentProfile(cli))
 	data, err := util.GetFileContent(path, ".env")
 	check(err)
 
@@ -61,7 +61,7 @@ func printEnv(cli *CLI) []byte {
 }
 
 func getEnv(cli *CLI) map[string]string {
-	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", profileDir, getCurrentProfile(cli)), ".env")
 	file, err := os.Open(path)
 	defer file.Close()
 	check(err)
@@ -95,7 +95,7 @@ func describeEnv(cli *CLI) {
 }
 
 func fixEnv(cli *CLI) {
-	path := util.GetFilePath(fmt.Sprintf("%s/%s", porfileDir, getCurrentProfile(cli)), ".env")
+	path := util.GetFilePath(fmt.Sprintf("%s/%s", profileDir, getCurrentProfile(cli)), ".env")
 	envsMap := getEnv(cli)
 	envs := make([]string, len(envsMap))
 	for key, value := range envsMap {

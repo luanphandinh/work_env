@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 // Executable is a callback for give commmand
@@ -82,21 +83,32 @@ func (cli *CLI) invokeCommand(cmds []Command) {
 	name := cli.ShiftStrictArg()
 
 	for _, cmd := range cmds {
-		if cmd.Name == name {
+		if matchCmd(name, cmd.Name) {
 			cli.cmd = &cmd
-			if cmd.Exec != nil {
-				cmd.Exec(cli)
+			if len(cmd.Commands) > 0 {
+				cli.invokeCommand(cmd.Commands)
 				return
 			}
 
-			if len(cmd.Commands) > 0 {
-				cli.invokeCommand(cmd.Commands)
+			if cmd.Exec != nil {
+				cmd.Exec(cli)
 				return
 			}
 		}
 	}
 
 	panic("")
+}
+
+func matchCmd(name, cmds string) bool {
+	cases := strings.Split(cmds, "|")
+	for _, c := range cases {
+		if name == c {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (cli *CLI) help() {

@@ -41,6 +41,18 @@ var envCli *CLI = &CLI{
 			},
 		},
 		{
+			Name:        "get",
+			Usage:       "Get resources",
+			Description: "return value for availabe resources",
+			Commands: []cli.Command{
+				{
+					Name:        "profile|profiles",
+					Description: "list all profiles",
+					Exec:        getProfiles,
+				},
+			},
+		},
+		{
 			Name:        "describe",
 			Description: "describe information of specific resource.",
 			Commands: []cli.Command{
@@ -75,6 +87,11 @@ var envCli *CLI = &CLI{
 					Name:        "env",
 					Description: "delete all env variables for current profile",
 					Exec:        cleanEnv,
+				},
+				{
+					Name:        "profile",
+					Description: "delete whole profile, set current_profile back to default",
+					Exec:        deleteProfile,
 				},
 			},
 		},
