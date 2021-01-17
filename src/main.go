@@ -46,7 +46,7 @@ var envCli *CLI = &CLI{
 			Description: "return value for availabe resources",
 			Commands: []cli.Command{
 				{
-					Name:        "profile",
+					Name:        "profile|profiles",
 					Description: "list all profiles",
 					Exec:        getProfiles,
 				},
