@@ -95,6 +95,17 @@ var envCli *CLI = &CLI{
 				},
 			},
 		},
+		{
+			Name:        "edit",
+			Description: "edit resource.",
+			Commands: []cli.Command{
+				{
+					Name:        "env",
+					Description: "edit env variable file",
+					Exec:        editEnv,
+				},
+			},
+		},
 	},
 }
 

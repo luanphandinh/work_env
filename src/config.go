@@ -48,11 +48,19 @@ func loadConfig(cli *CLI) error {
 	}
 
 	if currentProfile := objmap["current_profile"]; currentProfile != nil {
-		profile := currentProfile[1 : len(currentProfile)-1]
-		cli.SetConfig("current_profile", string(profile))
+		cli.SetConfig("current_profile", getJSONString(currentProfile))
+	}
+
+	if editor := objmap["editor"]; editor != nil {
+		cli.SetConfig("editor", getJSONString(editor))
 	}
 
 	return nil
+}
+
+func getJSONString(raw []byte) string {
+	data := raw[1 : len(raw)-1]
+	return string(data)
 }
 
 func saveConfig(cli *CLI) {
@@ -76,6 +84,9 @@ func setConfig(cli *CLI) {
 	switch opt {
 	case "--current-profile":
 		cli.SetConfig("current_profile", cli.ShiftStrictArg())
+		saveConfig(cli)
+	case "--editor":
+		cli.SetConfig("editor", cli.ShiftStrictArg())
 		saveConfig(cli)
 	}
 }
