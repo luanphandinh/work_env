@@ -26,8 +26,8 @@ func DirExists(dir string) bool {
 	return info.IsDir()
 }
 
-// GetDirPath return file path corresponding to user HomeDir
-// and will create new file if there is none.
+// GetDirPath recieve dir and return ${HOME}/dir
+// Will create ${HOME}/dir if dir is not exist
 func GetDirPath(dir string) string {
 	home, err := os.UserHomeDir()
 	check(err)

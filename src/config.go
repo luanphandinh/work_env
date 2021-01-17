@@ -9,7 +9,25 @@ import (
 )
 
 func getCurrentProfile(cli *CLI) string {
-	return cli.GetConfig("current_profile").(string)
+	return string(cli.GetConfig("current_profile").(string))
+}
+
+func getProfiles(cli *CLI) {
+	profilesPath := util.GetDirPath(profileDir)
+	cli.ExecCmd("ls", "-l", profilesPath)
+}
+
+func deleteProfile(cli *CLI) {
+	profile := cli.ShiftStrictArg()
+	profilesPath := util.GetDirPath(fmt.Sprintf("%s/%s", profileDir, profile))
+	if getCurrentProfile(cli) != "default" {
+		cli.SetConfig("current_profile", "default")
+		saveConfig(cli)
+	}
+
+	err := cli.ExecCmd("rm", "-rf", profilesPath)
+	check(err)
+	fmt.Println(fmt.Sprintf("Delete profile %s, set current_profile back to default", profile))
 }
 
 func loadConfig(cli *CLI) error {
@@ -30,7 +48,8 @@ func loadConfig(cli *CLI) error {
 	}
 
 	if currentProfile := objmap["current_profile"]; currentProfile != nil {
-		cli.SetConfig("current_profile", string(currentProfile))
+		profile := currentProfile[1 : len(currentProfile)-1]
+		cli.SetConfig("current_profile", string(profile))
 	}
 
 	return nil
