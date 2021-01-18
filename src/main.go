@@ -20,17 +20,17 @@ var envCli *CLI = &CLI{
 		{
 			Name:        "exec",
 			Usage:       "exec ...",
-			Description: "Execute given command, anything env that available for current profile will also be applied",
+			Description: "Execute given command, all environment variables of current profile will be applied.",
 			Exec:        exec,
 		},
 		{
 			Name:        "set",
 			Usage:       "Set resources",
-			Description: "Set use to config value for availabe resources",
+			Description: "set value for availabe resources.",
 			Commands: []cli.Command{
 				{
 					Name:        "env",
-					Description: "Set env variable",
+					Description: "set env variable to current profile",
 					Exec:        setEnv,
 				},
 				{
@@ -43,7 +43,7 @@ var envCli *CLI = &CLI{
 		{
 			Name:        "get",
 			Usage:       "Get resources",
-			Description: "return value for availabe resources",
+			Description: "retreive values for availabe resources",
 			Commands: []cli.Command{
 				{
 					Name:        "profile|profiles",

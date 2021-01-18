@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"text/tabwriter"
 )
 
 func envExec(cli *CLI) {
@@ -87,11 +88,13 @@ func getEnv(cli *CLI) map[string]string {
 
 func describeEnv(cli *CLI) {
 	envs := getEnv(cli)
-	fmt.Println(fmt.Sprintf("%s \t\t\t%s", "Key", "Value"))
-	fmt.Println(fmt.Sprintf("%s \t\t\t%s", "======", "======"))
+	w := tabwriter.NewWriter(os.Stdout, 1, 1, 8, ' ', 0)
+	fmt.Fprintln(w, fmt.Sprintf("%s \t%s", "Key", "Value"))
+	fmt.Fprintln(w, fmt.Sprintf("%s \t%s", "======", "======"))
 	for k, v := range envs {
-		fmt.Println(fmt.Sprintf("%s \t\t\t%s", k, v))
+		fmt.Fprintln(w, fmt.Sprintf("%s\t%s", k, v))
 	}
+	w.Flush()
 }
 
 func fixEnv(cli *CLI) {

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"text/tabwriter"
 )
 
 func getCurrentProfile(cli *CLI) string {
@@ -73,10 +74,13 @@ func saveConfig(cli *CLI) {
 }
 
 func describeConfig(cli *CLI) {
-	fmt.Print("Context:\n\n")
+	fmt.Print("Config:\n\n")
+	w := tabwriter.NewWriter(os.Stdout, 1, 1, 8, ' ', 0)
+	w.Flush()
 	for k, v := range cli.GetConfigs() {
-		fmt.Println(fmt.Sprintf("  %s: %s\n", k, v))
+		fmt.Fprintln(w, fmt.Sprintf("\t%s:\t%s", k, v))
 	}
+	w.Flush()
 }
 
 func setConfig(cli *CLI) {
