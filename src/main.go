@@ -1,8 +1,9 @@
 package main
 
 import (
-	"env/src/cli"
 	"fmt"
+
+	"github.com/luanphandinh/env/src/cli"
 )
 
 type (

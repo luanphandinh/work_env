@@ -18,7 +18,7 @@ install:
 tests:
 	chmod -R +x test/
 	test/config-profile.sh
-	test -f ./go.mod || go mod init env
+	test -f ./go.mod || go mod init github.com/luanphandinh/env
 	go test -v ./src/...
 
 sudo-user:

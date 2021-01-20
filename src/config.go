@@ -2,11 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"env/src/util"
 	"errors"
 	"fmt"
 	"os"
 	"text/tabwriter"
+
+	"github.com/luanphandinh/env/src/util"
 )
 
 func getCurrentProfile(cli *CLI) string {

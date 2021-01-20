@@ -2,12 +2,13 @@ package main
 
 import (
 	"bufio"
-	"env/src/util"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 	"text/tabwriter"
+
+	"github.com/luanphandinh/env/src/util"
 )
 
 func envExec(cli *CLI) {

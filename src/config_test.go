@@ -1,9 +1,10 @@
 package main
 
 import (
-	"env/src/assert"
 	"os"
 	"testing"
+
+	"github.com/luanphandinh/env/src/assert"
 )
 
 func TestConfigSetCurrentProfile(t *testing.T) {
