@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"text/tabwriter"
 )
 
 // Executable is a callback for give commmand
@@ -129,9 +130,11 @@ commands:
 }
 
 func printCommand(cmds []Command) {
+	w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
 	for _, cmd := range cmds {
-		fmt.Println(fmt.Sprintf("\t%s \t\t\t%s", cmd.Name, cmd.Description))
+		fmt.Fprintln(w, fmt.Sprintf("\t%s\t%s", cmd.Name, cmd.Description))
 	}
+	w.Flush()
 }
 
 // GetLastExecutedCommand return last command that cli run.
