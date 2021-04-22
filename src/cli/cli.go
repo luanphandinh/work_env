@@ -84,8 +84,13 @@ func (cli *CLI) Run() {
 	}()
 
 	// Apply cli level arguments
-	for _, executable := range cli.Arguments {
-		executable.Exec(cli)
+	for len(cli.args) > 0 && strings.HasPrefix(cli.args[0], "--") {
+		arg := cli.ShiftArg()
+		for _, executable := range cli.Arguments {
+			if strings.EqualFold(executable.Name, arg[2:]) {
+				executable.Exec(cli)
+			}
+		}
 	}
 
 	cli.invokeCommand(cli.Commands)
