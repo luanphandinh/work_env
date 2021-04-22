@@ -12,6 +12,11 @@ import (
 // It recieve CLI object as a parameter
 type Executable func(context *CLI)
 
+type Argument struct {
+	Name string
+	Exec Executable
+}
+
 // Command declare basic struct of a simple command
 // Command can be nested inside command.
 // If Command have other commands within it, Exec will be ignored.
@@ -27,6 +32,7 @@ type Command struct {
 // Contain args and cfgs bag
 type CLI struct {
 	Commands    []Command
+	Arguments   []Argument
 	Init        func(cli *CLI)
 	HandlePanic func(cli *CLI, e interface{})
 	args        []string
@@ -76,6 +82,11 @@ func (cli *CLI) Run() {
 			cli.help()
 		}
 	}()
+
+	// Apply cli level arguments
+	for _, executable := range cli.Arguments {
+		executable.Exec(cli)
+	}
 
 	cli.invokeCommand(cli.Commands)
 }
