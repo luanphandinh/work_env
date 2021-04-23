@@ -13,8 +13,10 @@ import (
 type Executable func(context *CLI)
 
 type Argument struct {
-	Name string
-	Exec Executable
+	Name        string
+	Exec        Executable
+	Usage       string
+	Description string
 }
 
 // Command declare basic struct of a simple command
@@ -135,17 +137,32 @@ func (cli *CLI) help() {
 CLI control your local development environment
 version:  2.1
 
-commands:
 `)
-		printCommand(cli.Commands)
+		fmt.Println("Cli's arguments:")
+		printArguments(cli.Arguments)
+		fmt.Println()
+
+		fmt.Println("Commands:")
+		printCommands(cli.Commands)
+		fmt.Println()
 	} else {
 		fmt.Println(fmt.Sprintf("%s %s\n", cli.cmd.Name, cli.cmd.Description))
-		fmt.Printf("Commands:\n\n")
-		printCommand(cli.cmd.Commands)
+		fmt.Printf("Available sub commands:\n\n")
+		printCommands(cli.cmd.Commands)
+		fmt.Println()
 	}
 }
 
-func printCommand(cmds []Command) {
+func printArguments(args []Argument) {
+	w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
+	for _, arg := range args {
+		fmt.Fprintln(w, fmt.Sprintf("\t%s\t%s", arg.Name, arg.Description))
+		fmt.Fprintln(w, fmt.Sprintf("\t%s\t%s", "", arg.Usage))
+	}
+	w.Flush()
+}
+
+func printCommands(cmds []Command) {
 	w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
 	for _, cmd := range cmds {
 		fmt.Fprintln(w, fmt.Sprintf("\t%s\t%s", cmd.Name, cmd.Description))
