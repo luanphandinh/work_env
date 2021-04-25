@@ -12,6 +12,13 @@ import (
 // It recieve CLI object as a parameter
 type Executable func(context *CLI)
 
+type Argument struct {
+	Name        string
+	Exec        Executable
+	Usage       string
+	Description string
+}
+
 // Command declare basic struct of a simple command
 // Command can be nested inside command.
 // If Command have other commands within it, Exec will be ignored.
@@ -27,6 +34,7 @@ type Command struct {
 // Contain args and cfgs bag
 type CLI struct {
 	Commands    []Command
+	Arguments   []Argument
 	Init        func(cli *CLI)
 	HandlePanic func(cli *CLI, e interface{})
 	args        []string
@@ -77,6 +85,16 @@ func (cli *CLI) Run() {
 		}
 	}()
 
+	// Apply cli level arguments
+	for len(cli.args) > 0 && strings.HasPrefix(cli.args[0], "--") {
+		arg := cli.ShiftArg()
+		for _, executable := range cli.Arguments {
+			if strings.EqualFold(executable.Name, arg[2:]) {
+				executable.Exec(cli)
+			}
+		}
+	}
+
 	cli.invokeCommand(cli.Commands)
 }
 
@@ -119,17 +137,32 @@ func (cli *CLI) help() {
 CLI control your local development environment
 version:  2.1
 
-commands:
 `)
-		printCommand(cli.Commands)
+		fmt.Println("Cli's arguments:")
+		printArguments(cli.Arguments)
+		fmt.Println()
+
+		fmt.Println("Commands:")
+		printCommands(cli.Commands)
+		fmt.Println()
 	} else {
 		fmt.Println(fmt.Sprintf("%s %s\n", cli.cmd.Name, cli.cmd.Description))
-		fmt.Printf("Commands:\n\n")
-		printCommand(cli.cmd.Commands)
+		fmt.Printf("Available sub commands:\n\n")
+		printCommands(cli.cmd.Commands)
+		fmt.Println()
 	}
 }
 
-func printCommand(cmds []Command) {
+func printArguments(args []Argument) {
+	w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
+	for _, arg := range args {
+		fmt.Fprintln(w, fmt.Sprintf("\t%s\t%s", arg.Name, arg.Description))
+		fmt.Fprintln(w, fmt.Sprintf("\t%s\t%s", "", arg.Usage))
+	}
+	w.Flush()
+}
+
+func printCommands(cmds []Command) {
 	w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
 	for _, cmd := range cmds {
 		fmt.Fprintln(w, fmt.Sprintf("\t%s\t%s", cmd.Name, cmd.Description))

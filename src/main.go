@@ -17,6 +17,17 @@ var envCli *CLI = &CLI{
 	HandlePanic: func(cli *CLI, e interface{}) {
 		fmt.Println(e)
 	},
+	Arguments: []cli.Argument{
+		{
+			Name:        "p",
+			Description: "Change current commands to use specified profile",
+			Usage:       "--p <profile_name>",
+			Exec: func(cli *CLI) {
+				profile := cli.ShiftStrictArg()
+				cli.SetConfig("current_profile", profile)
+			},
+		},
+	},
 	Commands: []cli.Command{
 		{
 			Name:        "exec",
