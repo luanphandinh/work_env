@@ -17,4 +17,9 @@ func TestConfigSetCurrentProfile(t *testing.T) {
 	envCli.Run()
 	assert.StringEquals(t, envCli.GetConfig("current_profile").(string), "default")
 	assert.StringNotEquals(t, envCli.GetConfig("current_profile").(string), "unit_test")
+
+	// Should run with optional --p arguments
+	os.Args = []string{"cli", "--p", "unit_test_2", "describe", "config"}
+	envCli.Run()
+	assert.StringEquals(t, envCli.GetConfig("current_profile").(string), "unit_test_2")
 }
