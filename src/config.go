@@ -30,25 +30,20 @@ func deleteProfile(cli *CLI) {
 	fmt.Println(fmt.Sprintf("Delete profile %s, set current_profile back to default", profile))
 }
 
-func loadCustomConfig(cli *CLI) error {
+func loadCustomConfig(cli *CLI) {
+	cli.SetConfigs(&Config{"default", ""})
 	data, err := util.GetFileContent(configDir, configFile)
-	if err != nil {
-		return err
+	if err != nil || data == nil {
+		return
 	}
 
 	var config Config
 	err = json.Unmarshal(data, &config)
 	if err != nil {
-		return err
-	}
-
-	if config.CurrentProfile == "" {
-		config.CurrentProfile = "default"
+		return
 	}
 
 	cli.SetConfigs(&config)
-
-	return nil
 }
 
 func saveCustomConfig(cli *CLI) {

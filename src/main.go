@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	"github.com/luanphandinh/env/src/cli"
 )
@@ -28,6 +29,7 @@ var envCli *CLI = &CLI{
 		loadCustomConfig(cli)
 	},
 	HandlePanic: func(cli *CLI, e interface{}) {
+		debug.PrintStack()
 		fmt.Println(e)
 	},
 	Arguments: []cli.Argument{
