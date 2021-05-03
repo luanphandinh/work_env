@@ -39,6 +39,7 @@ type CLI struct {
 	HandlePanic func(cli *CLI, e interface{})
 	args        []string
 	cfgs        map[string]interface{}
+	config      interface{}
 	cmd         *Command
 }
 
@@ -188,6 +189,10 @@ func (cli *CLI) GetConfig(k string) interface{} {
 // GetConfigs return cfgs
 func (cli *CLI) GetConfigs() map[string]interface{} {
 	return cli.cfgs
+}
+
+func (cli *CLI) GetCustomConfig() interface{} {
+	return cli.config
 }
 
 // GetArgs returns all available args

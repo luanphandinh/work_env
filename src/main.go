@@ -10,6 +10,11 @@ type (
 	CLI = cli.CLI
 )
 
+type Config struct {
+	CurrentProfile string `json:"current_profile"`
+	Editor         string `json:"editor"`
+}
+
 var envCli *CLI = &CLI{
 	Init: func(cli *CLI) {
 		loadConfig(cli)
