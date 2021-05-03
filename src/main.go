@@ -37,8 +37,7 @@ var envCli *CLI = &CLI{
 			Usage:       "--p <profile_name>",
 			Exec: func(cli *CLI) {
 				profile := cli.ShiftStrictArg()
-				cli.GetCustomConfig().(*Config).SetCurrentProfile(profile)
-				// cli.SetConfig("current_profile", profile)
+				cli.GetConfigs().(*Config).SetCurrentProfile(profile)
 			},
 		},
 	},

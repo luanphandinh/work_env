@@ -116,12 +116,12 @@ func fixEnv(cli *CLI) {
 }
 
 func editEnv(cli *CLI) {
-	path := util.GetFilePath(fmt.Sprintf("%s/%s", profileDir, getCurrentProfile(cli)), ".env")
-	if cli.GetConfig("editor") == nil {
+	if editor := cli.GetConfigs().(*Config).Editor; editor == "" {
 		fmt.Println("Default editor not found")
 		fmt.Println("Please user cli set config --editor <editor> first")
-		return
+	} else {
+		path := util.GetFilePath(fmt.Sprintf("%s/%s", profileDir, getCurrentProfile(cli)), ".env")
+		cli.ExecCmd(editor, path)
 	}
 
-	cli.ExecCmd(cli.GetConfig("editor").(string), path)
 }

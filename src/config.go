@@ -9,7 +9,7 @@ import (
 )
 
 func getCurrentProfile(cli *CLI) string {
-	return cli.GetCustomConfig().(*Config).CurrentProfile
+	return cli.GetConfigs().(*Config).CurrentProfile
 }
 
 func getProfiles(cli *CLI) {
@@ -21,7 +21,7 @@ func deleteProfile(cli *CLI) {
 	profile := cli.ShiftStrictArg()
 	profilesPath := util.GetDirPath(fmt.Sprintf("%s/%s", profileDir, profile))
 	if getCurrentProfile(cli) != "default" {
-		cli.GetCustomConfig().(*Config).SetCurrentProfile("default")
+		cli.GetConfigs().(*Config).SetCurrentProfile("default")
 		saveCustomConfig(cli)
 	}
 
@@ -46,7 +46,7 @@ func loadCustomConfig(cli *CLI) error {
 		config.CurrentProfile = "default"
 	}
 
-	cli.SetCustomConfig(&config)
+	cli.SetConfigs(&config)
 
 	return nil
 }
@@ -55,13 +55,13 @@ func saveCustomConfig(cli *CLI) {
 	file, err := os.Create(util.GetFilePath(configDir, configFile))
 	defer file.Close()
 	check(err)
-	config, _ := json.Marshal(cli.GetCustomConfig().(*Config))
+	config, _ := json.Marshal(cli.GetConfigs().(*Config))
 
 	file.Write(config)
 }
 
 func describeConfig(cli *CLI) {
-	config, _ := json.Marshal(*(cli.GetCustomConfig().(*Config)))
+	config, _ := json.Marshal(cli.GetConfigs().(*Config))
 
 	fmt.Println(string(config))
 }
@@ -70,10 +70,10 @@ func setConfig(cli *CLI) {
 	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "--current-profile":
-		cli.GetCustomConfig().(*Config).SetCurrentProfile(cli.ShiftStrictArg())
+		cli.GetConfigs().(*Config).SetCurrentProfile(cli.ShiftStrictArg())
 		saveCustomConfig(cli)
 	case "--editor":
-		cli.GetCustomConfig().(*Config).SetEditor(cli.ShiftStrictArg())
+		cli.GetConfigs().(*Config).SetEditor(cli.ShiftStrictArg())
 		saveCustomConfig(cli)
 	}
 }

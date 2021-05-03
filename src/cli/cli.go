@@ -38,8 +38,7 @@ type CLI struct {
 	Init        func(cli *CLI)
 	HandlePanic func(cli *CLI, e interface{})
 	args        []string
-	cfgs        map[string]interface{}
-	config      interface{}
+	configs     interface{}
 	cmd         *Command
 }
 
@@ -69,7 +68,6 @@ func (cli *CLI) ShiftArg() string {
 
 func (cli *CLI) init() {
 	cli.args = os.Args[1:]
-	cli.cfgs = make(map[string]interface{}, 0)
 	if cli.Init != nil {
 		cli.Init(cli)
 	}
@@ -176,27 +174,14 @@ func (cli *CLI) GetLastExecutedCommand() *Command {
 	return cli.cmd
 }
 
-// SetConfig store *CLI.cfgs with pair k,v
-func (cli *CLI) SetConfig(k string, v interface{}) {
-	cli.cfgs[k] = v
+// GetConfigs return interface{} config, that being set via SetConfigs.
+func (cli *CLI) GetConfigs() interface{} {
+	return cli.configs
 }
 
-// GetConfig return store "v" value with given key "k"
-func (cli *CLI) GetConfig(k string) interface{} {
-	return cli.cfgs[k]
-}
-
-// GetConfigs return cfgs
-func (cli *CLI) GetConfigs() map[string]interface{} {
-	return cli.cfgs
-}
-
-func (cli *CLI) GetCustomConfig() interface{} {
-	return cli.config
-}
-
-func (cli *CLI) SetCustomConfig(cfg interface{}) {
-	cli.config = cfg
+// SetConfigs allowed to put custom configuration to cli object.
+func (cli *CLI) SetConfigs(cfg interface{}) {
+	cli.configs = cfg
 }
 
 // GetArgs returns all available args
