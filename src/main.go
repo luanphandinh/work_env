@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	"github.com/luanphandinh/env/src/cli"
 )
@@ -10,11 +11,25 @@ type (
 	CLI = cli.CLI
 )
 
+type Config struct {
+	CurrentProfile string `json:"current_profile"`
+	Editor         string `json:"editor"`
+}
+
+func (this *Config) SetCurrentProfile(profile string) {
+	this.CurrentProfile = profile
+}
+
+func (this *Config) SetEditor(editor string) {
+	this.Editor = editor
+}
+
 var envCli *CLI = &CLI{
 	Init: func(cli *CLI) {
-		loadConfig(cli)
+		loadCustomConfig(cli)
 	},
 	HandlePanic: func(cli *CLI, e interface{}) {
+		debug.PrintStack()
 		fmt.Println(e)
 	},
 	Arguments: []cli.Argument{
@@ -24,7 +39,7 @@ var envCli *CLI = &CLI{
 			Usage:       "--p <profile_name>",
 			Exec: func(cli *CLI) {
 				profile := cli.ShiftStrictArg()
-				cli.SetConfig("current_profile", profile)
+				cli.GetConfigs().(*Config).SetCurrentProfile(profile)
 			},
 		},
 	},
