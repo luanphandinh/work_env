@@ -195,6 +195,10 @@ func (cli *CLI) GetCustomConfig() interface{} {
 	return cli.config
 }
 
+func (cli *CLI) SetCustomConfig(cfg interface{}) {
+	cli.config = cfg
+}
+
 // GetArgs returns all available args
 func (cli *CLI) GetArgs() []string {
 	return cli.args

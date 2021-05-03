@@ -15,9 +15,17 @@ type Config struct {
 	Editor         string `json:"editor"`
 }
 
+func (this *Config) SetCurrentProfile(profile string) {
+	this.CurrentProfile = profile
+}
+
+func (this *Config) SetEditor(editor string) {
+	this.Editor = editor
+}
+
 var envCli *CLI = &CLI{
 	Init: func(cli *CLI) {
-		loadConfig(cli)
+		loadCustomConfig(cli)
 	},
 	HandlePanic: func(cli *CLI, e interface{}) {
 		fmt.Println(e)
@@ -29,7 +37,8 @@ var envCli *CLI = &CLI{
 			Usage:       "--p <profile_name>",
 			Exec: func(cli *CLI) {
 				profile := cli.ShiftStrictArg()
-				cli.SetConfig("current_profile", profile)
+				cli.GetCustomConfig().(*Config).SetCurrentProfile(profile)
+				// cli.SetConfig("current_profile", profile)
 			},
 		},
 	},

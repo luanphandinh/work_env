@@ -5,13 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"text/tabwriter"
 
 	"github.com/luanphandinh/env/src/util"
 )
 
 func getCurrentProfile(cli *CLI) string {
-	return string(cli.GetConfig("current_profile").(string))
+	// return string(cli.GetConfig("current_profile").(string))
+	return cli.GetCustomConfig().(*Config).CurrentProfile
 }
 
 func getProfiles(cli *CLI) {
@@ -30,6 +30,27 @@ func deleteProfile(cli *CLI) {
 	err := cli.ExecCmd("rm", "-rf", profilesPath)
 	check(err)
 	fmt.Println(fmt.Sprintf("Delete profile %s, set current_profile back to default", profile))
+}
+
+func loadCustomConfig(cli *CLI) error {
+	data, err := util.GetFileContent(configDir, configFile)
+	if err != nil {
+		return err
+	}
+
+	var config Config
+	err = json.Unmarshal(data, &config)
+	if err != nil {
+		return err
+	}
+
+	if config.CurrentProfile == "" {
+		config.CurrentProfile = "default"
+	}
+
+	cli.SetCustomConfig(&config)
+
+	return nil
 }
 
 func loadConfig(cli *CLI) error {
@@ -65,6 +86,15 @@ func getJSONString(raw []byte) string {
 	return string(data)
 }
 
+func saveCustomConfig(cli *CLI) {
+	file, err := os.Create(util.GetFilePath(configDir, configFile))
+	defer file.Close()
+	check(err)
+	config, _ := json.Marshal(cli.GetCustomConfig().(*Config))
+
+	file.Write(config)
+}
+
 func saveConfig(cli *CLI) {
 	file, err := os.Create(util.GetFilePath(configDir, configFile))
 	defer file.Close()
@@ -75,23 +105,19 @@ func saveConfig(cli *CLI) {
 }
 
 func describeConfig(cli *CLI) {
-	fmt.Print("Config:\n\n")
-	w := tabwriter.NewWriter(os.Stdout, 1, 1, 8, ' ', 0)
-	w.Flush()
-	for k, v := range cli.GetConfigs() {
-		fmt.Fprintln(w, fmt.Sprintf("\t%s:\t%s", k, v))
-	}
-	w.Flush()
+	config, _ := json.Marshal(*(cli.GetCustomConfig().(*Config)))
+
+	fmt.Println(string(config))
 }
 
 func setConfig(cli *CLI) {
 	opt := cli.ShiftStrictArg()
 	switch opt {
 	case "--current-profile":
-		cli.SetConfig("current_profile", cli.ShiftStrictArg())
-		saveConfig(cli)
+		cli.GetCustomConfig().(*Config).SetCurrentProfile(cli.ShiftStrictArg())
+		saveCustomConfig(cli)
 	case "--editor":
-		cli.SetConfig("editor", cli.ShiftStrictArg())
-		saveConfig(cli)
+		cli.GetCustomConfig().(*Config).SetEditor(cli.ShiftStrictArg())
+		saveCustomConfig(cli)
 	}
 }
